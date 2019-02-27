@@ -950,7 +950,7 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   (bind-key "s-." #'hydra-ivy/body ivy-minibuffer-map))
 
 (use-package ivy-rich
-  :after ivy
+  :after ivy counsel
   :config
   ;; Align virtual buffers, and abbreviate paths
   (setq ivy-virtual-abbreviate 'full
