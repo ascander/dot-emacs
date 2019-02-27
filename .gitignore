@@ -1,0 +1,21 @@
+# Elisp byte code
+*.elc
+
+# Emacscollective no-littering directories
+/etc
+/var
+
+# Installed packages
+/elpa
+
+# Site-specific lisp code and settings; this includes cloned github repositories
+# for Emacs packages, private settings, and other stuff you typically wouldn't
+# want under version control
+/site-lisp
+
+# Cask auto-generated directory
+/.cask
+
+
+
+
