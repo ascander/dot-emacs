@@ -204,17 +204,18 @@
 (advice-add #'load-theme :before #'ad|disable-all-themes)
 
 ;; Pretty hydra entry point for theme switching
-(defhydra hydra-theme-selector (:hint nil :color amaranth :columns 3)
-  "Theme"
-  ("s" (load-theme 'solarized-dark t) "solarized dark")
-  ("m" (load-theme 'material t) "material dark")
-  ("DEL" (ad|disable-all-themes) "none")
+(when (package-installed-p 'hydra)
+  (defhydra hydra-theme-selector (:hint nil :color amaranth :columns 3)
+    "Theme"
+    ("s" (load-theme 'solarized-dark t) "solarized dark")
+    ("m" (load-theme 'material t) "material dark")
+    ("DEL" (ad|disable-all-themes) "none")
 
-  ("S" (load-theme 'solarized-light t) "solarized light")
-  ("M" (load-theme 'material-light t) "material light")
-  ("q" nil "quit" :color blue))
+    ("S" (load-theme 'solarized-light t) "solarized light")
+    ("M" (load-theme 'material-light t) "material light")
+    ("q" nil "quit" :color blue))
 
-(bind-keys ("C-c w t" . hydra-theme-selector/body))
+  (bind-keys ("C-c w t" . hydra-theme-selector/body)))
 
 ;; Create an `after-load-theme-hook' so that we can set faces after switching
 ;; themes interactively as well.
