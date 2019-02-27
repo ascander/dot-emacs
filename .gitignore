@@ -16,6 +16,11 @@
 # Cask auto-generated directory
 /.cask
 
+# Treemacs cache directory
+/.cache
+
+# Flycheck related files
+/flycheck_init.el
 
 
 
