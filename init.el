@@ -693,7 +693,6 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   :ensure nil)
 
 (use-package ox-reveal                  ; Reveal.js back end for Org export
-  :disabled t
   :defer t
   :load-path "site-lisp/org-reveal")
 
@@ -1353,7 +1352,6 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 ;;   (company-lsp-enable-snippet t))
 
 (use-package lsp-scala
-  :disabled t
   :load-path "site-lisp/lsp-scala"
   :after (scala-mode lsp-mode)
   :demand t
