@@ -1222,13 +1222,13 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   :defer t)
 
 (use-package company                    ; Text completion framework for Emacs
-  :defer 3
+  :hook (prog-mode . company-mode)
   :config
   ;; Basic settings
   (setq company-dabbrev-ignore-case nil
         company-dabbrev-code-ignore-case nil
         company-dabbrev-downcase nil
-        company-idle-delay 0.5
+        company-idle-delay 0.2
         company-tooltip-align-annotations t
         company-tooltip-flip-when-above t
         company-show-numbers t)
@@ -1248,14 +1248,7 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 
   ;; Turn off company support for certain modes
   (dolist (hook '(markdown-mode-hook org-mode-hook))
-    (add-hook hook '(lambda () (company-mode -1))))
-
-  ;; Leave TAB for YASnippet
-  ;; (define-key company-active-map (kbd "TAB") nil)
-  ;; (define-key company-active-map (kbd "<tab>") nil)
-  ;; (define-key company-active-map [tab] nil)
-
-  (global-company-mode 1))
+    (add-hook hook '(lambda () (company-mode -1)))))
 
 (use-package company-statistics         ; Sort company completions SMRT
   :after company
