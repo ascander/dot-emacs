@@ -1085,18 +1085,14 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 (put 'narrow-to-page 'disabled nil)
 (put 'narrow-to-defun 'disabled nil)
 
-(use-package smartparens                ; Deal with pairs in Emacs
-  :config
-  (require 'smartparens-config)
+;;; Pair management
 
-  ;; Free bindings for navigation
-  (bind-key "C-<left>" nil smartparens-mode-map)
-  (bind-key "C-<right>" nil smartparens-mode-map)
-  (bind-key "M-<backspace>" nil smartparens-mode-map)
+(use-package electric               ; Toggle automatic pairing of brackets, etc.
+  :ensure nil
+  :init (electric-pair-mode 1))
 
-  ;;  Activate smartparens globally
-  (smartparens-global-mode 1)
-  (show-smartparens-global-mode 1))
+(use-package evil-surround              ; Surrounding, with Evil
+  :config (global-evil-surround-mode 1))
 
 (use-package unfill                     ; The inverse of Emacs' fill
   :defer t)
