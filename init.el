@@ -1290,68 +1290,76 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
               ("C-c m e e" . eval-last-sexp)
               ("C-c m e f" . eval-defun)))
 
-;;; Scala support
+;; Scala support
 
-(use-package scala-mode                 ; Major mode for editing Scala files
+(use-package scala-mode                 ; Major mode for Scala
   :defer t
   :config
   ;; Indentation preferences
   (setq scala-indent:default-run-on-strategy
         scala-indent:operator-strategy)
 
-  ;; For correct newline behavior in multiline comments
+  ;; Insert newline in a multiline comment should insert an asterisk
   (defun ad|scala-mode-newline-comments ()
-    "Insert a leading asterisk in multiline comments, when hitting RET."
+    "Insert a leading asterisk in multiline comments, when hitting 'RET'."
     (interactive)
     (newline-and-indent)
     (scala-indent:insert-asterisk-on-multiline-comment))
+  (define-key scala-mode-map (kbd "RET") #'ad|scala-mode-newline-comments))
 
-  (define-key scala-mode-map (kbd "RET")
-    #'ad|scala-mode-newline-comments))
-
-(use-package sbt-mode                   ; Interactive support for Satan's Build Tool
-  :commands (sbt-start sbt-command)
+(use-package sbt-mode                   ; Support for Satan's Build Tool
+  :commands sbt-start sbt-command
   :config
   ;; Don't pop up SBT buffers automatically
   (setq sbt:display-command-buffer nil)
 
-  ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31 allows using
-  ;; SPACE when in the minibuffer
+  ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
+  ;; allows using SPACE when in the minibuffer
   (substitute-key-definition
    'minibuffer-complete-word
    'self-insert-command
    minibuffer-local-completion-map))
 
-(use-package flycheck                   ; On the fly syntax checking for Emacs
+(use-package lsp-scala                  ; LSP backend for Scala, using Metals
+  :after (scala-mode lsp-mode)
+  :load-path "site-lisp/lsp-scala"
+  :demand t
+  :hook (scala-mode . lsp)
+  :init (setq lsp-scala-server-command (executable-find "metals-emacs")))
+
+;; TODO: move to general programming
+
+(use-package flycheck
   :hook (prog-mode . flycheck-mode))
 
 (use-package lsp-mode
-  :commands lsp
-  :hook (prog-mode . lsp-mode)
-  :init
-  (evil-define-key '(normal visual) lsp-mode-map "gr" 'lsp-find-references)
-  :config (require 'lsp-clients))
+ :commands lsp
+ :hook (prog-mode . lsp-mode)
+ :init
+ ;; Prefer `lsp-ui' over `flymake' for errors
+ (setq lsp-prefer-flymake nil)
+ ;; Evil keybinding for `lsp-find-references'
+ (evil-define-key '(normal visual) lsp-mode-map "gr" 'lsp-find-references)
+ :config (require 'lsp-clients))
 
 (use-package lsp-ui
   :hook (lsp-mode . lsp-ui-mode))
 
-(use-package company-lsp
-  :after (company lsp-mode)
-  :config (add-to-list 'company-backends 'company-lsp)
-  :custom
-  (company-lsp-async t)
-  (company-lsp-enable-snippet t))
+;; (use-package lsp-mode
+;;   :commands lsp
+;;   :hook (prog-mode . lsp-mode)
+;;   :init
+;;   (evil-define-key '(normal visual) lsp-mode-map "gr" 'lsp-find-references)
+;;   :config (require 'lsp-clients))
 
-(use-package lsp-scala                  ; LSP backend for Scala, using Metals
-  :load-path "site-lisp/lsp-scala"
-  :after (scala-mode lsp-mode)
-  :init
-  ;; Where to find the metals executable
-  (setq lsp-scala-server-command (executable-find "metals-emacs"))
+;; (use-package company-lsp
+;;   :after (company lsp-mode)
+;;   :config (add-to-list 'company-backends 'company-lsp)
+;;   :custom
+;;   (company-lsp-async t)
+;;   (company-lsp-enable-snippet t))
 
-  (add-hook 'scala-mode-hook #'lsp))
-
-;;; Python support
+;; Python support
 
 (use-package elpy                       ; Emacs Lisp Python environment
   :defer 4
