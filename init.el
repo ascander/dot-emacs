@@ -1257,7 +1257,25 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   :after company
   :config (company-quickhelp-mode 1))
 
-;;; Markdown support
+(use-package flycheck                   ; On the fly syntax checking for Emacs
+  :config (global-flycheck-mode 1))
+
+(use-package lsp-mode                   ; Language Server Protocol support for Emacs
+  :hook (scala-mode . lsp-mode)
+  :init
+  (evil-define-key '(normal visual) lsp-mode-map "gr" 'lsp-find-references))
+
+(use-package lsp-ui                     ; UI support for `lsp-mode'
+  :hook (lsp-mode . lsp-ui-mode))
+
+;; (use-package company-lsp
+;;   :after (company lsp-mode)
+;;   :config (add-to-list 'company-backends 'company-lsp)
+;;   :custom
+;;   (company-lsp-async t)
+;;   (company-lsp-enable-snippet t))
+
+;; Markdown support
 
 (use-package markdown-mode              ; Major mode for editing Markdown/GFM files
   :commands (markdown-mode gfm-mode)
@@ -1320,44 +1338,12 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
    'self-insert-command
    minibuffer-local-completion-map))
 
-(use-package lsp-scala                  ; LSP backend for Scala, using Metals
-  :after (scala-mode lsp-mode)
+(use-package lsp-scala                  ; LSP support for Scala, using Metals
   :load-path "site-lisp/lsp-scala"
+  :after (scala-mode lsp-mode)
   :demand t
   :hook (scala-mode . lsp)
   :init (setq lsp-scala-server-command (executable-find "metals-emacs")))
-
-;; TODO: move to general programming
-
-(use-package flycheck
-  :hook (prog-mode . flycheck-mode))
-
-(use-package lsp-mode
- :commands lsp
- :hook (prog-mode . lsp-mode)
- :init
- ;; Prefer `lsp-ui' over `flymake' for errors
- (setq lsp-prefer-flymake nil)
- ;; Evil keybinding for `lsp-find-references'
- (evil-define-key '(normal visual) lsp-mode-map "gr" 'lsp-find-references)
- :config (require 'lsp-clients))
-
-(use-package lsp-ui
-  :hook (lsp-mode . lsp-ui-mode))
-
-;; (use-package lsp-mode
-;;   :commands lsp
-;;   :hook (prog-mode . lsp-mode)
-;;   :init
-;;   (evil-define-key '(normal visual) lsp-mode-map "gr" 'lsp-find-references)
-;;   :config (require 'lsp-clients))
-
-;; (use-package company-lsp
-;;   :after (company lsp-mode)
-;;   :config (add-to-list 'company-backends 'company-lsp)
-;;   :custom
-;;   (company-lsp-async t)
-;;   (company-lsp-enable-snippet t))
 
 ;; Python support
 
