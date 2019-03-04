@@ -1261,9 +1261,15 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   :config (global-flycheck-mode 1))
 
 (use-package lsp-mode                   ; Language Server Protocol support for Emacs
-  :hook (scala-mode . lsp-mode)
+  :commands lsp
+  :hook (prog-mode . lsp-mode)
   :init
-  (evil-define-key '(normal visual) lsp-mode-map "gr" 'lsp-find-references))
+  ;; Prefer `lsp-ui' over flymake for errors
+  (setq lsp-prefer-flymake nil)
+
+  ;; Evil binding for `lsp-find-references'
+  (evil-define-key '(normal visual) lsp-mode-map "gr" 'lsp-find-references)
+  :config (require 'lsp-clients))
 
 (use-package lsp-ui                     ; UI support for `lsp-mode'
   :hook (lsp-mode . lsp-ui-mode))
