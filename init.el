@@ -164,9 +164,6 @@
 (column-number-mode)                               ; Display column number in the mode line
 (setq confirm-kill-emacs 'y-or-n-p)                ; Because I keep hitting 's-q' accidentally
 
-;; ;; Use ESC as a universal "get me out of here" command
-;; (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
-
 ;; Make the Emacs shell ('M-x shell') interactive, and disable echoing each
 ;; terminal command as it's entered on the command line.
 (setq shell-command-switch "-ic")
@@ -272,11 +269,6 @@
   (setq dimmer-fraction 0.4)
   (add-hook 'after-init-hook #'dimmer-mode))
 
-(use-package stripe-buffer              ; striped backgorund in `dired'
-  :disabled t                           ; bad interactions with evil cursor states
-  :defer t
-  :hook (dired-mode . stripe-listify-buffer))
-
 ;;; Modeline improvements
 
 (use-package moody                      ; Tabs and Ribbons for the mode line
@@ -314,6 +306,7 @@
   (defconst *paradox-github-token-file*
     (concat user-emacs-directory "site-lisp/private.el")
     "Location of the `paradox-github-token' setting for Paradox.")
+  ;; TODO remap existing package manager to paradox
   :config
   ;; Basic settings
   (setq paradox-execute-asynchronously t
@@ -486,12 +479,6 @@ T - tag prefix
 (setq view-read-only t)
 
 ;;; Buffer, frame and window settings
-
-;; ;; Always prefer splitting vertically
-;; ;;
-;; ;; See: https://stackoverflow.com/a/2081978
-;; (setq split-height-threshold nil
-;;       split-width-threshold nil)
 
 (use-package ibuffer                       ; A better buffer list
   :bind (([remap list-buffers] . ibuffer)  ; C-x C-b
@@ -675,11 +662,6 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   (global-set-key (kbd "s-{") #'windmove-up)
   (global-set-key (kbd "s-}") #'windmove-up))
 
-;; ;; Quicker buffer cycling commands
-;; (bind-keys ("s-p" . previous-buffer)    ; TODO: conflicts with projectile command prefix
-;;            ("s-n" . next-buffer)
-;;            ("s-k" . kill-this-buffer))
-
 ;; Split and manage windows easily
 (global-set-key (kbd "s-1") (kbd "C-x 1")) ; ⌘-1 kill other windows (keep this one)
 (global-set-key (kbd "s-2") (kbd "C-x 2")) ; ⌘-2 split horizontally
@@ -825,10 +807,7 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 
 ;;; Version control
 
-(use-package what-the-commit            ; Random commit message
-  :bind (("C-c i w" . what-the-commit-insert)
-         ("C-c g w" . what-the-commit)))
-
+;; TODO bind these to Evil ex commands, eg. `:Gs' = `magit-status'
 (use-package magit                      ; The one and only Git front end
   :bind (("C-c g c" . magit-clone)
          ("C-c g s" . magit-status)
@@ -936,12 +915,6 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
           (ivy-switch-buffer . ivy--regex-plus)
           (t                 . ivy--regex-fuzzy)))
 
-  ;; Make the `ivy-current-match' face a bit more distinct
-  ;; (set-face-attribute 'ivy-current-match nil :inherit #'warning)
-  ;; (add-hook 'after-load-theme-hook
-  ;;           '(lambda () (set-face-attribute
-  ;;                   'ivy-current-match nil :inherit #'warning)))
-
   (ivy-mode 1))
 
 (use-package ivy-hydra                  ; A useful hydra for the Ivy minibuffer
@@ -974,6 +947,7 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
          ([remap completion-at-point]      . counsel-company)
          ([remap org-goto]                 . counsel-org-goto)
          ("C-c f L"                        . counsel-load-library)
+         ("C-c f t"                        . counsel-load-theme)
          ("C-c f r"                        . counsel-recentf)
          ("C-c i 8"                        . counsel-unicode-char)
          ("C-c r g"                        . counsel-rg)
@@ -1062,19 +1036,6 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 (global-set-key (kbd "s-k") #'previous-line)
 (global-set-key (kbd "s-l") #'right-char)
 
-;; Common ⌘-[arrow] keybindings for navigation/selection
-(global-set-key (kbd "s-<right>") #'move-end-of-line)   ; end of line
-(global-set-key (kbd "s-S-<right>") (kbd "C-S-e"))      ; select to end of line
-(global-set-key (kbd "s-<left>") #'back-to-indentation) ; beginning (first non-blank) of line
-(global-set-key (kbd "s-S-<left>") (kbd "M-S-m"))       ; select to beginning of line
-
-(global-set-key (kbd "s-<up>") #'beginning-of-buffer)   ; first line
-(global-set-key (kbd "s-<down>") #'end-of-buffer)       ; last line
-
-;; Killing; note 'M-<backspace>' kills the word backwards
-(global-set-key (kbd "s-<backspace>") #'kill-whole-line) ; kill line backwards
-(global-set-key (kbd "M-S-<backspace>") #'kill-word)     ; kill word forwards
-
 (use-package writeroom-mode             ; Distraction free editing mode
   :bind (:map writeroom-mode-map
               ("C-M-<" . #'writeroom-decrease-width)
@@ -1095,6 +1056,8 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 
 (use-package evil-surround              ; Surrounding, with Evil
   :config (global-evil-surround-mode 1))
+
+;;; Miscellaneous
 
 (use-package unfill                     ; The inverse of Emacs' fill
   :defer t)
@@ -1160,31 +1123,6 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 
 (use-package deadgrep                   ; Fast, beautiful text search
   :bind ("s-F" . deadgrep))             ; MacOS familiar ⌘-shift-f binding
-
-(use-package multiple-cursors           ; Edit text with multiple cursors
-  :defer 4
-  :bind (("C-c o <SPC>" . mc/vertical-align-with-space)
-         ("C-c o a"     . mc/vertical-align)
-         ("C-c o e"     . mc/mark-more-like-this-extended)
-         ("C-c o h"     . mc/mark-all-like-this-dwim)
-         ("C-c o i n"   . mc/insert-numbers)
-         ("C-c o i l"   . mc/insert-letters)
-         ("C-c o l"     . mc/edit-lines)
-         ("C-c o n"     . mc/mark-next-like-this)
-         ("C-c o p"     . mc/mark-previous-like-this)
-         ("C-c o r"     . vr/mc-mark)
-         ("C-c o C-a"   . mc/edit-beginnings-of-lines)
-         ("C-c o C-e"   . mc/edit-ends-of-lines)
-         ("C-c o C-s"   . mc/mark-all-in-region))
-  :config
-  ;; Keep preferences in no-littering directory
-  (setq mc/list-file (no-littering-expand-var-file-name "mc-lists.el"))
-
-  (setq
-   mc/mode-line
-   ;; Simplify the MC mode line indicator
-   '(:propertize (:eval (concat " " (number-to-string (mc/num-cursors))))
-                 face font-lock-warning-face)))
 
 (use-package expand-region              ; Expand region by semantic units
   :ensure t
