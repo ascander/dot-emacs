@@ -821,7 +821,8 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
         magit-branch-prefer-remote-upstream '("master")
         magit-branch-adjust-remote-upstream-alist '(("origin/master" "master"))
         magit-revision-show-gravatars nil
-        magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
+        ;; magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1
+        )
 
   ;; Show refined hunks during diffs
   (set-default 'magit-diff-refine-hunk t)
@@ -847,23 +848,24 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   ;; Refresh `magit-status' after saving a buffer
   (add-hook 'after-save-hook #'magit-after-save-refresh-status)
 
-  ;; Redirect "git" command to "hub" for interactive use only.
-  ;; See: https://github.com/DarwinAwardWinner/dotemacs/blob/8ed1ae8244b5c23965799b81c2371e27217bae48/config.org#magit-itself
-  ;;
-  ;; Note: This requires configuring the `$EDITOR' environment variable to play
-  ;; nice with Emacs running in server mode. For Oh-my-zsh users (also using the
-  ;; Emacs plugin) this looks like:
-  ;;
-  ;; export EDITOR="$HOME/.oh-my-zsh/plugins/emacs/emacsclient.sh --no-wait"
-  ;;
-  ;; See: https://unix.stackexchange.com/a/9202
-  (defvar magit-hub-executable (when (executable-find "hub") "hub")
-    "Executable to use for calling hub.")
-  (define-advice magit-git-command (:around (orig-fun &rest args) use-hub)
-    "Use `hub' instead of `git' if available."
-    (let ((magit-git-executable
-           (or magit-hub-executable magit-git-executable)))
-      (apply orig-fun args))))
+  ;; ;; Redirect "git" command to "hub" for interactive use only.
+  ;; ;; See: https://github.com/DarwinAwardWinner/dotemacs/blob/8ed1ae8244b5c23965799b81c2371e27217bae48/config.org#magit-itself
+  ;; ;;
+  ;; ;; Note: This requires configuring the `$EDITOR' environment variable to play
+  ;; ;; nice with Emacs running in server mode. For Oh-my-zsh users (also using the
+  ;; ;; Emacs plugin) this looks like:
+  ;; ;;
+  ;; ;; export EDITOR="$HOME/.oh-my-zsh/plugins/emacs/emacsclient.sh --no-wait"
+  ;; ;;
+  ;; ;; See: https://unix.stackexchange.com/a/9202
+  ;; (defvar magit-hub-executable (when (executable-find "hub") "hub")
+  ;;   "Executable to use for calling hub.")
+  ;; (define-advice magit-git-command (:around (orig-fun &rest args) use-hub)
+  ;;   "Use `hub' instead of `git' if available."
+  ;;   (let ((magit-git-executable
+  ;;          (or magit-hub-executable magit-git-executable)))
+  ;;     (apply orig-fun args)))
+  )
 
 (use-package git-commit                 ; git commit message mode
   :defer t
@@ -1195,7 +1197,31 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   :after company
   :config (company-quickhelp-mode 1))
 
-;;; Markdown support
+(use-package flycheck                   ; On the fly syntax checking for Emacs
+  :config (global-flycheck-mode 1))
+
+(use-package lsp-mode                   ; Language Server Protocol support for Emacs
+  :commands lsp
+  :hook (prog-mode . lsp-mode)
+  :init
+  ;; Prefer `lsp-ui' over flymake for errors
+  (setq lsp-prefer-flymake nil)
+
+  ;; Evil binding for `lsp-find-references'
+  (evil-define-key '(normal visual) lsp-mode-map "gr" 'lsp-find-references)
+  :config (require 'lsp-clients))
+
+(use-package lsp-ui                     ; UI support for `lsp-mode'
+  :hook (lsp-mode . lsp-ui-mode))
+
+;; (use-package company-lsp
+;;   :after (company lsp-mode)
+;;   :config (add-to-list 'company-backends 'company-lsp)
+;;   :custom
+;;   (company-lsp-async t)
+;;   (company-lsp-enable-snippet t))
+
+;; Markdown support
 
 (use-package markdown-mode              ; Major mode for editing Markdown/GFM files
   :commands (markdown-mode gfm-mode)
@@ -1228,57 +1254,44 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
               ("C-c m e e" . eval-last-sexp)
               ("C-c m e f" . eval-defun)))
 
-;;; Scala support
+;; Scala support
 
-(use-package scala-mode                 ; Major mode for editing Scala files
+(use-package scala-mode                 ; Major mode for Scala
   :defer t
   :config
   ;; Indentation preferences
   (setq scala-indent:default-run-on-strategy
         scala-indent:operator-strategy)
 
-  ;; For correct newline behavior in multiline comments
+  ;; Insert newline in a multiline comment should insert an asterisk
   (defun ad|scala-mode-newline-comments ()
-    "Insert a leading asterisk in multiline comments, when hitting RET."
+    "Insert a leading asterisk in multiline comments, when hitting 'RET'."
     (interactive)
     (newline-and-indent)
     (scala-indent:insert-asterisk-on-multiline-comment))
+  (define-key scala-mode-map (kbd "RET") #'ad|scala-mode-newline-comments))
 
-  (define-key scala-mode-map (kbd "RET")
-    #'ad|scala-mode-newline-comments))
-
-(use-package sbt-mode                   ; Interactive support for Satan's Build Tool
-  :commands (sbt-start sbt-command)
+(use-package sbt-mode                   ; Support for Satan's Build Tool
+  :commands sbt-start sbt-command
   :config
   ;; Don't pop up SBT buffers automatically
   (setq sbt:display-command-buffer nil)
 
-  ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31 allows using
-  ;; SPACE when in the minibuffer
+  ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
+  ;; allows using SPACE when in the minibuffer
   (substitute-key-definition
    'minibuffer-complete-word
    'self-insert-command
    minibuffer-local-completion-map))
 
-(use-package flycheck
-  :config (global-flycheck-mode 1))
-
-(use-package lsp-mode
-  :hook (scala-mode . lsp-mode)
-  :init
-  (evil-define-key '(normal visual) lsp-mode-map "gr" 'lsp-find-references))
-
-(use-package lsp-ui
-  :hook (lsp-mode . lsp-ui-mode))
-
-(use-package lsp-scala
+(use-package lsp-scala                  ; LSP support for Scala, using Metals
   :load-path "site-lisp/lsp-scala"
   :after (scala-mode lsp-mode)
   :demand t
   :hook (scala-mode . lsp)
   :init (setq lsp-scala-server-command (executable-find "metals-emacs")))
 
-;;; Python support
+;; Python support
 
 (use-package elpy                       ; Emacs Lisp Python environment
   :defer 4
