@@ -1054,6 +1054,10 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   :ensure nil
   :init (electric-pair-mode 1))
 
+(use-package paren                      ; Highlight matching parentheses
+  :ensure nil
+  :init (show-paren-mode 1))
+
 (use-package evil-surround              ; Surrounding, with Evil
   :config (global-evil-surround-mode 1))
 
