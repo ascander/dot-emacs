@@ -1218,12 +1218,12 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 (use-package lsp-ui                     ; UI support for `lsp-mode'
   :hook (lsp-mode . lsp-ui-mode))
 
-;; (use-package company-lsp
-;;   :after (company lsp-mode)
-;;   :config (add-to-list 'company-backends 'company-lsp)
-;;   :custom
-;;   (company-lsp-async t)
-;;   (company-lsp-enable-snippet t))
+(use-package company-lsp                ; Company backend for `lsp-mode'
+  :after (company lsp-mode)
+  :config (add-to-list 'company-backends 'company-lsp)
+  :custom
+  (company-lsp-async t)
+  (company-lsp-enable-snippet t))
 
 ;; Markdown support
 
