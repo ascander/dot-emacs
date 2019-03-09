@@ -1202,7 +1202,7 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   :config (company-quickhelp-mode 1))
 
 (use-package flycheck                   ; On the fly syntax checking for Emacs
-  :config (global-flycheck-mode 1))
+  :hook (prog-mode . flycheck-mode))
 
 (use-package lsp-mode                   ; Language Server Protocol support for Emacs
   :commands lsp
