@@ -921,6 +921,7 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   :bind (([remap execute-extended-command] . counsel-M-x)
          ("s-P"                            . counsel-M-x) ; familiar command palette keybinding for MacOS
          ([remap find-file]                . counsel-find-file)
+         ([remap describe-bindings]        . counsel-descbinds)
          ([remap describe-face]            . counsel-describe-face)
          ([remap describe-function]        . counsel-describe-function)
          ([remap describe-variable]        . counsel-describe-variable)
