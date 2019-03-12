@@ -846,26 +846,7 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
             #'ad|magit-set-repo-dirs-from-projectile)
 
   ;; Refresh `magit-status' after saving a buffer
-  (add-hook 'after-save-hook #'magit-after-save-refresh-status)
-
-  ;; ;; Redirect "git" command to "hub" for interactive use only.
-  ;; ;; See: https://github.com/DarwinAwardWinner/dotemacs/blob/8ed1ae8244b5c23965799b81c2371e27217bae48/config.org#magit-itself
-  ;; ;;
-  ;; ;; Note: This requires configuring the `$EDITOR' environment variable to play
-  ;; ;; nice with Emacs running in server mode. For Oh-my-zsh users (also using the
-  ;; ;; Emacs plugin) this looks like:
-  ;; ;;
-  ;; ;; export EDITOR="$HOME/.oh-my-zsh/plugins/emacs/emacsclient.sh --no-wait"
-  ;; ;;
-  ;; ;; See: https://unix.stackexchange.com/a/9202
-  ;; (defvar magit-hub-executable (when (executable-find "hub") "hub")
-  ;;   "Executable to use for calling hub.")
-  ;; (define-advice magit-git-command (:around (orig-fun &rest args) use-hub)
-  ;;   "Use `hub' instead of `git' if available."
-  ;;   (let ((magit-git-executable
-  ;;          (or magit-hub-executable magit-git-executable)))
-  ;;     (apply orig-fun args)))
-  )
+  (add-hook 'after-save-hook #'magit-after-save-refresh-status))
 
 (use-package git-commit                 ; git commit message mode
   :defer t
