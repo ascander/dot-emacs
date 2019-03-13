@@ -262,9 +262,6 @@
   ;;   (load-theme 'solarized-dark t))
   )
 
-(use-package material-theme             ; Google Material Design theme for Emacs
-  :defer t)
-
 (use-package doom-themes                ; DOOM Emacs themes
   :init
   (setq doom-themes-enable-bold nil
@@ -274,8 +271,8 @@
       (add-hook 'after-make-frame-functions
                 (lambda (frame)
                   (select-frame frame)
-                  (load-theme 'doom-city-lights t)))
-    (load-theme 'doom-city-lights t)))
+                  (load-theme 'doom-sourcerer t)))
+    (load-theme 'doom-sourcerer t)))
 
 (use-package dimmer                     ; Dim buffers other than the current one
   :init
