@@ -69,6 +69,18 @@
   (require 'use-package))
 (require 'bind-key)
 
+;;; Keybindings
+
+(use-package general          ; A more convenient way of binding keys in Emacs
+  :demand t
+  :config
+  ;; Spacemacs-like leader key
+  (general-create-definer general-spc
+    :states '(normal visual insert emacs)
+    :keymaps 'override
+    :prefix "SPC"
+    :non-normal-prefix "C-SPC"))
+
 ;;; OS X settings
 
 (when *is-a-mac*
@@ -737,6 +749,12 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 
 (use-package magit                      ; The one and only Git front end
   :defer t
+  :general
+  (general-spc
+    "g"  #'(:ignore t :which-key "Magit")
+    "gs" #'magit-status
+    "gb" #'magit-blame-addition
+    "gc" #'magit-clone)
   :config
   ;; Basic settings
   (setq magit-save-repository-buffers 'dontask
@@ -839,6 +857,7 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 (use-package counsel                    ; Ivy-enhanced versions of commands
   :after ivy
   :demand t
+  :general (general-spc "/" #'counsel-grep-or-swiper)
   :bind (([remap execute-extended-command] . counsel-M-x)
          ("s-P"                            . counsel-M-x) ; familiar command palette keybinding for MacOS
          ([remap find-file]                . counsel-find-file)
@@ -878,23 +897,7 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   :bind (([remap isearch-forward] . swiper)))
 
 ;;; Keys and keybindings
-
-(use-package general          ; A more convenient way of binding keys in Emacs
-  :config
-  ;; Spacemacs-like leader key
-  (general-define-key
-   :states '(normal visual insert emacs)
-   :prefix "SPC"
-   :non-normal-prefix "C-SPC"
-   ;; Swiper
-   "/" 'counsel-grep-or-swiper
-
-   ;; Git commands
-   "g"  '(:ignore t :which-key "Git")
-   "gs" 'magit-status
-   "gc" 'magit-clone
-   "gb" 'magit-blame-addition))
-
+  
 (use-package evil                       ; Vim keybindings for Emacs
   :init
   (setq evil-want-integration t
