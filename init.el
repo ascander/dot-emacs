@@ -886,6 +886,8 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 
 ;;; Keys and keybindings
 
+(use-package general)          ; A more convenient way of binding keys in Emacs
+
 (use-package evil                       ; Vim keybindings for Emacs
   :init
   (setq evil-want-integration t
