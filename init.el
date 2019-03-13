@@ -886,6 +886,9 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
    :states '(normal visual insert emacs)
    :prefix "SPC"
    :non-normal-prefix "C-SPC"
+   ;; Swiper
+   "/" 'counsel-grep-or-swiper
+
    ;; Git commands
    "g"  '(:ignore t :which-key "Git")
    "gs" 'magit-status
