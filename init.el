@@ -984,11 +984,7 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
         undo-tree-visualizer-timestamps t
         undo-tree-visualizer-diff t)
   :config
-  (global-undo-tree-mode 1)
-
-  ;; Use familiar MacOS keybindings for undo/redo
-  (global-set-key (kbd "s-z") 'undo-tree-undo)
-  (global-set-key (kbd "s-Z") 'undo-tree-redo))
+  (global-undo-tree-mode 1))
 
 ;;; Programming Settings
 
