@@ -90,6 +90,7 @@
   (setq ns-pop-up-frames nil))
 
 (use-package exec-path-from-shell       ; Fix PATH on GUI Emacs
+  :disabled t                           ; Not needed for the way I call Emacs
   :if *is-a-mac*
   :init
   (setq exec-path-from-shell-check-startup-files nil
@@ -645,6 +646,9 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 
     (add-to-list 'aw-dispatch-alist '(?w hydra-window-size/body) t)
     (add-to-list 'aw-dispatch-alist '(?\; hydra-window-frame/body) t)))
+
+(use-package beacon                     ; Never lose your cursor again
+  :config (beacon-mode 1))
 
 (use-package focus-autosave-mode        ; Save buffers when Emacs loses focus
   :config (focus-autosave-mode t))
