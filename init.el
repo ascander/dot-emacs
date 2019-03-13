@@ -735,22 +735,15 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 
 ;;; Version control
 
-;; TODO bind these to Evil ex commands, eg. `:Gs' = `magit-status'
 (use-package magit                      ; The one and only Git front end
-  :bind (("C-c g c" . magit-clone)
-         ("C-c g s" . magit-status)
-         ("s-G"     . magit-status)
-         ("C-c g b" . magit-blame-addition)
-         ("C-c g p" . magit-pull-branch))
+  :defer t
   :config
   ;; Basic settings
   (setq magit-save-repository-buffers 'dontask
         magit-refs-show-commit-count 'all
         magit-branch-prefer-remote-upstream '("master")
         magit-branch-adjust-remote-upstream-alist '(("origin/master" "master"))
-        magit-revision-show-gravatars nil
-        ;; magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1
-        )
+        magit-revision-show-gravatars nil)
 
   ;; Show refined hunks during diffs
   (set-default 'magit-diff-refine-hunk t)
@@ -886,7 +879,18 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 
 ;;; Keys and keybindings
 
-(use-package general)          ; A more convenient way of binding keys in Emacs
+(use-package general          ; A more convenient way of binding keys in Emacs
+  :config
+  ;; Spacemacs-like leader key
+  (general-define-key
+   :states '(normal visual insert emacs)
+   :prefix "SPC"
+   :non-normal-prefix "C-SPC"
+   ;; Git commands
+   "g"  '(:ignore t :which-key "Git")
+   "gs" 'magit-status
+   "gc" 'magit-clone
+   "gb" 'magit-blame-addition))
 
 (use-package evil                       ; Vim keybindings for Emacs
   :init
