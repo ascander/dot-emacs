@@ -657,6 +657,10 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
     (add-to-list 'aw-dispatch-alist '(?\; hydra-window-frame/body) t)))
 
 (use-package beacon                     ; Never lose your cursor again
+  :init (setq beacon-blink-delay 0.2
+              beacon-blink-duration 0.2
+              beacon-blink-when-window-scrolls nil
+              beacon-color "#aa4450")
   :config (beacon-mode 1))
 
 (use-package focus-autosave-mode        ; Save buffers when Emacs loses focus
