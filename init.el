@@ -186,7 +186,7 @@
 ;;; Fonts
 
 (set-face-attribute 'default nil
-                    :family "Iosevka Pro" ; custom build of Iosevka with ligatures
+                    :family "Iosevka Type" ; custom build of Iosevka with ligatures
                     :height 140
                     :weight 'regular)
 
