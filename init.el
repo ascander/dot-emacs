@@ -1215,7 +1215,7 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   :after (scala-mode lsp-mode)
   :demand t
   :hook (scala-mode . lsp)
-  :init (setq lsp-scala-server-command (executable-find "metals-emacs")))
+  :init (setq lsp-scala-server-command (executable-find "metals")))
 
 ;; Python support
 
