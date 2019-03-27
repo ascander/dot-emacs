@@ -707,9 +707,10 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 ;;; Project management
 
 (use-package projectile                 ; Project management for Emacs
-  :defer 2
-  :bind-keymap ("M-p" . projectile-command-map)
-  :bind (("M-P" . hydra-projectile/body))
+  :defer t
+  :general
+  (general-spc
+    "P" #'hydra-projectile/body)
   :init
   (defhydra hydra-projectile (:color teal :columns 4)
     "Projectile"
@@ -888,7 +889,9 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 
 (use-package counsel-projectile         ; Counsel integration with Projectile
   :after (counsel projectile)
-  :bind (("s-p" . counsel-projectile-find-file)) ; Find file in current project with
+  :general
+  (general-spc
+    "p" #'counsel-projectile-find-file)
   :config
   ;; TODO: remap `projectile-ag' to `counsel-projectile-rg'
   (counsel-projectile-mode 1))
