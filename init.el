@@ -664,6 +664,16 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
               beacon-color "#aa4450")
   :config (beacon-mode 1))
 
+(use-package shackle                    ; Make popped up buffers behave
+  :config
+  (setq shackle-rules
+        '(("\\*Org Src.*" :regexp t :align below :select t)
+          (" *Org todo*" :align below :select t)
+          (compilation-mode :noselect t))
+        shackle-default-rule '(:select t))
+  
+  (shackle-mode t))
+
 (use-package focus-autosave-mode        ; Save buffers when Emacs loses focus
   :config (focus-autosave-mode t))
 

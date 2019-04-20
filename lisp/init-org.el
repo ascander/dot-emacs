@@ -43,6 +43,20 @@
    org-enable-priority-commands nil     ; disable priority commands
    org-reverse-note-order t)            ; store new notes at the beginning
 
+  ;; Force org popup buffers to follow Shackle rules
+  ;; See: https://emacs.stackexchange.com/a/31634
+  (setq org-src-window-setup 'other-window)
+
+  ;; Re-define org-switch-to-buffer-other-window to NOT use org-no-popups.
+  ;; Primarily for compatibility with shackle.
+  (defun org-switch-to-buffer-other-window (args)
+    "Switch to buffer in a second window on the current frame.
+In particular, do not allow pop-up frames. Returns the newly
+created buffer. Redefined to allow pop-up windows."
+    ;;  (org-no-popups
+    ;;     (apply 'switch-to-buffer-other-window args)))
+    (switch-to-buffer-other-window args))
+
   ;; Export backends
   (setq org-export-backends '(md odt latex icalendar html ascii))
 
