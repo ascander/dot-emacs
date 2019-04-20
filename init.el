@@ -1041,7 +1041,6 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   (setq rainbow-x-colors nil))
 
 (use-package whitespace-cleanup-mode    ; Intelligently clean up whitespace before buffers are saved
-  :bind (("C-c x w" . whitespace-cleanup))
   :hook (prog-mode text-mode conf-mode))
 
 (use-package eldoc                      ; Print argument information in the echo area
