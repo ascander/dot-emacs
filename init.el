@@ -1087,10 +1087,8 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   :hook (prog-mode . company-mode)
   :config
   ;; Basic settings
-  (setq company-dabbrev-ignore-case nil
-        company-dabbrev-code-ignore-case nil
-        company-dabbrev-downcase nil
-        company-idle-delay 0.2
+  (setq company-idle-delay 0.2
+        company-minimum-prefix-length 2
         company-tooltip-align-annotations t
         company-tooltip-flip-when-above t
         company-show-numbers t)
@@ -1111,6 +1109,10 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   ;; Turn off company support for certain modes
   (dolist (hook '(markdown-mode-hook org-mode-hook))
     (add-hook hook '(lambda () (company-mode -1)))))
+
+(use-package company-box                ; A company front-end with icons
+  :disabled t
+  :hook (company-mode . company-box-mode))
 
 (use-package company-statistics         ; Sort company completions SMRT
   :after company
