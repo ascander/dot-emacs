@@ -206,38 +206,43 @@
 
 ;;; Color theme and looks
 
-;; Advise the `load-theme' function to disable all existing themes first. This
-;; avoids pollution from a past theme that isn't overriden by the current theme.
-(defun ad|disable-all-themes (&rest args)
-  "Disable all currently active themes. ARGS is ignored."
+;; Color theme specific tweaks are managed based on Greg Hendershott's blog post
+;; here: http://www.greghendershott.com/2017/02/emacs-themes.html
+;;
+;; The basic idea is to advise `load-theme' by running `ad|disable-all-themes'
+;; before, and executing any theme-specific hooks after. Disabling all currently
+;; active themes is needed to ensure that when loading theme T, only faces
+;; defined by T are active. The latter is a general mechanism for tweaking
+;; specific features of individual themes.
+
+(defun ad|disable-all-themes ()
+  "Disable all currently active color themes."
   (interactive)
   (mapc #'disable-theme custom-enabled-themes))
 
-(advice-add #'load-theme :before #'ad|disable-all-themes)
+(defvar ad|theme-hooks nil
+  "This variable contains registered color theme hooks.")
 
-;; Pretty hydra entry point for theme switching
-(when (package-installed-p 'hydra)
-  (defhydra hydra-theme-selector (:hint nil :color amaranth :columns 3)
-    "Theme"
-    ("s" (load-theme 'solarized-dark t) "solarized dark")
-    ("m" (load-theme 'material t) "material dark")
-    ("DEL" (ad|disable-all-themes) "none")
+(defun ad|add-theme-hook (theme-id hook-func)
+  "Add HOOK-FUNC as a hook to be called when THEME-ID is loaded."
+  (add-to-list 'ad|theme-hooks (cons theme-id hook-func)))
 
-    ("S" (load-theme 'solarized-light t) "solarized light")
-    ("M" (load-theme 'material-light t) "material light")
-    ("q" nil "quit" :color blue))
+(defun ad|load-theme-advice (f theme-id &optional no-confirm no-enable &rest args)
+  "Enhances `load-theme' in two ways:
+1. Disables enabled themes for a clean slate.
+2. Calls functions registered using `ad|add-theme-hook'."
+  (unless no-enable
+    (ad|disable-all-themes))
+  (prog1
+      (apply f theme-id no-confirm no-enable args)
+    (unless no-enable
+      (pcase (assq theme-id ad|theme-hooks)
+        (`(,_ . ,f) (funcall f))))))
 
-  (bind-keys ("C-c w t" . hydra-theme-selector/body)))
-
-;; Create an `after-load-theme-hook' so that we can set faces after switching
-;; themes interactively as well.
-;; See: https://github.com/pkkm/.emacs.d/blob/e86c9e541a9b18f40292d32dc431557d0ca3e62b/conf/view/color-theme.el#L5-L9
-(defvar after-load-theme-hook nil
-  "Hook run after a color theme is loaded using `load-theme'.")
-
-(defadvice load-theme (after run-after-load-theme-hook activate)
-  "Run `after-load-theme-hook'."
-  (run-hooks 'after-load-theme-hook))
+;; TODO: add hydra for fast-switching themes
+(advice-add 'load-theme
+            :around
+            #'ad|load-theme-advice)
 
 (use-package solarized-theme            ; I always come back to you
   :init
@@ -266,8 +271,14 @@
 
 (use-package doom-themes                ; DOOM Emacs themes
   :init
+  ;; Don't use bold or italics
   (setq doom-themes-enable-bold nil
         doom-themes-enable-italic nil)
+  ;; Add more contrast to background highlighting for `ivy-current-match' in the
+  ;; `doom-sourcerer' theme.
+  (ad|add-theme-hook 'doom-sourcerer
+                     #'(lambda () (set-face-attribute
+                              'ivy-current-match nil :background "#494952")))
   :config
   (if (daemonp)
       (add-hook 'after-make-frame-functions
