@@ -64,6 +64,9 @@ created buffer. Redefined to allow pop-up windows."
   ;; See discussion at: https://lists.gnu.org/archive/html/emacs-orgmode/2018-04/msg00600.html
   (require 'org-tempo)
 
+  ;; Enable org habits for habit tracking
+  (require 'org-habit)
+
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Tasks & States
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
