@@ -29,10 +29,9 @@
 (setq debug-on-error t)
 (setq message-log-max 10000)
 
-;; Increase GC threshold for faster startup, and set to a more reasonable value
-;; after startup.
-(let ((normal-gc-cons-threshold (* 20 1024 1024))
-      (init-gc-cons-threshold (* 256 1024 1024)))
+
+(let ((normal-gc-cons-threshold gc-cons-threshold)
+      (init-gc-cons-threshold most-positive-fixnum))
   (setq gc-cons-threshold init-gc-cons-threshold)
   (add-hook 'after-init-hook
             (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
@@ -69,6 +68,9 @@
   (require 'use-package))
 (require 'bind-key)
 
+;;; Start the server
+(server-start)
+
 ;;; Keybindings
 
 (use-package general          ; A more convenient way of binding keys in Emacs
@@ -102,7 +104,6 @@
   (setq ns-pop-up-frames nil))
 
 (use-package exec-path-from-shell       ; Fix PATH on GUI Emacs
-  :disabled t                           ; Not needed for the way I call Emacs
   :if *is-a-mac*
   :init
   (setq exec-path-from-shell-check-startup-files nil
@@ -113,6 +114,7 @@
           "METALS_ENABLED"              ; Metals for Scala
           "EMAIL"                       ; User email address
           "PATH"                        ; Executables
+          "MANPATH"                     ; Man pages
           "LANG"                        ; System language
           "LC_CTYPE"                    ; System character set
           ))
@@ -198,9 +200,9 @@
 (use-package default-text-scale         ; Easily adjust font size in all Emacs frames
   :init (default-text-scale-mode 1))
 
-(use-package init-ligatures             ; Sick liggz
-  :load-path "lisp"
-  :ensure nil)
+;; (use-package init-ligatures             ; Sick liggz
+;;   :load-path "lisp"
+;;   :ensure nil)
 
 ;;; Color theme and looks
 
@@ -316,7 +318,6 @@
   (defconst *paradox-github-token-file*
     (concat user-emacs-directory "site-lisp/private.el")
     "Location of the `paradox-github-token' setting for Paradox.")
-  ;; TODO remap existing package manager to paradox
   :config
   ;; Basic settings
   (setq paradox-execute-asynchronously t
