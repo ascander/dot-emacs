@@ -69,6 +69,18 @@
   (require 'use-package))
 (require 'bind-key)
 
+;;; Keybindings
+
+(use-package general          ; A more convenient way of binding keys in Emacs
+  :demand t
+  :config
+  ;; Spacemacs-like leader key
+  (general-create-definer general-spc
+    :states '(normal visual insert emacs)
+    :keymaps 'override
+    :prefix "SPC"
+    :non-normal-prefix "C-SPC"))
+
 ;;; OS X settings
 
 (when *is-a-mac*
@@ -174,7 +186,7 @@
 ;;; Fonts
 
 (set-face-attribute 'default nil
-                    :family "Iosevka Pro" ; custom build of Iosevka with ligatures
+                    :family "Iosevka Type" ; custom build of Iosevka with ligatures
                     :height 140
                     :weight 'regular)
 
@@ -250,9 +262,6 @@
   ;;   (load-theme 'solarized-dark t))
   )
 
-(use-package material-theme             ; Google Material Design theme for Emacs
-  :defer t)
-
 (use-package doom-themes                ; DOOM Emacs themes
   :init
   (setq doom-themes-enable-bold nil
@@ -262,8 +271,8 @@
       (add-hook 'after-make-frame-functions
                 (lambda (frame)
                   (select-frame frame)
-                  (load-theme 'doom-city-lights t)))
-    (load-theme 'doom-city-lights t)))
+                  (load-theme 'doom-sourcerer t)))
+    (load-theme 'doom-sourcerer t)))
 
 (use-package dimmer                     ; Dim buffers other than the current one
   :init
@@ -648,6 +657,10 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
     (add-to-list 'aw-dispatch-alist '(?\; hydra-window-frame/body) t)))
 
 (use-package beacon                     ; Never lose your cursor again
+  :init (setq beacon-blink-delay 0.2
+              beacon-blink-duration 0.2
+              beacon-blink-when-window-scrolls nil
+              beacon-color "#aa4450")
   :config (beacon-mode 1))
 
 (use-package focus-autosave-mode        ; Save buffers when Emacs loses focus
@@ -694,9 +707,10 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 ;;; Project management
 
 (use-package projectile                 ; Project management for Emacs
-  :defer 2
-  :bind-keymap ("M-p" . projectile-command-map)
-  :bind (("M-P" . hydra-projectile/body))
+  :defer t
+  :general
+  (general-spc
+    "P" #'hydra-projectile/body)
   :init
   (defhydra hydra-projectile (:color teal :columns 4)
     "Projectile"
@@ -735,22 +749,21 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 
 ;;; Version control
 
-;; TODO bind these to Evil ex commands, eg. `:Gs' = `magit-status'
 (use-package magit                      ; The one and only Git front end
-  :bind (("C-c g c" . magit-clone)
-         ("C-c g s" . magit-status)
-         ("s-G"     . magit-status)
-         ("C-c g b" . magit-blame-addition)
-         ("C-c g p" . magit-pull-branch))
+  :defer t
+  :general
+  (general-spc
+    "g"  #'(:ignore t :which-key "Magit")
+    "gs" #'magit-status
+    "gb" #'magit-blame-addition
+    "gc" #'magit-clone)
   :config
   ;; Basic settings
   (setq magit-save-repository-buffers 'dontask
         magit-refs-show-commit-count 'all
         magit-branch-prefer-remote-upstream '("master")
         magit-branch-adjust-remote-upstream-alist '(("origin/master" "master"))
-        magit-revision-show-gravatars nil
-        ;; magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1
-        )
+        magit-revision-show-gravatars nil)
 
   ;; Show refined hunks during diffs
   (set-default 'magit-diff-refine-hunk t)
@@ -846,6 +859,7 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 (use-package counsel                    ; Ivy-enhanced versions of commands
   :after ivy
   :demand t
+  :general (general-spc "/" #'counsel-grep-or-swiper)
   :bind (([remap execute-extended-command] . counsel-M-x)
          ("s-P"                            . counsel-M-x) ; familiar command palette keybinding for MacOS
          ([remap find-file]                . counsel-find-file)
@@ -875,7 +889,9 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 
 (use-package counsel-projectile         ; Counsel integration with Projectile
   :after (counsel projectile)
-  :bind (("s-p" . counsel-projectile-find-file)) ; Find file in current project with
+  :general
+  (general-spc
+    "p" #'counsel-projectile-find-file)
   :config
   ;; TODO: remap `projectile-ag' to `counsel-projectile-rg'
   (counsel-projectile-mode 1))
@@ -885,7 +901,7 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   :bind (([remap isearch-forward] . swiper)))
 
 ;;; Keys and keybindings
-
+  
 (use-package evil                       ; Vim keybindings for Emacs
   :init
   (setq evil-want-integration t
@@ -982,11 +998,7 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
         undo-tree-visualizer-timestamps t
         undo-tree-visualizer-diff t)
   :config
-  (global-undo-tree-mode 1)
-
-  ;; Use familiar MacOS keybindings for undo/redo
-  (global-set-key (kbd "s-z") 'undo-tree-undo)
-  (global-set-key (kbd "s-Z") 'undo-tree-redo))
+  (global-undo-tree-mode 1))
 
 ;;; Programming Settings
 
@@ -1203,7 +1215,7 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   :after (scala-mode lsp-mode)
   :demand t
   :hook (scala-mode . lsp)
-  :init (setq lsp-scala-server-command (executable-find "metals-emacs")))
+  :init (setq lsp-scala-server-command (executable-find "metals")))
 
 ;; Python support
 
