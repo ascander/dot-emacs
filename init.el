@@ -1229,5 +1229,22 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
               python-check-command "/usr/local/bin/flake8")
   :config (elpy-enable))
 
+;; Nix support
+
+(use-package nix-mode                   ; Major mode for editing Nix expressions
+  :mode ("\\.nix\\'" "\\.nix.in\\'"))
+
+(use-package nix-drv-mode               ; Major mode for viewing Nix .drv files
+  :ensure nix-mode
+  :mode "\\.drv\\'")
+
+(use-package nix-shell                  ; Make calls to 'nix-shell' from Emacs
+  :ensure nix-mode
+  :commands (nix-shell-unpack nix-shell-configure nix-shell-build))
+
+(use-package nix-repl                   ; Completion interface for `nix-mode'
+  :ensure nix-mode
+  :commands (nix-repl))
+
 (provide 'init)
 ;;; init.el ends here
