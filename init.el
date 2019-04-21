@@ -47,7 +47,7 @@
                               (time-subtract after-init-time before-init-time)))
                      gcs-done)))
 
-;;; Package management
+;;; Package initialization
 
 (require 'package)
 (setq load-prefer-newer t            ; prefer the newest version of a file
@@ -209,7 +209,9 @@
 ;;; Color theme and looks
 
 ;; Color theme specific tweaks are managed based on Greg Hendershott's blog post
-;; here: http://www.greghendershott.com/2017/02/emacs-themes.html
+;; here:
+;;
+;;   http://www.greghendershott.com/2017/02/emacs-themes.html
 ;;
 ;; The basic idea is to advise `load-theme' by running `ad|disable-all-themes'
 ;; before, and executing any theme-specific hooks after. Disabling all currently
@@ -241,10 +243,11 @@
       (pcase (assq theme-id ad|theme-hooks)
         (`(,_ . ,f) (funcall f))))))
 
-;; TODO: add hydra for fast-switching themes
 (advice-add 'load-theme
             :around
             #'ad|load-theme-advice)
+
+;; TODO add hydra for fast-theme selection
 
 (use-package solarized-theme            ; I always come back to you
   :init
