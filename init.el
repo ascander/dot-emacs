@@ -261,13 +261,12 @@
         solarized-height-plus-4 1.0)
   :config
   ;; Conditionally load the default theme based on whether we're running the Emacs daemon.
-  ;; (if (daemonp)
-  ;;     (add-hook 'after-make-frame-functions
-  ;;               (lambda (frame)
-  ;;                 (select-frame frame)
-  ;;                 (load-theme 'solarized-dark t)))
-  ;;   (load-theme 'solarized-dark t))
-  )
+  (if (daemonp)
+      (add-hook 'after-make-frame-functions
+                (lambda (frame)
+                  (select-frame frame)
+                  (load-theme 'solarized-dark t)))
+    (load-theme 'solarized-dark t)))
 
 (use-package doom-themes                ; DOOM Emacs themes
   :init
@@ -280,12 +279,13 @@
                      #'(lambda () (set-face-attribute
                               'ivy-current-match nil :background "#494952")))
   :config
-  (if (daemonp)
-      (add-hook 'after-make-frame-functions
-                (lambda (frame)
-                  (select-frame frame)
-                  (load-theme 'doom-sourcerer t)))
-    (load-theme 'doom-sourcerer t)))
+  ;; (if (daemonp)
+  ;;     (add-hook 'after-make-frame-functions
+  ;;               (lambda (frame)
+  ;;                 (select-frame frame)
+  ;;                 (load-theme 'doom-sourcerer t)))
+  ;;   (load-theme 'doom-sourcerer t))
+  )
 
 (use-package dimmer                     ; Dim buffers other than the current one
   :init
