@@ -22,21 +22,23 @@
 
 ;;; Code:
 
-;; Constants
+;;; Preliminaries
+
 (defconst *is-a-mac* (eq system-type 'darwin) "Are we on a mac?")
 
-;; Enter debugger on error, and keep more messages.
-(setq debug-on-error t)
-(setq message-log-max 10000)
+(setq debug-on-error t)                 ; Enter debugger on error
+(setq message-log-max 10000)            ; Keep more log messages
 
+;; Set GC threshold as high as possible for fast startup
+(setq gc-cons-threshold most-positive-fixnum)
 
-(let ((normal-gc-cons-threshold gc-cons-threshold)
-      (init-gc-cons-threshold most-positive-fixnum))
-  (setq gc-cons-threshold init-gc-cons-threshold)
-  (add-hook 'after-init-hook
-            (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
+;; Set GC threshold back to default value when idle
+(run-with-idle-timer
+ 10 nil
+ (lambda () (setq gc-cons-threshold (car (get 'gc-cons-threshold 'standard-value)))
+     (message "GC threshold restored to %S" gc-cons-threshold)))
 
-;; Display timing information after startup
+;; Display some timing information after startup
 (add-hook 'emacs-startup-hook
           (lambda ()
             (message "Emacs ready in %s with %d garbage collections."
