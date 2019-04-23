@@ -83,6 +83,60 @@
     :prefix "SPC"
     :non-normal-prefix "C-SPC"))
 
+;; Display keybindings based on the current prefix
+(use-package which-key
+  :defer 5
+  :init
+  (setq which-key-idle-delay 0.4
+        which-key-sort-order 'which-key-prefix-then-key-order
+        which-key-replacement-alist
+        '(
+          ;; Replacements for how all or part of FUNCTION is replaced when
+          ;; `which-key' displays:
+          ;;
+          ;;     KEY → Function
+          ;;
+          ;; Eg: after "C-c g" display "s → magit-status" as "s → git-status"
+          ((nil . "Prefix Command")            . (nil . "prefix"))
+          ((nil . "\\`\\?\\?\\'")              . (nil . "λ"))
+          ((nil . "projectile-")               . (nil . "pj-"))
+          ((nil . "magit-")                    . (nil . "git-"))
+          ((nil . "\\`hydra-\\(.+\\)/body\\'") . (nil . "=|\\1"))
+          ((nil . "\\`hydra-\\(.+\\)\\'")      . (nil . "=|\\1"))))
+  :config
+  (which-key-mode 1))
+
+;; Show free keybindings in the current buffer
+(use-package free-keys
+  :defer t)
+
+;;; Evil and friends
+
+;; Extensible Vi Layer for Emacs
+(use-package evil
+  :init
+  (setq evil-want-integration t
+        evil-want-keybinding nil)
+
+  ;; Start things like commit message buffers in insert state
+  (add-hook 'with-editor-mode-hook #'evil-insert-state)
+  :config (evil-mode 1))
+
+;; Evil bindings for Emacs modes
+(use-package evil-collection
+  :after evil
+  :config (evil-collection-init))
+
+;; Customizable escape from insert state
+(use-package evil-escape
+  :after evil
+  :init (setq-default evil-escape-key-sequence "jk")
+  :config (evil-escape-mode 1))
+
+;; Evil bindings for Magit
+(use-package evil-magit
+  :after evil magit)
+
 ;;; OS X settings
 
 (when *is-a-mac*
@@ -913,65 +967,15 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   (counsel-mode 1))
 
 (use-package counsel-projectile         ; Counsel integration with Projectile
-  :after (counsel projectile)
-  :general
-  (general-spc
-    "p" #'counsel-projectile-find-file)
+  :general (general-spc "p" #'counsel-projectile-find-file)
+  :init
+  (setq counsel-projectile-sort-files t)
   :config
-  ;; TODO: remap `projectile-ag' to `counsel-projectile-rg'
   (counsel-projectile-mode 1))
 
 (use-package swiper                     ; An Ivy-enhanced alternative to isearch
   :after ivy
   :bind (([remap isearch-forward] . swiper)))
-
-;;; Keys and keybindings
-  
-(use-package evil                       ; Vim keybindings for Emacs
-  :init
-  (setq evil-want-integration t
-        evil-want-keybinding nil)
-
-  ;; Start things like commit message buffers in insert state
-  (add-hook 'with-editor-mode-hook #'evil-insert-state)
-  :config (evil-mode 1))
-
-(use-package evil-collection            ; Evil bindings for Emacs modes
-  :after evil
-  :config (evil-collection-init))
-
-(use-package evil-escape                ; Customizable escape from insert state
-  :after evil
-  :init (setq-default evil-escape-key-sequence "jk")
-  :config (evil-escape-mode 1))
-
-(use-package evil-magit                 ; Evil bindings for Magit
-  :after evil magit)
-
-(use-package which-key                  ; Display keybindings based on current command
-  :defer 5
-  :init
-  (setq which-key-idle-delay 0.4
-        which-key-sort-order 'which-key-prefix-then-key-order
-        which-key-replacement-alist
-        '(
-          ;; Replacements for how all or part of FUNCTION is replaced when
-          ;; `which-key' displays:
-          ;;
-          ;;     KEY → Function
-          ;;
-          ;; Eg: after "C-c g" display "s → magit-status" as "s → git-status"
-          ((nil . "Prefix Command")            . (nil . "prefix"))
-          ((nil . "\\`\\?\\?\\'")              . (nil . "λ"))
-          ((nil . "projectile-")               . (nil . "pj-"))
-          ((nil . "magit-")                    . (nil . "git-"))
-          ((nil . "\\`hydra-\\(.+\\)/body\\'") . (nil . "=|\\1"))
-          ((nil . "\\`hydra-\\(.+\\)\\'")      . (nil . "=|\\1"))))
-  :config
-  (which-key-mode 1))
-
-(use-package free-keys                  ; Show free keybindings in the current buffer
-  :defer 5)
 
 ;;; Basic editing
 
