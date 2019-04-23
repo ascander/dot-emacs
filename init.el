@@ -70,12 +70,10 @@
   (require 'use-package))
 (require 'bind-key)
 
-;;; Start the server
-(server-start)
-
 ;;; Keybindings
 
-(use-package general          ; A more convenient way of binding keys in Emacs
+;; A more convenient way of binding keys in Emacs (esp. for evil users)
+(use-package general
   :demand t
   :config
   ;; Spacemacs-like leader key
