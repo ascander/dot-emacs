@@ -914,11 +914,15 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
         ivy-initial-inputs-alist nil
         ivy-count-format "")
 
-  ;; Enable fuzzy searching everywhere except for Swiper
+  ;; Enable fuzzy searching everywhere*
+  ;;
+  ;; *not everywhere
   (setq ivy-re-builders-alist
-        '((swiper            . ivy--regex-plus)
-          (ivy-switch-buffer . ivy--regex-plus)
-          (t                 . ivy--regex-fuzzy)))
+        '((swiper            . ivy--regex-plus) ; convert spaces to '.*' for swiper
+          (ivy-switch-buffer . ivy--regex-plus) ; and buffer switching
+          (counsel-rg        . regexp-quote)    ; quote exactly for ripgrep, since it does its own
+          (counsel-ag        . regexp-quote)    ; same for the silver snorfer
+          (t                 . ivy--regex-fuzzy))) ; fuzzy everywhere else
 
   (ivy-mode 1))
 
@@ -1072,6 +1076,7 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   :hook (eval-expression-minibuffer-setup . eldoc-mode))
 
 (use-package deadgrep                   ; Fast, beautiful text search
+  :disabled t                           ; Disabled because `counsel-rg' is more useful
   :bind ("s-F" . deadgrep))             ; MacOS familiar ⌘-shift-f binding
 
 (use-package expand-region              ; Expand region by semantic units
