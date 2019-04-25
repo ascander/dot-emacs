@@ -101,6 +101,19 @@
 (use-package free-keys
   :defer t)
 
+;; This gets called by 'evil' so it needs to be declared beforehand. I'm sure
+;; there's another solution, but this works for now.
+;;
+;; Replace the confusing Emacs undo system
+(use-package undo-tree
+  :pin gnu
+  :init
+  (setq undo-tree-auto-save-history t
+        undo-tree-visualizer-timestamps t
+        undo-tree-visualizer-diff t)
+  :config
+  (global-undo-tree-mode 1))
+
 ;;; Evil and friends
 
 ;; Extensible Vi Layer for Emacs
@@ -1011,14 +1024,6 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 
 (use-package unfill                     ; The inverse of Emacs' fill
   :defer t)
-
-(use-package undo-tree                  ; Replace the confusing Emacs undo system
-  :init
-  (setq undo-tree-auto-save-history t
-        undo-tree-visualizer-timestamps t
-        undo-tree-visualizer-diff t)
-  :config
-  (global-undo-tree-mode 1))
 
 ;;; Programming Settings
 
