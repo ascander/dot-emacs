@@ -28,10 +28,12 @@
   :ensure org-plus-contrib
   :pin org
   :mode (("\\.org$" . org-mode))
-  :bind (("C-c l"   . org-store-link)
-         ("C-c c"   . org-capture)
-         ("<f12>"   . org-agenda)
-         ("C-c C-j" . counsel-org-goto))
+  :general (general-spc
+             "o"  #'(:ignore t :which-key "Org")
+             "oa" #'org-agenda
+             "oc" #'org-capture
+             "oj" #'counsel-org-goto
+             "ol" #'org-store-link)
   :config
   ;; Defaults
   (setq
