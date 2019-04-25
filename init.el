@@ -54,10 +54,9 @@
       package-enable-at-startup nil) ; explicitly initialize packages
 
 (setq package-archives
-      '(("melpa"        . "https://melpa.org/packages/")
-        ("melpa-stable" . "https://stable.melpa.org/packages/")
-        ("gnu"          . "http://elpa.gnu.org/packages/")
-        ("org"          . "https://orgmode.org/elpa/")))
+      '(("melpa" . "https://melpa.org/packages/")
+        ("gnu"   . "http://elpa.gnu.org/packages/")
+        ("org"   . "https://orgmode.org/elpa/")))
 (package-initialize)
 
 ;; Bootstrap `use-package'
