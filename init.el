@@ -35,17 +35,9 @@
 ;; Set GC threshold back to default value when idle
 (run-with-idle-timer
  10 nil
- (lambda () (setq gc-cons-threshold (car (get 'gc-cons-threshold 'standard-value)))
-     (message "GC threshold restored to %S" gc-cons-threshold)))
-
-;; Display some timing information after startup
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (message "Emacs ready in %s with %d garbage collections."
-                     (format "%.2f seconds"
-                             (float-time
-                              (time-subtract after-init-time before-init-time)))
-                     gcs-done)))
+ (lambda ()
+   (setq gc-cons-threshold (car (get 'gc-cons-threshold 'standard-value)))
+   (message "GC threshold restored to %S" gc-cons-threshold)))
 
 ;;; Package initialization
 
@@ -1282,6 +1274,16 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 (use-package nix-repl                   ; Completion interface for `nix-mode'
   :ensure nix-mode
   :commands (nix-repl))
+
+;;; Coda
+
+;; Display some timing information after startup
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (message "Emacs ready in %s with %d garbage collections."
+                     (format "%.2f seconds"
+                             (float-time
+                              (time-subtract after-init-time before-init-time))) gcs-done)))
 
 (provide 'init)
 ;;; init.el ends here
