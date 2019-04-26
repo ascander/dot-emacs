@@ -824,12 +824,11 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 
 (use-package magit                      ; The one and only Git front end
   :defer t
-  :general
-  (general-spc
-    "g"  #'(:ignore t :which-key "Magit")
-    "gs" #'magit-status
-    "gb" #'magit-blame-addition
-    "gc" #'magit-clone)
+  :general (general-spc
+             "g"  #'(:ignore t :which-key "Magit")
+             "gs" #'magit-status
+             "gb" #'magit-blame-addition
+             "gc" #'magit-clone)
   :config
   ;; Basic settings
   (setq magit-save-repository-buffers 'dontask
