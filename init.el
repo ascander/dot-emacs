@@ -791,26 +791,16 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 
 (use-package projectile                 ; Project management for Emacs
   :defer t
-  :general
-  (general-spc
-    "P" #'hydra-projectile/body)
-  :init
-  (defhydra hydra-projectile (:color teal :columns 4)
-    "Projectile"
-    ("f"   projectile-find-file                "Find File")
-    ("r"   projectile-recentf                  "Recent Files")
-    ("z"   projectile-cache-current-file       "Cache Current File")
-    ("x"   projectile-remove-known-project     "Remove Known Project")
-
-    ("d"   projectile-find-dir                 "Find Directory")
-    ("b"   projectile-switch-to-buffer         "Switch to Buffer")
-    ("c"   projectile-invalidate-cache         "Clear Cache")
-    ("X"   projectile-cleanup-known-projects   "Cleanup Known Projects")
-
-    ("o"   projectile-multi-occur              "Multi Occur")
-    ("s"   projectile-switch-project           "Switch Project")
-    ("k"   projectile-kill-buffers             "Kill Buffers")
-    ("q"   nil "Cancel" :color blue))
+  :general (general-spc
+             "p"  #'(:ignore t :which-key "Projectile")
+             "pb" #'projectile-switch-to-buffer
+             "pc" #'projectile-invalidate-cache
+             "pd" #'projectile-find-dir
+             "pf" #'counsel-projectile-find-file
+             "pk" #'projectile-kill-buffers
+             "pp" #'projectile-switch-project
+             "pr" #'projectile-recentf
+             "px" #'projectile-remove-known-project)
   :config
   ;; Basic settings
   (setq projectile-completion-system 'ivy
@@ -946,7 +936,6 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 (use-package counsel                    ; Ivy-enhanced versions of commands
   :after ivy
   :demand t
-  :general (general-spc "/" #'counsel-grep-or-swiper)
   :bind (([remap execute-extended-command] . counsel-M-x)
          ("s-P"                            . counsel-M-x) ; familiar command palette keybinding for MacOS
          ([remap find-file]                . counsel-find-file)
@@ -975,7 +964,7 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   (counsel-mode 1))
 
 (use-package counsel-projectile         ; Counsel integration with Projectile
-  :general (general-spc "p" #'counsel-projectile-find-file)
+  :general (general-spc "/" #'counsel-projectile-rg)
   :init
   (setq counsel-projectile-sort-files t)
   :config
