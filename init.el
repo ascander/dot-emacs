@@ -90,7 +90,6 @@
           ;; Eg: after "C-c g" display "s → magit-status" as "s → git-status"
           ((nil . "Prefix Command")            . (nil . "prefix"))
           ((nil . "\\`\\?\\?\\'")              . (nil . "λ"))
-          ((nil . "projectile-")               . (nil . "pj-"))
           ((nil . "magit-")                    . (nil . "git-"))
           ((nil . "\\`hydra-\\(.+\\)/body\\'") . (nil . "=|\\1"))
           ((nil . "\\`hydra-\\(.+\\)\\'")      . (nil . "=|\\1"))))
@@ -791,16 +790,11 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 
 (use-package projectile                 ; Project management for Emacs
   :defer t
-  :general (general-spc
-             "p"  #'(:ignore t :which-key "Projectile")
-             "pb" #'projectile-switch-to-buffer
-             "pc" #'projectile-invalidate-cache
-             "pd" #'projectile-find-dir
-             "pf" #'counsel-projectile-find-file
-             "pk" #'projectile-kill-buffers
-             "pp" #'projectile-switch-project
-             "pr" #'projectile-recentf
-             "px" #'projectile-remove-known-project)
+  :general
+  (general-spc
+    "P" #'projectile-find-file-in-known-projects
+    "c" #'projectile-switch-project
+    "D" #'projectile-dired)
   :config
   ;; Basic settings
   (setq projectile-completion-system 'ivy
@@ -892,9 +886,10 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 
 (use-package ivy                        ; Generic completion mechanism for Emacs
   :demand t
-  :bind (("s-b" . ivy-switch-buffer)
-         ("s-B" . ivy-switch-buffer-other-window)
-         ("s-r" . ivy-resume))
+  :general
+  (general-spc
+    "f" #'ivy-switch-buffer
+    "r" #'ivy-resume)
   :config
   (use-package flx)
 
@@ -935,6 +930,9 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 (use-package counsel                    ; Ivy-enhanced versions of commands
   :after ivy
   :demand t
+  :general
+  ;; Replace evil default search with swiper
+  ('normal "/" #'counsel-grep-or-swiper)
   :bind (([remap execute-extended-command] . counsel-M-x)
          ("s-P"                            . counsel-M-x) ; familiar command palette keybinding for MacOS
          ([remap find-file]                . counsel-find-file)
@@ -963,11 +961,23 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   (counsel-mode 1))
 
 (use-package counsel-projectile         ; Counsel integration with Projectile
-  :general (general-spc "/" #'counsel-projectile-rg)
-  :init
-  (setq counsel-projectile-sort-files t)
+  :general
+  (general-spc
+    "/" #'ad|counsel-projectile-rg
+    "p" #'counsel-projectile-find-file)
   :config
-  (counsel-projectile-mode 1))
+  ;; basic settings
+  (setq counsel-projectile-sort-files t)
+
+  ;; make `counsel-projectile-rg' work outside of a project
+  (defun ad|counsel-projectile-rg ()
+    "Call `counsel-projectile-rg' if in a project, and `counsel-rg' otherwise."
+    (interactive)
+    (if (projectile-project-p)
+        (counsel-projectile-rg)
+      (counsel-rg)))
+
+  (counsel-projectile-mode))
 
 (use-package swiper                     ; An Ivy-enhanced alternative to isearch
   :after ivy
