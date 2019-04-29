@@ -902,10 +902,10 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   ;;
   ;; *not everywhere
   (setq ivy-re-builders-alist
-        '((swiper            . ivy--regex-plus) ; convert spaces to '.*' for swiper
-          (ivy-switch-buffer . ivy--regex-plus) ; and buffer switching
-          (counsel-rg        . regexp-quote)    ; quote exactly for ripgrep, since it does its own
-          (counsel-ag        . regexp-quote)    ; same for the silver snorfer
+        '((swiper            . ivy--regex-plus)    ; convert spaces to '.*' for swiper
+          (ivy-switch-buffer . ivy--regex-plus)    ; and buffer switching
+          (counsel-rg        . ivy--regex-plus)    ; and ripgrep
+          (counsel-ag        . ivy--regex-plus)    ; the silver snorfer too
           (t                 . ivy--regex-fuzzy))) ; fuzzy everywhere else
 
   (ivy-mode 1))
