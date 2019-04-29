@@ -100,6 +100,16 @@
 (use-package free-keys
   :defer t)
 
+;; Make escape do what it should in the minibuffer
+;;
+;; Taken from https://github.com/noctuid/dotfiles/blob/d345d2b7479fc7db44005b686b3b76c35e9c6898/emacs/.emacs.d/awaken.org#escape-everywhere
+(general-def '(minibuffer-local-map
+               minibuffer-local-ns-map
+               minibuffer-local-completion-map
+               minibuffer-local-must-match-map
+               minibuffer-local-isearch-map)
+  "<escape>" #'keyboard-escape-quit)
+
 ;; This gets called by 'evil' so it needs to be declared beforehand. I'm sure
 ;; there's another solution, but this works for now.
 ;;
@@ -905,8 +915,8 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
         '((swiper            . ivy--regex-plus)    ; convert spaces to '.*' for swiper
           (ivy-switch-buffer . ivy--regex-plus)    ; and buffer switching
           (counsel-rg        . ivy--regex-plus)    ; and ripgrep
-          (counsel-ag        . ivy--regex-plus)    ; the silver snorfer too
-          (t                 . ivy--regex-fuzzy))) ; fuzzy everywhere else
+          (counsel-ag        . ivy--regex-plus)    ; the silver snorfer, too
+          (t                 . ivy--regex-fuzzy))) ; go fuzzy everywhere else
 
   (ivy-mode 1))
 
