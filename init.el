@@ -110,6 +110,8 @@
                minibuffer-local-isearch-map)
   "<escape>" #'keyboard-escape-quit)
 
+;;; Evil and friends
+
 ;; This gets called by 'evil' so it needs to be declared beforehand. I'm sure
 ;; there's another solution, but this works for now.
 ;;
@@ -201,11 +203,13 @@
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 (when (and (not *is-a-mac*) (fboundp 'menu-bar-mode)) (menu-bar-mode -1))
 
-;; Display line numbers suitable for evil
+;; Use Emacs' builtin for relative line numbers
 (setq-default display-line-numbers-type 'visual
               display-line-numbers-current-absolute t
               display-line-numbers-width 4
               display-line-numbers-widen t)
+
+;; Display line numbers for prog and text modes
 (add-hook 'text-mode-hook #'display-line-numbers-mode)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 
