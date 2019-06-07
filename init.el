@@ -924,6 +924,13 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 
   (ivy-mode 1))
 
+(use-package ivy-posframe
+  :demand t
+  :init (setq ivy-posframe-display-functions-alist
+              '((t . ivy-posframe-display-at-frame-center)))
+  :config
+  (ivy-posframe-mode 1))
+
 (use-package ivy-hydra                  ; A useful hydra for the Ivy minibuffer
   :after (ivy hydra)
   :defer t
