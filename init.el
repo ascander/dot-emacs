@@ -1178,16 +1178,26 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 
 (use-package lsp-mode                   ; Language Server Protocol support for Emacs
   :commands lsp
-  :hook (scala-mode . lsp-mode)
   :init
+  ;; Use LSP for the following languages
+  (add-hook 'scala-mode-hook #'lsp)
+
   ;; Prefer `lsp-ui' over flymake for errors
   (setq lsp-prefer-flymake nil)
+
+  ;; My version of the Metals executable is different
+  (setq lsp-metals-server-command "metals")
 
   ;; Evil binding for `lsp-find-references'
   (evil-define-key '(normal visual) lsp-mode-map "gr" 'lsp-find-references)
   :config (require 'lsp-clients))
 
 (use-package lsp-ui                     ; UI support for `lsp-mode'
+  :init
+  ;; Information only when I ask for it, thanks
+  (setq-default lsp-ui-sideline-enable nil
+                lsp-ui-doc-enable nil)
+
   :hook (lsp-mode . lsp-ui-mode))
 
 (use-package company-lsp                ; Company backend for `lsp-mode'
@@ -1259,22 +1269,6 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
    'minibuffer-complete-word
    'self-insert-command
    minibuffer-local-completion-map))
-
-(use-package lsp-scala                  ; LSP support for Scala, using Metals
-  :load-path "site-lisp/lsp-scala"
-  :after (scala-mode lsp-mode)
-  :demand t
-  :hook (scala-mode . lsp)
-  :init (setq lsp-scala-server-command (executable-find "metals"))
-  :config
-  ;; Disable `lsp-ui-sideline-mode' when using Metals, as it clutters up the
-  ;; buffer and doesn't provide much information above and beyond what is
-  ;; already presented in widgits and in the minibuffer
-  (defun ad|disable-lsp-ui-sideline-mode-maybe ()
-    "Disables `lsp-ui-sideline-mode' when it exists and major mode is Scala."
-    (when (and (bound-and-true-p lsp-ui-mode) (eq major-mode 'scala-mode))
-      (lsp-ui-sideline-enable nil)))
-  (add-hook 'lsp-ui-mode-hook #'ad|disable-lsp-ui-sideline-mode-maybe))
 
 ;; Python support
 
