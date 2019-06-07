@@ -1186,36 +1186,41 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 (use-package flycheck                   ; On the fly syntax checking for Emacs
   :hook (prog-mode . flycheck-mode))
 
-(use-package lsp-mode                   ; Language Server Protocol support for Emacs
-  :commands lsp
-  :init
-  ;; Use LSP for the following languages
-  (add-hook 'scala-mode-hook #'lsp)
+(use-package eglot                      ; Emacs LSP client that stays out of your way
+  :hook (scala-mode . eglot-ensure)
+  :config
+  (add-to-list 'eglot-server-programs '(scala-mode . ("metals"))))
 
-  ;; Prefer `lsp-ui' over flymake for errors
-  (setq lsp-prefer-flymake nil)
+;; (use-package lsp-mode                   ; Language Server Protocol support for Emacs
+;;   :commands lsp
+;;   :init
+;;   ;; Use LSP for the following languages
+;;   (add-hook 'scala-mode-hook #'lsp)
 
-  ;; My version of the Metals executable is different
-  (setq lsp-metals-server-command "metals")
+;;   ;; Prefer `lsp-ui' over flymake for errors
+;;   (setq lsp-prefer-flymake nil)
 
-  ;; Evil binding for `lsp-find-references'
-  (evil-define-key '(normal visual) lsp-mode-map "gr" 'lsp-find-references)
-  :config (require 'lsp-clients))
+;;   ;; My version of the Metals executable is different
+;;   (setq lsp-metals-server-command "metals")
 
-(use-package lsp-ui                     ; UI support for `lsp-mode'
-  :init
-  ;; Information only when I ask for it, thanks
-  (setq-default lsp-ui-sideline-enable nil
-                lsp-ui-doc-enable nil)
+;;   ;; Evil binding for `lsp-find-references'
+;;   (evil-define-key '(normal visual) lsp-mode-map "gr" 'lsp-find-references)
+;;   :config (require 'lsp-clients))
 
-  :hook (lsp-mode . lsp-ui-mode))
+;; (use-package lsp-ui                     ; UI support for `lsp-mode'
+;;   :init
+;;   ;; Information only when I ask for it, thanks
+;;   (setq-default lsp-ui-sideline-enable nil
+;;                 lsp-ui-doc-enable nil)
 
-(use-package company-lsp                ; Company backend for `lsp-mode'
-  :after (company lsp-mode)
-  :config (add-to-list 'company-backends 'company-lsp)
-  :custom
-  (company-lsp-async t)
-  (company-lsp-enable-snippet t))
+;;   :hook (lsp-mode . lsp-ui-mode))
+
+;; (use-package company-lsp                ; Company backend for `lsp-mode'
+;;   :after (company lsp-mode)
+;;   :config (add-to-list 'company-backends 'company-lsp)
+;;   :custom
+;;   (company-lsp-async t)
+;;   (company-lsp-enable-snippet t))
 
 ;; Markdown support
 
