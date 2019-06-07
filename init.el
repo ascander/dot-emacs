@@ -72,7 +72,12 @@
     :states '(normal visual insert emacs)
     :keymaps 'override
     :prefix "SPC"
-    :non-normal-prefix "C-SPC"))
+    :non-normal-prefix "C-SPC")
+
+  ;; Major mode prefix
+  (general-create-definer general-m
+    :states 'normal
+    :prefix "m"))
 
 ;; Display keybindings based on the current prefix
 (use-package which-key
@@ -756,7 +761,7 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
           (" *Org todo*" :align below :select t)
           (compilation-mode :noselect t))
         shackle-default-rule '(:select t))
-  
+
   (shackle-mode t))
 
 (use-package focus-autosave-mode        ; Save buffers when Emacs loses focus
@@ -1141,10 +1146,15 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
         company-tooltip-flip-when-above t
         company-show-numbers t)
 
+  ;; Experiment with a different keybinding for completing the current
+  ;; selection. It's confusing that TAB doesn't do this
+  (general-def company-active-map
+    "<C-return>" #'company-complete-selection)
+
   ;; Add YASnippet support for all company backends
   ;; See: https://github.com/syl20bnr/spacemacs/pull/179
   (defvar company-mode-enable-yas t "Enable YASnippet for all company backends.")
-  
+
   (defun ad|company-mode-backend-with-yas (backend)
     (if (or (not company-mode-enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
         backend
