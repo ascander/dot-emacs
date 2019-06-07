@@ -294,7 +294,7 @@ Skip project and sub-project tasks, habits, and project related tasks."
                                      (org-agenda-sorting-strategy '(category-keep))))
                          (tags-todo "-HOLD-CANCELLED-ARCHIVE/!NEXT"
                                     ((org-agenda-overriding-header "Next Tasks:")))
-                         (tags-todo "-REFILE-CANCELLED-WAITING-HOLD-REMINDER/!"
+                         (tags-todo "-REFILE-CANCELLED-WAITING-HOLD-REMINDER-HABIT/!"
                                     ((org-agenda-overriding-header "Charlie Work:")
                                      (org-agenda-skip-function 'ad|skip-project-tasks)
                                      (org-agenda-sorting-strategy '(category-keep))))
