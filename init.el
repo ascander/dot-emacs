@@ -259,7 +259,7 @@
 ;;; Fonts
 
 (set-face-attribute 'default nil
-                    :family "Iosevka Type" ; custom build of Iosevka with ligatures
+                    :family "Iosevka Dost" ; my own build of Iosevka
                     :height 140
                     :weight 'regular)
 
@@ -271,9 +271,9 @@
 (use-package default-text-scale         ; Easily adjust font size in all Emacs frames
   :init (default-text-scale-mode 1))
 
-;; (use-package init-ligatures             ; Sick liggz
-;;   :load-path "lisp"
-;;   :ensure nil)
+(use-package init-ligatures             ; Sick liggz
+  :load-path "lisp"
+  :ensure nil)
 
 ;;; Color theme and looks
 
