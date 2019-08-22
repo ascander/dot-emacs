@@ -150,8 +150,10 @@ created buffer. Redefined to allow pop-up windows."
   ;; Org Agenda Settings
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-  ;; Open org agenda in current window
-  (setq org-agenda-window-setup 'current-window)
+  ;; Display agenda as the only window, but restore the previous configuration
+  ;; afterwards; let's be polite.
+  (setq org-agenda-window-setup 'only-window
+        org-agenda-restore-windows-after-quit t)
 
   ;; Do not dim blocked tasks
   (setq org-agenda-dim-blocked-tasks nil)
