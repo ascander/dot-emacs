@@ -268,6 +268,11 @@
                     :height 140
                     :weight 'regular)
 
+(set-face-attribute 'fixed-pitch nil
+                    :family "Iosevka Dost"
+                    :height 140
+                    :weight 'regular)
+
 (set-face-attribute 'variable-pitch nil
                     :family "Fira Sans"
                     :height 150
