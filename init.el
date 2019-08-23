@@ -1203,6 +1203,10 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   ;; My version of the Metals executable is different
   (setq lsp-metals-server-command "metals")
 
+  ;; Metals/bloop frequently takes over 10s (the default) to import a build
+  ;; TODO maybe configure this just for lsp and scala-mode
+  (setq lsp-response-timeout 30)
+
   ;; Evil binding for `lsp-find-references'
   (evil-define-key '(normal visual) lsp-mode-map "gr" 'lsp-find-references)
   :config (require 'lsp-clients))
@@ -1262,7 +1266,8 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   :config
   ;; Indentation preferences
   (setq scala-indent:default-run-on-strategy
-        scala-indent:operator-strategy)
+        scala-indent:operator-strategy
+        scala-indent:use-javadoc-style t)
 
   ;; Insert newline in a multiline comment should insert an asterisk
   (defun ad|scala-mode-newline-comments ()
