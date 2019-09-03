@@ -1060,6 +1060,12 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 
 ;;; Programming Settings
 
+(general-with-package 'prog-mode
+  (general-m prog-mode-map
+    "j" #'flycheck-next-error
+    "k" #'flycheck-previous-error
+    "E" #'flycheck-list-errors))
+
 ;; Use the familiar MacOS keybinding for commenting
 (global-set-key (kbd "s-/") #'comment-dwim)
 
@@ -1209,7 +1215,21 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 
   ;; Evil binding for `lsp-find-references'
   (evil-define-key '(normal visual) lsp-mode-map "gr" 'lsp-find-references)
-  :config (require 'lsp-clients))
+  :config
+
+  (general-def 'normal lsp-mode-map
+    "N" #'lsp-describe-thing-at-point
+    "RET" #'lsp-find-definition)
+
+  ;; Commented bindings not supported by Metals
+  (general-m lsp-mode-map
+    ;; "i" #'lsp-goto-implementation
+    ;; "D" #'lsp-find-declaration
+    "x" #'lsp-find-references
+    ;; "r" #'lsp-rename
+    "=" #'lsp-format-buffer)
+
+  (require 'lsp-clients))
 
 (use-package lsp-ui                     ; UI support for `lsp-mode'
   :init
