@@ -1014,6 +1014,16 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   :after ivy
   :bind (([remap isearch-forward] . swiper)))
 
+(use-package avy                        ; Jump to visible text using character based decision tree
+  :init
+  (setq avy-all-windows nil))
+
+(use-package evil-snipe
+  :init
+  (setq evil-snipe-scope 'visible)
+  :config
+  (evil-snipe-mode +1))
+
 ;;; Basic editing
 
 ;; Common MacOS keybindings; taken from https://github.com/freetonik/castlemacs
