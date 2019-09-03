@@ -1253,11 +1253,11 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 
 (use-package elisp-mode                 ; Major mode for editing Emacs Lisp files
   :ensure nil
-  :bind (:map emacs-lisp-mode-map
-              ("C-c m e r" . eval-region)
-              ("C-c m e b" . eval-buffer)
-              ("C-c m e e" . eval-last-sexp)
-              ("C-c m e f" . eval-defun)))
+  :general
+  (general-m emacs-lisp-mode-map
+    "b" #'eval-buffer
+    "r" #'eval-region
+    "f" #'eval-defun))
 
 ;; Scala support
 
