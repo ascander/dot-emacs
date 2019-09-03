@@ -67,6 +67,12 @@
 (use-package general
   :demand t
   :config
+
+  (eval-and-compile
+    (defalias 'gsetq #'general-setq)
+    (defalias 'gsetq-local #'general-setq-local)
+    (defalias 'gsetq-default #'general-setq-default))
+
   ;; Spacemacs-like leader key
   (general-create-definer general-spc
     :states '(normal visual insert emacs)
