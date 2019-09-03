@@ -83,7 +83,12 @@
   ;; Major mode prefix
   (general-create-definer general-m
     :states 'normal
-    :prefix "m"))
+    :prefix "m")
+
+  ;; Remote movement or removed/renamed actions
+  (general-create-definer general-r
+    :states 'normal
+    :prefix "r"))
 
 ;; Display keybindings based on the current prefix
 (use-package which-key
