@@ -934,10 +934,15 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 
   (ivy-mode 1))
 
-(use-package ivy-posframe
-  :demand t
-  :init (setq ivy-posframe-display-functions-alist
-              '((t . ivy-posframe-display-at-frame-center)))
+(use-package ivy-posframe               ; Ivy candidates in a floating frame
+  :disabled t
+  :after (ivy counsel)
+  :init
+  ;; Only use a posframe for the following commands
+  (setq ivy-posframe-display-functions-alist
+        '((complete-symbol . ivy-posframe-display-at-point)
+          (counsel-M-x     . ivy-posframe-display-at-window-bottom-left)
+          (t               . nil)))
   :config
   (ivy-posframe-mode 1))
 
