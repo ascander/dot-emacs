@@ -20,11 +20,13 @@
 
 ;;; Commentary:
 
-;; This is my Emacs configuration
+;; This is my Emacs config. There are many like it, but this one is mine.
 
 ;;; Code:
 
 ;;; Preliminaries
+
+(defconst *is-a-mac* (eq system-type 'darwin) "Are we on a Mac?")
 
 (setq debug-on-error t)                 ; Enter debugger on error
 (setq message-log-max 10000)            ; Keep more log messages
@@ -47,8 +49,8 @@
 
 (setq package-archives
       '(("melpa" . "https://melpa.org/packages/")
-        ("gnu"   . "http://elpa.gnu.org/packages/")
-        ("org"   . "https://orgmode.org/elpa/")))
+	("gnu"   . "http://elpa.gnu.org/packages/")
+	("org"   . "https://orgmode.org/elpa/")))
 (package-initialize)
 
 ;; Bootstrap `use-package'
@@ -61,12 +63,11 @@
   (require 'use-package))
 (require 'bind-key)
 
-;;; General
+;;; General.el
 
 (use-package general
   :demand t
   :config
-  
   ;; aliases
   (eval-and-compile
     (defalias 'gsetq #'general-setq)
@@ -75,8 +76,8 @@
 
   ;; Unbind keys when necessary - General should take precedence
   (general-auto-unbind-keys)
-  
-  ;; spacemacs like leader key
+
+  ;; spacemacs-like leader key
   (general-create-definer general-spc
     :states '(normal visual insert emacs)
     :keymaps 'override
@@ -108,7 +109,7 @@
   :init (gsetq-default evil-escape-key-sequence "jk")
   :config (evil-escape-mode))
 
-;; Use normal state as the default state for all modes 
+;; Use normal state as the default state for all modes
 (gsetq evil-normal-state-modes
        (append evil-emacs-state-modes
 	       evil-normal-state-modes)
@@ -118,13 +119,22 @@
 ;;; OSX settings
 
 (use-package exec-path-from-shell
-  :if (eq system-type 'darwin)
+  :if *is-a-mac*
   :init (gsetq exec-path-from-shell-check-startup-files nil)
   :config (exec-path-from-shell-initialize))
 
 (use-package osx-trash
-  :if (eq system-type 'darwin)
+  :if *is-a-mac*
   :config (osx-trash-setup))
+
+;; Modifier keys
+;;
+;; In addition, left caps lock is set to esc/control and return is set
+;; to return/control using Karabiner elements.
+;;
+(setq mac-command-modifier 'meta	; command is meta
+      mac-option-modifier 'super	; alt/option is super
+      mac-function-modifier 'none)	; reserve 'fn' for OSX
 
 ;;; Basic UI
 
@@ -134,7 +144,7 @@
 ;; we're not on a Mac.
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-(when (and (not (eq system-type 'darwin)) (fboundp 'menu-bar-mode)) (menu-bar-mode -1))
+(when (and (not *is-a-mac*) (fboundp 'menu-bar-mode)) (menu-bar-mode -1))
 
 ;; Use Emacs' builtin line numbering
 (gsetq-default display-line-numbers 'visual ; vim-style line numbers
@@ -153,7 +163,7 @@
 
 ;; Bedazzle the current line number
 (custom-set-faces '(line-number-current-line ((t :weight bold
-                                                 :foreground "#b58900"))))
+						 :foreground "#b58900"))))
 
 ;; Set some sensible defaults
 (gsetq blink-cursor-mode -1		; no blinking
@@ -198,7 +208,7 @@
     "C-M--" nil
     "C-M-=" nil
     "C-M-0" nil)
-  
+
   (default-text-scale-mode 1))
 
 ;;; Colors and Themes
@@ -214,26 +224,46 @@
   :init
   ;; Basic settings - disprefer bold and italics, use high contrast
   (setq solarized-use-variable-pitch nil
-        solarized-use-less-bold t
-        solarized-use-more-italic nil
-        solarized-distinct-doc-face t
-        solarized-emphasize-indicators nil
-        solarized-high-contrast-mode-line nil)
+	solarized-use-less-bold t
+	solarized-use-more-italic nil
+	solarized-distinct-doc-face t
+	solarized-emphasize-indicators nil
+	solarized-high-contrast-mode-line nil)
   ;; Avoid all font size changes
   (setq solarized-height-minus-1 1.0
-        solarized-height-plus-1 1.0
-        solarized-height-plus-2 1.0
-        solarized-height-plus-3 1.0
-        solarized-height-plus-4 1.0)
+	solarized-height-plus-1 1.0
+	solarized-height-plus-2 1.0
+	solarized-height-plus-3 1.0
+	solarized-height-plus-4 1.0)
   :config
   ;; Conditionally load the default theme based on whether we're
   ;; running the Emacs daemon.
   (if (daemonp)
       (add-hook 'after-make-frame-functions
-                (lambda (frame)
-                  (select-frame frame)
-                  (load-theme 'solarized-dark t)))
+		(lambda (frame)
+		  (select-frame frame)
+		  (load-theme 'solarized-dark t)))
     (load-theme 'solarized-dark t)))
+
+;;; Version control
+
+(use-package magit
+  :defer t
+  :general
+  (general-spc
+    "g" #'(:ignore t :which-key "Magit")
+    "gs" #'magit-status
+    "gb" #'magit-blame-addition)
+  :config
+  ;; Basic settings
+  (gsetq magit-save-repository-buffers 'dontask ; save without asking before running Magit commands
+	 magit-refs-show-commit-count 'all	; show commit counts for branches and tags
+	 magit-branch-prefer-remote-upstream '("master") ; start new branches from master
+	 magit-branch-adjust-remote-upstream-alist '(("origin/master" "master")) ; upstreams for branching from remote branches
+	 magit-revision-show-gravatars nil)) ; don't show gravatar images in revision buffers
+
+(use-package evil-magit
+  :after evil magit)
 
 ;;; Coda
 
