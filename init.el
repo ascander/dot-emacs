@@ -141,7 +141,7 @@
 ;; Disable tool bar, scroll bar, and menu bar.
 ;;
 ;; Note: menu bar cannot be disabled on OSX, so only remove it if
-;; we're not on a Mac.
+;; we're not on a Mac (and it's enabled).
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 (when (and (not *is-a-mac*) (fboundp 'menu-bar-mode)) (menu-bar-mode -1))
