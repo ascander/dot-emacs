@@ -47,8 +47,8 @@
 
 (setq package-archives
       '(("melpa" . "https://melpa.org/packages/")
-	("gnu"   . "http://elpa.gnu.org/packages/")
-	("org"   . "https://orgmode.org/elpa/")))
+    ("gnu"   . "http://elpa.gnu.org/packages/")
+    ("org"   . "https://orgmode.org/elpa/")))
 (package-initialize)
 
 ;; Bootstrap `use-package'
@@ -97,10 +97,10 @@
 (use-package evil
   :init
   (gsetq evil-want-keybinding nil ; don't load evil bindings for other modes
-	 evil-overriding-maps nil ; no maps should override evil maps
-	 evil-search-module 'evil-search ; use evil-search instead of isearch
-	 evil-ex-search-persistent-highlight nil ; no persistent highlighting after search
-	 evil-want-Y-yank-to-eol t)		 ; Y like D
+     evil-overriding-maps nil ; no maps should override evil maps
+     evil-search-module 'evil-search ; use evil-search instead of isearch
+     evil-ex-search-persistent-highlight nil ; no persistent highlighting after search
+     evil-want-Y-yank-to-eol t)		 ; Y like D
   :config (evil-mode))
 
 (use-package evil-collection
@@ -227,38 +227,38 @@
 
   (default-text-scale-mode 1))
 
-;;; Colors and Themes
+;;; Colors & Themes
 
 ;; Disable old color theme when switching to new color theme
-(defun ad|disable-themes (&rest _)
+(defun ad:disable-themes (&rest _)
   "Disable all currently active color themes."
   (mapc #'disable-theme custom-enabled-themes))
 
-(general-add-advice 'load-theme :before #'ad|disable-themes)
+(general-add-advice 'load-theme :before #'ad:disable-themes)
 
 (use-package solarized-theme            ; I always come back to you
   :init
   ;; Basic settings - disprefer bold and italics, use high contrast
   (setq solarized-use-variable-pitch nil
-	solarized-use-less-bold t
-	solarized-use-more-italic nil
-	solarized-distinct-doc-face t
-	solarized-emphasize-indicators nil
-	solarized-high-contrast-mode-line nil)
+    solarized-use-less-bold t
+    solarized-use-more-italic nil
+    solarized-distinct-doc-face t
+    solarized-emphasize-indicators nil
+    solarized-high-contrast-mode-line nil)
   ;; Avoid all font size changes
   (setq solarized-height-minus-1 1.0
-	solarized-height-plus-1 1.0
-	solarized-height-plus-2 1.0
-	solarized-height-plus-3 1.0
-	solarized-height-plus-4 1.0)
+    solarized-height-plus-1 1.0
+    solarized-height-plus-2 1.0
+    solarized-height-plus-3 1.0
+    solarized-height-plus-4 1.0)
   :config
   ;; Conditionally load the default theme based on whether we're
   ;; running the Emacs daemon.
   (if (daemonp)
       (add-hook 'after-make-frame-functions
-		(lambda (frame)
-		  (select-frame frame)
-		  (load-theme 'solarized-dark t)))
+        (lambda (frame)
+          (select-frame frame)
+          (load-theme 'solarized-dark t)))
     (load-theme 'solarized-dark t)))
 
 ;;; Version control
@@ -289,11 +289,11 @@
 
 ;; Display timing information in '*Messages*' buffer
 (add-hook 'emacs-startup-hook
-	  (lambda ()
-	    (message "Emacs ready in %s with %d garbage collections."
-		     (format "%.2f seconds"
-			     (float-time
-			      (time-subtract after-init-time before-init-time))) gcs-done)))
+      (lambda ()
+        (message "Emacs ready in %s with %d garbage collections."
+             (format "%.2f seconds"
+                 (float-time
+                  (time-subtract after-init-time before-init-time))) gcs-done)))
 
 (provide 'init)
 ;;; init.el ends here
