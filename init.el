@@ -285,6 +285,9 @@
 (use-package evil-magit
   :after evil magit)
 
+(use-package git-timemachine
+  :general (general-t "gt" #'git-timemachine))
+
 ;;; Coda
 
 ;; Display timing information in '*Messages*' buffer
