@@ -77,14 +77,19 @@
   ;; Unbind keys when necessary - General should take precedence
   (general-auto-unbind-keys)
 
-  ;; spacemacs-like leader key
+  ;; General leader key
   (general-create-definer general-spc
-    :states '(normal visual insert emacs)
+    :states 'normal
     :keymaps 'override
-    :prefix "SPC"
-    :non-normal-prefix "C-SPC")
+    :prefix "SPC")
 
-  ;; major mode functionality
+  ;; Window navigation/management, Version control, etc.
+  (general-create-definer general-t
+    :states 'normal
+    :keymaps 'override
+    :prefix "t")
+
+  ;; Major mode functionality
   (general-create-definer general-m
     :states 'normal
     :prefix "m"))
@@ -250,17 +255,21 @@
 (use-package magit
   :defer t
   :general
-  (general-spc
-    "g" #'(:ignore t :which-key "Magit")
+  (general-t
     "gs" #'magit-status
-    "gb" #'magit-blame-addition)
+    "gl" #'magit-log-all
+    "gL" #'magit-log-buffer-file
+    "gc" #'magit-commit
+    "gp" #'magit-push
+    "gf" #'magit-pull
+    "gb" #'magit-blame)
   :config
   ;; Basic settings
   (gsetq magit-save-repository-buffers 'dontask ; save without asking before running Magit commands
-	 magit-refs-show-commit-count 'all	; show commit counts for branches and tags
-	 magit-branch-prefer-remote-upstream '("master") ; start new branches from master
-	 magit-branch-adjust-remote-upstream-alist '(("origin/master" "master")) ; upstreams for branching from remote branches
-	 magit-revision-show-gravatars nil)) ; don't show gravatar images in revision buffers
+     magit-refs-show-commit-count 'all ; show commit counts for branches and tags
+     magit-branch-prefer-remote-upstream '("master") ; start new branches from master
+     magit-branch-adjust-remote-upstream-alist '(("origin/master" "master")) ; upstreams for branching from remote branches
+     magit-revision-show-gravatars nil)) ; don't show gravatar images in revision buffers
 
 (use-package evil-magit
   :after evil magit)
