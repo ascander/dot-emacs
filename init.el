@@ -26,8 +26,6 @@
 
 ;;; Preliminaries
 
-(defconst *is-a-mac* (eq system-type 'darwin) "Are we on a Mac?")
-
 (setq debug-on-error t)                 ; Enter debugger on error
 (setq message-log-max 10000)            ; Keep more log messages
 
@@ -116,30 +114,63 @@
 
 ;; Use normal state as the default state for all modes
 (gsetq evil-normal-state-modes
-       (append evil-emacs-state-modes
-	       evil-normal-state-modes)
+       (append evil-emacs-state-modes evil-normal-state-modes)
        evil-emacs-state-modes nil
        evil-motion-state-modes nil)
 
 ;;; OSX settings
 
+(defconst ad:is-a-mac-p (eq system-type 'darwin) "Are we on a Mac?")
+
 (use-package exec-path-from-shell
-  :if *is-a-mac*
+  :if ad:is-a-mac-p
   :init (gsetq exec-path-from-shell-check-startup-files nil)
   :config (exec-path-from-shell-initialize))
 
 (use-package osx-trash
-  :if *is-a-mac*
+  :if ad:is-a-mac-p
   :config (osx-trash-setup))
 
 ;; Modifier keys
-;;
-;; In addition, left caps lock is set to esc/control and return is set
-;; to return/control using Karabiner elements.
-;;
-(setq mac-command-modifier 'meta	; command is meta
-      mac-option-modifier 'super	; alt/option is super
-      mac-function-modifier 'none)	; reserve 'fn' for OSX
+(setq mac-command-modifier 'meta	; command is Meta
+      mac-option-modifier 'super	; alt/option is Super
+      mac-function-modifier 'none)	; reserve fn for OSX
+
+;;; Default settings
+
+(setq-default
+ blink-cursor-mode -1            ; no blinking
+ ring-bell-function #'ignore         ; no ringing
+ inhibit-startup-screen t            ; no startup screen
+ initial-scratch-message ""          ; no message in the scratch buffer
+ cursor-in-non-selected-windows nil  ; hide the cursor in inactive windows
+ delete-by-moving-to-trash t         ; delete files to trash
+ fill-column 80                      ; set width for modern displays
+ help-window-select t                ; focus new help windows when opened
+ indent-tabs-mode nil                ; stop using tabs to indent
+ tab-width 4                         ; but set their width properly
+ left-margin-width 0                 ; no left margin
+ right-margin-width 0                ; no right margin
+ recenter-positions '(12 top bottom) ; set re-centering positions
+ scroll-conservatively 1000          ; never recenter point while scrolling
+ sentence-end-double-space nil       ; single space after a sentence end
+ require-final-newline t             ; require a newline at file end
+ show-trailing-whitespace nil        ; don't display trailing whitespaces by default
+ uniquify-buffer-name-style 'forward ; uniquify buffer names correctly
+ window-combination-resize t         ; resize windows proportionally
+ frame-resize-pixelwise t            ; resize frames by pixel (don't snap to char)
+ history-length 1000                 ; store more history
+ use-dialog-box nil)                 ; don't use dialogues for mouse imput
+
+;; Miscellaneous settings
+(fset 'yes-or-no-p 'y-or-n-p)                      ; replace yes/no prompts with y/n
+(fset 'display-startup-echo-area-message #'ignore) ; no startup message in the echo area
+(delete-selection-mode 1)                          ; replace region when inserting text
+(put 'downcase-region 'disabled nil)               ; enable downcase-region
+(put 'upcase-region 'disabled nil)                 ; enable upcase-region
+(global-hl-line-mode)                              ; highlight the current line
+(line-number-mode)                                 ; display line number in the mode line
+(column-number-mode)                               ; display column number in the mode line
 
 ;;; Basic UI
 
@@ -149,58 +180,38 @@
 ;; we're not on a Mac (and it's enabled).
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-(when (and (not *is-a-mac*) (fboundp 'menu-bar-mode)) (menu-bar-mode -1))
+(when (and (not ad:is-a-mac-p) (fboundp 'menu-bar-mode)) (menu-bar-mode -1))
 
 ;; Use Emacs' builtin line numbering
 (gsetq-default display-line-numbers 'visual ; vim-style line numbers
-	       display-line-numbers-widen t ; disregard any narrowing
-	       display-line-numbers-current-absolute t) ; display absolute number of current line
+           display-line-numbers-widen t ; disregard any narrowing
+           display-line-numbers-current-absolute t) ; display absolute number of current line
 
-(defun ad|relative-line-numbers ()
+(defun ad:relative-line-numbers ()
   (setq-local display-line-numbers 'visual))
 
-(defun ad|absolute-line-numbers ()
+(defun ad:absolute-line-numbers ()
   (setq-local display-line-numbers t))
 
 ;; Switch to absolute line numbers in insert state
-(general-add-hook 'evil-insert-state-entry-hook #'ad|absolute-line-numbers)
-(general-add-hook 'evil-insert-state-exit-hook #'ad|relative-line-numbers)
+(general-add-hook 'evil-insert-state-entry-hook #'ad:absolute-line-numbers)
+(general-add-hook 'evil-insert-state-exit-hook #'ad:relative-line-numbers)
 
 ;; Bedazzle the current line number
-(custom-set-faces '(line-number-current-line ((t :weight bold
-						 :foreground "#b58900"))))
-
-;; Set some sensible defaults
-(gsetq blink-cursor-mode -1		; no blinking
-       ring-bell-function #'ignore	; no ringing
-       inhibit-startup-screen t		; no startup screen
-       initial-scratch-message nil	; no scratch message
-       delete-by-moving-to-trash t)	; delete files to system trash
-
-;; Replace yes/no prompts with y/n
-(fset 'yes-or-no-p 'y-or-n-p)
-
-;; No startup message in the echo area
-(fset 'display-startup-echo-area-message #'ignore)
-
-;; Display line/column numbers in the mode line
-(line-number-mode)
-(column-number-mode)
-
-;; Highlight the current line
-(global-hl-line-mode)
+(custom-set-faces '(line-number-current-line
+            ((t :weight bold :foreground "#b58900"))))
 
 ;;; Fonts and font sizes
 
 (set-face-attribute 'default nil
-		    :family "Iosevka Dost"
-		    :height 140
-		    :weight 'regular)
+            :family "Iosevka Dost"
+            :height 140
+            :weight 'regular)
 
 (set-face-attribute 'variable-pitch nil
-		    :family "Fira Sans"
-		    :height 140
-		    :weight 'regular)
+            :family "Fira Sans"
+            :height 140
+            :weight 'regular)
 
 (use-package default-text-scale
   :general
