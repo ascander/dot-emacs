@@ -356,6 +356,14 @@
   :general ([remap isearch-forward] #'swiper)
   :init (gsetq swiper-goto-start-of-match t))
 
+(use-package prescient
+  :config (prescient-persist-mode))
+
+(use-package ivy-prescient
+  :after ivy
+  :demand t
+  :config (ivy-prescient-mode))
+
 ;;; Coda
 
 ;; Display timing information in '*Messages*' buffer
