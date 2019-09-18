@@ -266,6 +266,7 @@
 (use-package magit
   :defer t
   :general
+  ('normal 'override "S" #'magit-status)
   (general-t
     "gs" #'magit-status
     "gl" #'magit-log-all
@@ -276,11 +277,33 @@
     "gb" #'magit-blame)
   :config
   ;; Basic settings
-  (gsetq magit-save-repository-buffers 'dontask ; save without asking before running Magit commands
-     magit-refs-show-commit-count 'all ; show commit counts for branches and tags
-     magit-branch-prefer-remote-upstream '("master") ; start new branches from master
-     magit-branch-adjust-remote-upstream-alist '(("origin/master" "master")) ; upstreams for branching from remote branches
-     magit-revision-show-gravatars nil)) ; don't show gravatar images in revision buffers
+  (gsetq magit-save-repository-buffers 'dontask
+     magit-refs-show-commit-count 'all
+     magit-branch-prefer-remote-upstream '("master")
+     magit-branch-adjust-remote-upstream-alist '(("origin/master" "master"))
+     magit-revision-show-gravatars nil)
+
+  ;; Show fine-grained diffs in hunks
+  (gsetq-default magit-diff-refine-hunk t)
+
+  ;; Set Magit's repository directories for `magit-list-repositories', based on
+  ;; Projectile's known projects. This also has effects on `magit-status' in
+  ;; "potentially surprising ways". Initialize after Projectile loads, and every
+  ;; time we switch projects (we may switch to a previously unknown project).
+  (defun ad:set-magit-repository-directories-from-projectile-known-projects ()
+    "Set `magit-repository-directories' from known Projectile projects."
+    (let ((project-dirs (bound-and-true-p projectile-known-projects)))
+      (setq magit-repository-directories
+            ;; Strip trailing slashes from project-dirs, since Magit adds them
+            ;; again. Double trailing slashes break presentation in Magit
+            (mapcar #'directory-file-name project-dirs))))
+
+  (with-eval-after-load 'projectile
+    (ad:set-magit-repository-directories-from-projectile-known-projects))
+
+  (general-add-hook
+   'projectile-switch-project-hook
+   #'ad:set-magit-repository-directories-from-projectile-known-projects))
 
 (use-package evil-magit
   :after evil magit)
