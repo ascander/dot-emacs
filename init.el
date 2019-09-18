@@ -220,10 +220,10 @@
    "C-0" #'default-text-scale-reset)
   :init
   ;; Unbind default bindings
-  (general-def default-text-scale-mode-map
-    "C-M--" nil
-    "C-M-=" nil
-    "C-M-0" nil)
+  (general-unbind default-text-scale-mode-map
+    "C-M--"
+    "C-M-="
+    "C-M-0")
 
   (default-text-scale-mode 1))
 
