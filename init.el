@@ -311,6 +311,51 @@
 (use-package git-timemachine
   :general (general-t "gt" #'git-timemachine))
 
+;;; Completion
+
+(use-package flx)                       ; used by ivy
+(use-package smex)                      ; used by counsel
+
+(use-package ivy
+  :general (general-spc "f" #'ivy-switch-buffer)
+  :config
+  ;; Basic settings
+  (gsetq ivy-use-virtual-buffers t
+         ivy-initial-inputs-alist nil
+         ivy-count-format "")
+
+  ;; Enable fuzzy searching everywhere*
+  ;;
+  ;; *not everywhere
+  (gsetq ivy-re-builders-alist
+         '((swiper            . ivy--regex-plus)    ; convert spaces to '.*' for swiper
+           (ivy-switch-buffer . ivy--regex-plus)    ; and buffer switching
+           (counsel-rg        . ivy--regex-plus)    ; and ripgrep
+           (t                 . ivy--regex-fuzzy))) ; go fuzzy everywhere else
+
+  (ivy-mode 1))
+
+(use-package counsel
+  :general
+  ;; Replace standard 'evil-ex-search-forward' with swiper
+  ('normal "/" #'counsel-grep-or-swiper)
+  ;; Remap standard commands to their counsel analogs
+  (general-def
+    [remap execute-extended-command] #'counsel-M-x
+    [remap find-file]                #'counsel-find-file
+    [remap describe-bindings]        #'counsel-descbinds
+    [remap describe-face]            #'counsel-describe-face
+    [remap describe-function]        #'counsel-describe-function
+    [remap describe-variable]        #'counsel-describe-variable
+    [remap info-lookup-symbol]       #'counsel-info-lookup-symbol
+    [remap completion-at-point]      #'counsel-company
+    [remap org-goto]                 #'counsel-org-goto)
+  :config (counsel-mode 1))
+
+(use-package swiper
+  :general ([remap isearch-forward] #'swiper)
+  :init (gsetq swiper-goto-start-of-match t))
+
 ;;; Coda
 
 ;; Display timing information in '*Messages*' buffer
