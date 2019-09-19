@@ -376,6 +376,45 @@
   :demand t
   :config (ivy-prescient-mode))
 
+;;; Project management
+
+(use-package projectile
+  :general
+  (general-spc
+    "P" #'projectile-find-file-in-known-projects
+    "c" #'projectile-switch-project
+    "D" #'projectile-dired)
+  :config
+  ;; Basic settings
+  (gsetq projectile-enable-caching t
+         projectile-find-dir-includes-top-level t
+         projectile-switch-project-action #'projectile-dired
+         projectile-indexing-method 'alien
+         projectile-completion-system 'ivy)
+
+  ;; Cleanup dead projects when idle
+  (run-with-idle-timer 10 nil #'projectile-cleanup-known-projects)
+
+  (projectile-mode))
+
+(use-package counsel-projectile
+  :general
+  (general-spc
+    "/" #'ad:counsel-projectile-rg
+    "p" #'counsel-projectile-find-file)
+  :config
+  (gsetq counsel-projectile-sort-files t)
+
+  ;; Make 'counsel-projectile-rg' work outside projects
+  (defun ad:counsel-projectile-rg ()
+    "Call `counsel-projectile-rg' if in a project, and `counsel-rg' otherwise."
+    (interactive)
+    (if (projectile-project-p)
+        (counsel-projectile-rg)
+      (counsel-rg)))
+
+  (counsel-projectile-mode))
+
 ;;; Coda
 
 ;; Display timing information in '*Messages*' buffer
