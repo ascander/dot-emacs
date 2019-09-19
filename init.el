@@ -286,10 +286,6 @@
   :ensure nil
   :general ('normal "-" #'counsel-dired-jump)
   :gfhook (nil #'auto-revert-mode)      ; automatically refresh
-  :init
-  ;; Use GNU 'ls' if we're on a Mac and it's installed
-  (when-let (gls (and ad:is-a-mac-p (executable-find "gls")))
-    (setq insert-directory-program gls))
   :config
   ;; Basic settings
   (gsetq dired-auto-revert-buffer t
@@ -297,11 +293,13 @@
          dired-recursive-copies 'always
          dired-dwim-target t)
 
-  ;; Bedazzle 'ls' if we're using a GNU version
-  (when (or (memq system-type '(gnu gnu/linux))
-            (string= (file-name-nondirectory insert-directory-program) "gls"))
-    (gsetq dired-listing-switches
-           (concat dired-listing-switches " --group-directories-first -v"))))
+  ;; Bedazzle 'ls' if we're using a suitable GNU version
+  (if ad:is-a-mac-p
+      (when (executable-find "gls")
+        (gsetq insert-directory-program "gls"
+               dired-listing-switches "-lha --group-directories-first"))
+    ;; Assume we're on a GNU-compatible system
+    (gsetq dired-listing-switches "-lha --group-directories-first")))
 
 ;;; Version control
 
