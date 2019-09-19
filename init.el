@@ -301,6 +301,24 @@
     ;; Assume we're on a GNU-compatible system
     (gsetq dired-listing-switches "-lha --group-directories-first")))
 
+(use-package dired-x
+  :ensure nil
+  :after dired
+  :ghook ('dired-mode-hook #'dired-omit-mode)
+  :config
+  ;; Don't tell me when you're omitting files
+  (gsetq dired-omit-verbose nil))
+
+(use-package ignoramus
+  :config
+  ;; Ignore a few additional things
+  (dolist (name '("company-statistics-cache.el"
+                  ".metals"
+                  ".bloop"))
+    (add-to-list 'ignoramus-file-basename-exact-names name))
+
+  (ignoramus-setup))
+
 ;;; Version control
 
 (use-package magit
