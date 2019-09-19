@@ -208,6 +208,13 @@
   (require 'recentf)
   (add-to-list 'recentf-exclude no-littering-var-directory)
   (add-to-list 'recentf-exclude no-littering-etc-directory)
+  ;; Version backups
+  (gsetq create-lockfiles nil           ; don't create lockfiles
+         delete-old-verisons t          ; don't ask before deleting old backups
+         version-control t              ; use version control for backups
+         kept-new-versions 10           ; keep 10 newest versions
+         kept-old-versions 4            ; keep 4 oldest versions
+         vc-make-backup-files)          ; backup files under vc too
   ;; Don't let customization use my init.el file
   (gsetq custom-file (no-littering-expand-etc-file-name "custom.el"))
   (general-add-hook 'after-init-hook
