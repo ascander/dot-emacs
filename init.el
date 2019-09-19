@@ -198,8 +198,20 @@
 (general-add-hook 'evil-insert-state-exit-hook #'ad:relative-line-numbers)
 
 ;; Bedazzle the current line number
-(custom-set-faces '(line-number-current-line
-            ((t :weight bold :foreground "#b58900"))))
+;; TODO handle this for dark/light themes
+(custom-set-faces
+ '(line-number-current-line ((t :weight bold :foreground "#b58900"))))
+
+(use-package no-littering
+  :config
+  ;; Exclude no-littering files from 'recentf'
+  (require 'recentf)
+  (add-to-list 'recentf-exclude no-littering-var-directory)
+  (add-to-list 'recentf-exclude no-littering-etc-directory)
+  ;; Don't let customization use my init.el file
+  (gsetq custom-file (no-littering-expand-etc-file-name "custom.el"))
+  (general-add-hook 'after-init-hook
+                    (lambda () (load custom-file 'noerror 'nomessage))))
 
 ;;; Fonts and font sizes
 
