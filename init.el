@@ -319,6 +319,16 @@
 
   (ignoramus-setup))
 
+(use-package autorevert
+  :init
+  (gsetq auto-revert-verbose nil                ; autorevert quietly
+         global-auto-revert-non-file-buffers t) ; and in dired, too
+
+  ;; Notifications aren't used on OSX
+  (when ad:is-a-mac-p
+    (gsetq auto-revert-use-notify nil))
+  :config (global-auto-revert-mode 1))
+
 ;;; Version control
 
 (use-package magit
