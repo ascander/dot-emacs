@@ -280,6 +280,29 @@
           (load-theme 'solarized-dark t)))
     (load-theme 'solarized-dark t)))
 
+;;; File & Directory handling
+
+(use-package dired
+  :ensure nil
+  :general ('normal "-" #'counsel-dired-jump)
+  :gfhook (nil #'auto-revert-mode)      ; automatically refresh
+  :init
+  ;; Use GNU 'ls' if we're on a Mac and it's installed
+  (when-let (gls (and ad:is-a-mac-p (executable-find "gls")))
+    (setq insert-directory-program gls))
+  :config
+  ;; Basic settings
+  (gsetq dired-auto-revert-buffer t
+         dired-listing-switches "-lha"
+         dired-recursive-copies 'always
+         dired-dwim-target t)
+
+  ;; Bedazzle 'ls' if we're using a GNU version
+  (when (or (memq system-type '(gnu gnu/linux))
+            (string= (file-name-nondirectory insert-directory-program) "gls"))
+    (gsetq dired-listing-switches
+           (concat dired-listing-switches " --group-directories-first -v"))))
+
 ;;; Version control
 
 (use-package magit
