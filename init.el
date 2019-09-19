@@ -329,6 +329,71 @@
     (gsetq auto-revert-use-notify nil))
   :config (global-auto-revert-mode 1))
 
+;;; Windows and buffers
+
+(use-package ace-window
+  :general (general-t "w" #'ace-window)
+  :config
+  ;; Basic settings
+  (gsetq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
+         aw-scope 'frame))
+
+;; Bindings for window movement/splitting
+
+(use-package windmove
+  :config (gsetq windmove-wrap-around t))
+
+(use-package winner
+  :general
+  (general-t
+    "u" #'winner-undo
+    "U" #'winner-redo)
+  :config (winner-mode))
+
+(defun ad:kill-this-buffer ()
+  "Calls `kill-this-buffer' without menu bar checks."
+  (interactive)
+  (if (minibufferp)
+      (abort-recursive-edit)
+    (kill-buffer (current-buffer))))
+
+(defun ad:kill-buffer-delete-window ()
+  "Kill the current buffer and delete its window."
+  (interactive)
+  (ad:kill-this-buffer)
+  (delete-window))
+
+(defun ad:delete-other-windows ()
+  "Make the current window the only one."
+  (interactive)
+  (if (eq (count-windows) 1)
+      (winner-undo)
+    (delete-other-windows)))
+
+(defun ad:vsplit ()
+  "Split the window vertically and switch to the new window."
+  (interactive)
+  (split-window-vertically)
+  (other-window 1))
+
+(defun ad:hsplit ()
+  "Split the window horizontally and switch to the new window."
+  (interactive)
+  (split-window-horizontally)
+  (other-window 1))
+
+(general-t
+  "h" #'windmove-left
+  "j" #'windmove-down
+  "k" #'windmove-up
+  "l" #'windmove-right
+  "-" #'ad:vsplit
+  "'" #'ad:hsplit
+  "q" #'ad:kill-this-buffer
+  "d" #'delete-window
+  "D" #'ad:kill-buffer-delete-window
+  "." #'ad:delete-other-windows)
+
 ;;; Version control
 
 (use-package magit
