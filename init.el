@@ -118,6 +118,13 @@
        evil-emacs-state-modes nil
        evil-motion-state-modes nil)
 
+(use-package with-editor
+  :gfhook #'evil-insert-state
+  :config
+  (general-def 'normal with-editor-mode-map
+    "RET" #'with-editor-finish
+    "q" #'with-editor-cancel))
+
 ;;; OSX settings
 
 (defconst ad:is-a-mac-p (eq system-type 'darwin) "Are we on a Mac?")
