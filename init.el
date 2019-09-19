@@ -47,8 +47,8 @@
 
 (setq package-archives
       '(("melpa" . "https://melpa.org/packages/")
-    ("gnu"   . "http://elpa.gnu.org/packages/")
-    ("org"   . "https://orgmode.org/elpa/")))
+        ("gnu"   . "http://elpa.gnu.org/packages/")
+        ("org"   . "https://orgmode.org/elpa/")))
 (package-initialize)
 
 ;; Bootstrap `use-package'
