@@ -61,7 +61,7 @@
   (require 'use-package))
 (require 'bind-key)
 
-;;; General.el
+;;; General and friends
 
 (use-package general
   :demand t
@@ -91,6 +91,26 @@
   (general-create-definer general-m
     :states 'normal
     :prefix "m"))
+
+(use-package which-key
+  :defer 5
+  :init
+  (gsetq which-key-idle-delay 0.4
+         which-key-idle-secondary-delay 0.2
+         which-key-sort-order 'which-key-key-order-alpha
+         which-key-max-display-columns 6
+         which-key-add-column-padding 2
+         which-key-replacement-alist '(((nil . "Prefix Command") . (nil . "prefix"))
+                                       ((nil . "\\`\\?\\?\\'") . (nil . "λ"))
+                                       ((nil . "magit-") . (nil . "git-"))))
+
+  ;; No line numbers in `which-key' buffers, please.
+  (defun ad:disable-line-numbers-local ()
+    "Disables line numbers locally."
+    (gsetq display-line-numbers nil))
+
+  (general-add-hook 'which-key-init-buffer-hook #'ad:disable-line-numbers-local)
+  :config (which-key-mode 1))
 
 ;;; Evil and friends
 
@@ -408,6 +428,7 @@
   :general
   ('normal 'override "S" #'magit-status)
   (general-t
+    "g"  #'(:ignore t :which-key "Git")
     "gs" #'magit-status
     "gl" #'magit-log-all
     "gL" #'magit-log-buffer-file
