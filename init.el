@@ -525,6 +525,17 @@
   :demand t
   :config (ivy-prescient-mode))
 
+(use-package ivy-rich
+  :after ivy counsel
+  :config
+  ;; Align virtual buffers, and abbreviate paths
+  (gsetq ivy-virtual-abbreviate 'full
+         ivy-rich-path-style 'abbrev)
+
+  (ivy-set-display-transformer 'ivy-switch-buffer
+                               'ivy-rich-switch-buffer-transformer)
+  (ivy-rich-mode 1))
+
 ;;; Project management
 
 (use-package projectile
