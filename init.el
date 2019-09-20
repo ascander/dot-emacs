@@ -494,6 +494,15 @@
            (counsel-rg        . ivy--regex-plus)    ; and ripgrep
            (t                 . ivy--regex-fuzzy))) ; go fuzzy everywhere else
 
+  ;; Keybindings
+  (general-def ivy-minibuffer-map
+    "<escape>" #'minibuffer-keyboard-quit ; the natural choice
+    "<next>" #'ivy-scroll-up-command      ; default, here for documentation
+    "<prior>" #'ivy-scroll-down-command   ; same here
+    "C-j" #'ivy-next-history-element      ; repeat command with next element
+    "C-k" #'ivy-previous-history-element  ; repeat command with prev element
+    "C-'" #'ivy-avy)                      ; pick a candidate using avy
+
   (ivy-mode 1))
 
 (use-package counsel
