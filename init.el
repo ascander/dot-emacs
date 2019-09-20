@@ -586,6 +586,21 @@
 
 ;;; General programming
 
+(use-package electric
+  :ensure nil
+  :init (electric-pair-mode 1))
+
+(use-package paren
+  :ensure nil
+  :init (show-paren-mode 1))
+
+(use-package evil-surround
+  :init (global-evil-surround-mode 1))
+
+(use-package rainbow-delimiters
+  :defer t
+  :ghook 'prog-mode-hook 'text-mode-hook)
+
 (use-package company
   :init (global-company-mode)
   :config
