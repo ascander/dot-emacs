@@ -584,6 +584,53 @@
 
   (counsel-projectile-mode))
 
+;;; General programming
+
+(use-package company
+  :init (global-company-mode)
+  :config
+  ;; Basic settings
+  (gsetq company-idle-delay 0.2
+         company-minimum-prefix-length 2
+         company-tooltip-align-annotations t
+         company-show-numbers t)
+
+  ;; Add YASnippet support for all company backends
+  ;; See: https://github.com/syl20bnr/spacemacs/pull/179
+  (defun ad:company-backend-with-yas (backends)
+    (if (and (listp backends) (memq 'company-yasnippet backends))
+        backends
+      (append (if (consp backends)
+                  backends
+                (list backends))
+              '(:with company-yasnippet))))
+
+  ;; Add YASnippet to all backends
+  (gsetq company-backends
+         (mapcar #'ad:company-backend-with-yas company-backends)))
+
+;; Use prescient instead of company-statistics for smrts
+(use-package company-prescient
+  :after company
+  :demand t
+  :config
+  (company-prescient-mode))
+
+(use-package flycheck
+  :ghook ('after-init-hook #'global-flycheck-mode)
+  :config
+  ;; Basic settings
+  (gsetq flycheck-display-errors-delay 0.4)
+  ;; Get me outta here
+  (general-def 'normal flycheck-error-list-mode
+    "q" #'quit-window))
+
+(general-with-package 'prog-mode
+  (general-m prog-mode-map
+    "j" #'flycheck-next-error
+    "k" #'flycheck-previous-error
+    "E" #'flycheck-list-errors))
+
 ;;; Coda
 
 ;; Display timing information in '*Messages*' buffer
