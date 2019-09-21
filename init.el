@@ -378,7 +378,7 @@
   :config (winner-mode))
 
 (defun ad:kill-this-buffer ()
-  "Calls `kill-this-buffer' without menu bar checks."
+  "Call `kill-this-buffer' without menu bar interaction."
   (interactive)
   (if (minibufferp)
       (abort-recursive-edit)
