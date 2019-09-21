@@ -646,6 +646,44 @@
     "k" #'flycheck-previous-error
     "E" #'flycheck-list-errors))
 
+(use-package lsp-mode
+  :commands lsp
+  :init
+  ;; ;; Only enable LSP for these languages/modes
+  ;; (general-add-hook 'scala-mode-hook #'lsp)
+  :config
+  ;; Basic settings
+  (gsetq lsp-prefer-flymake nil
+         lsp-metals-server-command "metals"
+         lsp-response-timeout 20)
+
+  (general-def 'normal lsp-mode-map
+    "N" #'lsp-describe-thing-at-point
+    "RET" #'lsp-find-definition)
+
+  (general-m lsp-mode-map
+    "i" #'lsp-goto-implementation       ; donut work on metals
+    "D" #'lsp-find-declaration          ; same
+    "x" #'lsp-find-references
+    "r" #'lsp-rename                    ; this'n too
+    "=" #'lsp-format-buffer)
+
+  (require 'lsp-clients))
+
+(use-package lsp-ui
+  :ghook ('lsp-mode-hook #'lsp-ui-mode)
+  :init
+  ;; Show information only when I ask for it, thanks
+  (gsetq-default lsp-ui-sideline-enable nil
+                 lsp-ui-doc-enable nil))
+
+(use-package company-lsp
+  :after company lsp-mode
+  :config (add-to-list 'company-backends 'company-lsp)
+  :custom
+  (company-lsp-async 1)
+  (company-lsp-enable-snippet t))
+
 ;;; Coda
 
 ;; Display timing information in '*Messages*' buffer
