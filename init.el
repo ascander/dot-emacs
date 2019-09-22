@@ -649,8 +649,8 @@
 (use-package lsp-mode
   :commands lsp
   :init
-  ;; ;; Only enable LSP for these languages/modes
-  ;; (general-add-hook 'scala-mode-hook #'lsp)
+  ;; Only enable LSP for these languages/modes
+  (general-add-hook 'scala-mode-hook #'lsp)
   :config
   ;; Basic settings
   (gsetq lsp-prefer-flymake nil
@@ -683,6 +683,58 @@
   :custom
   (company-lsp-async 1)
   (company-lsp-enable-snippet t))
+
+;;; Major modes
+
+;; Git
+;; TODO try 'git-link' again
+
+(use-package git-commit
+  :defer t
+  :config
+  ;; Remove style conventions
+  (general-remove-hook 'git-commit-finish-query-functions
+                       #'git-commit-check-style-conventions))
+
+(use-package gitconfig-mode
+  :defer t)
+
+(use-package gitignore-mode
+  :defer t)
+
+(use-package gitattributes-mode
+  :defer t)
+
+;; Scala
+
+(use-package scala-mode
+  :defer t
+  :config
+  ;; Indentation preferences
+  (gsetq scala-indent:default-run-on-strategy
+        scala-indent:operator-strategy
+        scala-indent:use-javadoc-style t)
+
+  ;; Insert newline in a multiline comment should insert an asterisk
+  (defun ad|scala-mode-newline-comments ()
+    "Insert a leading asterisk in multiline comments, when hitting 'RET'."
+    (interactive)
+    (newline-and-indent)
+    (scala-indent:insert-asterisk-on-multiline-comment))
+  (define-key scala-mode-map (kbd "RET") #'ad|scala-mode-newline-comments))
+
+(use-package sbt-mode
+  :commands sbt-start sbt-command
+  :config
+  ;; Don't pop up SBT buffers automatically
+  (gsetq sbt:display-command-buffer nil)
+
+  ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
+  ;; allows using SPACE when in the minibuffer
+  (substitute-key-definition
+   'minibuffer-complete-word
+   'self-insert-command
+   minibuffer-local-completion-map))
 
 ;;; Coda
 
