@@ -705,6 +705,15 @@
 (use-package gitattributes-mode
   :defer t)
 
+;; Markdown
+
+(use-package vmd-mode)
+
+(use-package markdown-mode
+  :config
+  (general-m markdown-mode-map
+    "p" #'vmd-mode))
+
 ;; Scala
 
 (use-package scala-mode
