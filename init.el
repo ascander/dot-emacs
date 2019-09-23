@@ -705,6 +705,22 @@
 (use-package gitattributes-mode
   :defer t)
 
+;; Lisp/Emacs Lisp
+
+(use-package elisp-mode
+  :ensure nil
+  :general
+  (general-m emacs-lisp-mode-map
+    "b" #'eval-buffer
+    "r" #'eval-region
+    "f" #'eval-defun)
+
+  (general-def 'normal emacs-lisp-mode-map
+    "RET" #'xref-find-definitions
+    "<S-return>" #'pop-tag-mark)
+  :config
+  (gsetq emacs-lisp-docstring-fill-column 80))
+
 ;; Markdown
 
 (use-package vmd-mode)
