@@ -543,6 +543,19 @@
          ivy-rich-switch-buffer-align-virtual-buffer t)
   :config (ivy-rich-mode 1))
 
+(use-package yasnippet
+  :defer 3
+  :ghook ('prog-mode-hook #'yas-minor-mode)
+  :config
+  ;; Never expand snippets in normal state
+  (general-def 'normal yas-minor-mode-map
+    [remap yas-expand] #'ignore)
+
+  (yas-reload-all))
+
+(use-package yasnippet-snippets
+  :after yasnippet)
+
 ;;; Project management
 
 (use-package projectile
