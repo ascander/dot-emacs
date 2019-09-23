@@ -536,14 +536,12 @@
 
 (use-package ivy-rich
   :after ivy counsel
-  :config
+  :init
   ;; Align virtual buffers, and abbreviate paths
   (gsetq ivy-virtual-abbreviate 'full
-         ivy-rich-path-style 'abbrev)
-
-  (ivy-set-display-transformer 'ivy-switch-buffer
-                               'ivy-rich-switch-buffer-transformer)
-  (ivy-rich-mode 1))
+         ivy-rich-path-style 'abbrev
+         ivy-rich-switch-buffer-align-virtual-buffer t)
+  :config (ivy-rich-mode 1))
 
 ;;; Project management
 
