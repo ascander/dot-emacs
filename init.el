@@ -691,6 +691,10 @@
 
 (use-package git-commit
   :defer t
+  :init
+  (gsetq
+   git-commit-usage-message
+   "Type 'RET' to finish, 'q' to cancel, and \\[git-commit-prev-message] and \\[git-commit-next-message] to recover older messages")
   :config
   ;; Remove style conventions
   (general-remove-hook 'git-commit-finish-query-functions
