@@ -237,7 +237,7 @@
   (add-to-list 'recentf-exclude no-littering-etc-directory)
   ;; Version backups
   (gsetq create-lockfiles nil           ; don't create lockfiles
-         delete-old-verisons t          ; don't ask before deleting old backups
+         delete-old-versions t          ; don't ask before deleting old backups
          version-control t              ; use version control for backups
          kept-new-versions 10           ; keep 10 newest versions
          kept-old-versions 4            ; keep 4 oldest versions
