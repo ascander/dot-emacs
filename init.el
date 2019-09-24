@@ -546,6 +546,9 @@
     [remap info-lookup-symbol]       #'counsel-info-lookup-symbol
     [remap completion-at-point]      #'counsel-company
     [remap org-goto]                 #'counsel-org-goto)
+  ;; Goto org headings
+  (general-m org-mode-map
+    "j" #'counsel-org-goto)
   :config (counsel-mode 1))
 
 (use-package swiper
@@ -588,7 +591,7 @@
   :general
   (general-spc
     "P" #'projectile-find-file-in-known-projects
-    "c" #'projectile-switch-project
+    "r" #'projectile-switch-project
     "D" #'projectile-dired)
   :config
   ;; Basic settings

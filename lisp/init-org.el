@@ -27,13 +27,10 @@
 (use-package org                        ; The almighty Org mode
   :ensure org-plus-contrib
   :pin org
-  :mode (("\\.org$" . org-mode))
-  :general (general-spc
-             "o"  #'(:ignore t :which-key "Org")
-             "oa" #'org-agenda
-             "oc" #'org-capture
-             "oj" #'counsel-org-goto
-             "ol" #'org-store-link)
+  :general
+  (general-spc
+    "c" #'org-capture
+    "a" #'org-agenda)
   :config
   ;; Defaults
   (setq
