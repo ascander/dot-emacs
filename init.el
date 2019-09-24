@@ -421,6 +421,23 @@
   "D" #'ad:kill-buffer-delete-window
   "." #'ad:delete-other-windows)
 
+;;; Org mode & friends
+
+(use-package init-org
+  :load-path "lisp"
+  :ensure nil)
+
+(use-package evil-org
+  :after evil org
+  :config
+  ;; TODO can these be put in ':ghook' and ':gfhook' sections?
+  (add-hook 'org-mode-hook #'evil-org-mode)
+  (add-hook 'evil-org-mode-hook #'(lambda () (evil-org-set-key-theme)))
+
+  ;; Evil bindings in the agenda, too
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys))
+
 ;;; Version control
 
 (use-package magit
