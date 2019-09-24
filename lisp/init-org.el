@@ -112,11 +112,11 @@ created buffer. Redefined to allow pop-up windows."
   ;; Capture templates
   (setq org-capture-templates
         '(("t" "Todo" entry (file "~/org/refile.org")
-           "** TODO %i%?")
+           "* TODO %i%?")
           ("n" "Note" entry (file "~/org/refile.org")
-           "** %i%? :NOTE:\n %U")
+           "* %i%? :NOTE:\n %U")
           ("m" "Meeting" entry (file "~/org/refile.org")
-           "** MEETING with %? :MEETING:\n %U")
+           "* MEETING with %? :MEETING:\n %U")
           ("d" "Deadline" entry (file "~/org/reminders.org")
            "* TODO %i%?\n DEADLINE:%T")))
 
