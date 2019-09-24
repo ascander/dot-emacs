@@ -432,6 +432,8 @@
 
 ;;; Org mode & friends
 
+;; TODO simplify and switch to using 'org-ql' for custom agenda building
+;; See: https://github.com/alphapapa/org-ql
 (use-package init-org
   :load-path "lisp"
   :ensure nil)
@@ -727,7 +729,6 @@
 ;;; Major modes
 
 ;; Git
-;; TODO try 'git-link' again
 
 (use-package git-commit
   :defer t
