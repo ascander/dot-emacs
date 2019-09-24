@@ -66,6 +66,10 @@ created buffer. Redefined to allow pop-up windows."
   ;; Enable org habits for habit tracking
   (require 'org-habit)
 
+  ;; Don't display line numbers in capture buffers
+  (general-add-hook 'org-capture-mode-hook
+                    #'(lambda () (gsetq display-line-numbers nil)))
+
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Tasks & States
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
