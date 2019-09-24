@@ -358,6 +358,15 @@
 
 ;;; Windows and buffers
 
+;; Start in fullscreen mode. Do this after `make-frame' runs, if running in
+;; daemon mode. Otherwise, just toggle fullscreen mode.
+(if (and (daemonp) ad:is-a-mac-p)
+    (general-add-hook 'after-make-frame-functions
+                      #'(lambda (frame)
+                          (select-frame frame)
+                          (toggle-frame-fullscreen)))
+  (toggle-frame-fullscreen))
+
 (use-package ace-window
   :general (general-t "w" #'ace-window)
   :config
