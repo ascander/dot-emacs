@@ -432,11 +432,119 @@
 
 ;;; Org mode & friends
 
-;; TODO simplify and switch to using 'org-ql' for custom agenda building
-;; See: https://github.com/alphapapa/org-ql
-(use-package init-org
-  :load-path "lisp"
-  :ensure nil)
+(use-package org
+  :ensure org-plus-contrib
+  :pin org
+  :general
+  (general-spc
+    "c" #'org-capture
+    "a" #'org-agenda)
+  :config
+  ;; Set locations of org directory, agenda files, default notes file
+  (defun ad:expand-org-file (file)
+    (concat (file-name-as-directory org-directory) file))
+
+  (gsetq org-directory (expand-file-name "~/org")
+         org-default-notes-file (ad:expand-org-file "refile.org")
+         org-archive-location (concat (ad:expand-org-file "archive.org") "::* From %s")
+         org-agenda-files (mapcar #'ad:expand-org-file
+                                  '("work.org"
+                                    "home.org"
+                                    "refile.org"
+                                    "reminders.org"
+                                    "emacs.org")))
+
+  ;; Default settings
+  (gsetq org-src-fontify-natively t
+         org-log-done 'time
+         org-use-fast-todo-selection t
+         org-startup-truncated t
+         org-tags-column 80
+         org-enable-priority-commands nil
+         org-reverse-note-order t)
+
+  ;; Navigate by headings, using Ivy
+  (gsetq org-goto-interface 'outline-path-completion
+         org-outline-path-complete-in-steps nil)
+
+  ;; Enable easy templates for src blocks
+  (require 'org-tempo)
+
+  ;; Enable habits
+  (require 'org-habit)
+
+  ;; TODO task states
+  (gsetq org-todo-keywords
+        '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+          (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "MEETING")))
+
+  ;; Task state settings
+  (gsetq org-enforce-todo-dependencies t
+         org-enforce-todo-checkbox-dependencies t
+         org-treat-S-cursor-todo-selection-as-state-change nil)
+
+  ;; Tags based on state triggers; used for filtering tasks in agenda views
+  ;;
+  ;; Triggers break down into the following rules:
+  ;;
+  ;;   - moving a task to CANCELLED adds the CANCELLED tag
+  ;;   - moving a task to WAITING adds the WAITING tag
+  ;;   - moving a task to HOLD adds the WAITING and HOLD tags
+  ;;   - moving a task to a done state removes the WAITING and HOLD tags
+  ;;   - moving a task to TODO removes WAITING, CANCELLED, and HOLD tags
+  ;;   - moving a task to NEXT removes WAITING, CANCELLED, and HOLD tags
+  ;;   - moving a task to DONE removes WAITING, CANCELLED, and HOLD tags
+  (gsetq org-todo-state-tags-triggers
+        '(("CANCELLED" ("CANCELLED" . t))
+          ("WAITING" ("WAITING" . t))
+          ("HOLD" ("WAITING" . t) ("HOLD" . t))
+          (done ("WAITING") ("HOLD"))
+          ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
+          ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
+          ("DONE" ("WAITING") ("CANCELLED") ("HOLD"))))
+
+  ;; Org capture templates
+  (gsetq org-capture-templates
+        '(("t" "Todo" entry (file "~/org/refile.org")
+           "* TODO %i%?")
+          ("n" "Note" entry (file "~/org/refile.org")
+           "* %i%? :NOTE:\n %U")
+          ("m" "Meeting" entry (file "~/org/refile.org")
+           "* MEETING with %? :MEETING:\n %U")
+          ("d" "Deadline" entry (file "~/org/reminders.org")
+           "* TODO %i%?\n DEADLINE:%T")))
+
+  ;; Refile targets include this file and any agenda file - up to 5 levels deep
+  (gsetq org-refile-targets '((nil :maxlevel . 5)
+                             (org-agenda-files :maxlevel . 5)))
+
+  ;; Switch to insert state when capturing
+  (general-add-hook 'org-capture-mode-hook #'evil-insert-state)
+  (general-add-hook 'org-log-buffer-setup-hook #'evil-insert-state)
+
+  ;; Include the filename in refile target paths; this allows refiling to the
+  ;; top level of a target
+  (gsetq org-refile-use-outline-path 'file)
+
+  ;; Allow refiling to create parent tasks with confirmation
+  (gsetq org-refile-allow-creating-parent-nodes 'confirm)
+
+  ;; Do not use hierarchical steps in completion, since we use Ivy
+  (gsetq org-outline-path-complete-in-steps nil)
+
+  ;; Display agenda as the only window, but restore the previous configuration
+  ;; afterwards; let's be polite.
+  (gsetq org-agenda-window-setup 'only-window
+        org-agenda-restore-windows-after-quit t)
+
+  ;; Do not dim blocked tasks
+  (gsetq org-agenda-dim-blocked-tasks nil)
+
+  ;; Compact agenda blocks (disabled)
+  (gsetq org-agenda-compact-blocks nil))
+
+(use-package org-bullets
+  :ghook 'org-mode)
 
 (use-package evil-org
   :after evil org
