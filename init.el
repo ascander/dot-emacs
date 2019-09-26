@@ -535,7 +535,7 @@
   ;; Display agenda as the only window, but restore the previous configuration
   ;; afterwards; let's be polite.
   (gsetq org-agenda-window-setup 'only-window
-        org-agenda-restore-windows-after-quit t)
+         org-agenda-restore-windows-after-quit t)
 
   ;; Do not dim blocked tasks
   (gsetq org-agenda-dim-blocked-tasks nil)
