@@ -541,6 +541,18 @@ and ':underline' the same value."
           ("d" "Deadline" entry (file "~/org/reminders.org")
            "* TODO %i%?\n DEADLINE:%T")))
 
+  ;; Use sensible keybindings for capture buffers
+  (general-def 'normal org-capture-mode-map
+    "RET" #'org-capture-finalize
+    "q" #'org-capture-kill
+    "r" #'org-capture-refile)
+
+  ;; Display the right `header-line-format' as well
+  (general-add-hook
+   'org-capture-mode-hook
+   #'(lambda ()
+       (gsetq-local header-line-format "Capture buffer. Finish 'RET', refile 'r', abort 'q'.")))
+
   ;; Refile targets include this file and any agenda file - up to 5 levels deep
   (gsetq org-refile-targets '((nil :maxlevel . 5)
                              (org-agenda-files :maxlevel . 5)))
