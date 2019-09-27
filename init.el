@@ -332,7 +332,10 @@ and ':underline' the same value."
 
 (use-package minions
   :after moody
-  :init (minions-mode 1))
+  :init
+  (gsetq minions-mode-line-lighter "o.O"
+         minions-mode-line-delimiters '("" . ""))
+  (minions-mode 1))
 
 ;;; File & Directory handling
 
