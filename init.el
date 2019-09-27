@@ -729,7 +729,8 @@ and ':underline' the same value."
   (general-spc
     "P" #'projectile-find-file-in-known-projects
     "r" #'projectile-switch-project
-    "D" #'projectile-dired)
+    "v" #'projectile-invalidate-cache
+    "d" #'projectile-dired)
   :config
   ;; Basic settings
   (gsetq projectile-enable-caching t
