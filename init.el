@@ -307,6 +307,33 @@
           (load-theme 'solarized-dark t)))
     (load-theme 'solarized-dark t)))
 
+;;; Mode line
+
+(use-package moody
+  :init
+  ;; Advise `load-theme' to set mode-line face attributes correctly.
+  (defun ad:set-mode-line-attributes (&rest _)
+    "Unset the ':box' attribute for the `mode-line' face, and make ':overline'
+and ':underline' the same value."
+    (let ((line (face-attribute 'mode-line :underline)))
+      (set-face-attribute 'mode-line          nil :overline  line)
+      (set-face-attribute 'mode-line-inactive nil :overline  line)
+      (set-face-attribute 'mode-line-inactive nil :underline line)
+      (set-face-attribute 'mode-line          nil :box       nil)
+      (set-face-attribute 'mode-line-inactive nil :box       nil)))
+
+  (general-add-advice #'load-theme :after #'ad:set-mode-line-attributes)
+  :config
+  (gsetq x-underline-at-descent-line t
+         moody-slant-function #'moody-slant-apple-rgb)
+
+  (moody-replace-mode-line-buffer-identification)
+  (moody-replace-vc-mode))
+
+(use-package minions
+  :after moody
+  :init (minions-mode 1))
+
 ;;; File & Directory handling
 
 (use-package dired
