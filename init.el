@@ -139,6 +139,7 @@
        evil-motion-state-modes nil)
 
 (use-package with-editor
+  :defer t
   :gfhook #'evil-insert-state
   :config
   (general-def 'normal with-editor-mode-map
@@ -363,6 +364,7 @@
 ;;; Colors & Themes
 
 ;; Distinguish evil state by cursor shape/color
+;; TODO advise `load-theme' to set cursor colors per theme
 (gsetq evil-mode-line-format nil
        evil-normal-state-cursor '(box "#839496")
        evil-motion-state-cursor '(box "#b58900")
@@ -482,15 +484,6 @@ and ':underline' the same value."
   :config (global-auto-revert-mode 1))
 
 ;;; Windows and buffers
-
-;; Start in fullscreen mode. Do this after `make-frame' runs, if running in
-;; daemon mode. Otherwise, just toggle fullscreen mode.
-(if (and (daemonp) ad:is-a-mac-p)
-    (general-add-hook 'after-make-frame-functions
-                      #'(lambda (frame)
-                          (select-frame frame)
-                          (toggle-frame-fullscreen)))
-  (toggle-frame-fullscreen))
 
 (use-package ace-window
   :general (general-t "w" #'ace-window)
@@ -1063,6 +1056,12 @@ and ':underline' the same value."
    minibuffer-local-completion-map))
 
 ;;; Coda
+
+(use-package profile-dotemacs
+  :load-path "lisp"
+  :ensure nil
+  :init
+  (gsetq profile-dotemacs-low-percentage 1))
 
 ;; Display timing information in '*Messages*' buffer
 (add-hook 'emacs-startup-hook
