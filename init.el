@@ -273,7 +273,102 @@
 
   (default-text-scale-mode 1))
 
+;; Set up ligatures by way of `prettify-symbols-alist'
+(defun ad:setup-ligatures ()
+  "Append Iosevka ligatures to `prettify-symbols-alist'."
+  (gsetq prettify-symbols-alist
+         (append prettify-symbols-alist
+                 '(
+                  ;; Rightwards arrows
+                  ("->"   . ?)
+                  ("=>"   . ?)
+                  ("->>"  . ?)
+                  ("=>>"  . ?)
+                  ("-->"  . ?)
+                  ("==>"  . ?)
+                  ("--->" . ?)
+                  ("===>" . ?)
+                  ("->-"  . ?)
+                  ("=>="  . ?)
+                  (">-"   . ?)
+                  (">>-"  . ?)
+                  (">>="  . ?)
+                  ("~>"   . ?⤳)
+
+                  ;; Leftwards arrows
+                  ("<-"   . ?)
+                  ("<<-"  . ?)
+                  ("<<="  . ?)
+                  ("<--"  . ?)
+                  ("<=="  . ?)
+                  ("<---" . ?)
+                  ("<===" . ?)
+                  ("-<-"  . ?)
+                  ("=<="  . ?)
+                  ("-<"   . ?)
+                  ("=<"   . ?)
+                  ("-<<"  . ?)
+                  ("=<<"  . ?)
+
+                  ;; Bidirectional arrows
+                  ("<->"    . ?)
+                  ("<=>"    . ?)
+                  ("<-->"   . ?)
+                  ("<==>"   . ?)
+                  ("<--->"  . ?)
+                  ("<===>"  . ?)
+                  ("<---->" . ?)
+                  ("<====>" . ?)
+
+                  ;; Colons
+                  ("::"  . ?)
+                  (":::" . ?)
+
+                  ;; Logical
+                  ("/\\" . ?)
+                  ("\\/" . ?)
+
+                  ;; Comparison operators
+                  (">="  . ?)
+                  ("<="  . ?)
+
+                  ;; Equality/inequality
+                  ("=="    . ?)
+                  ("!="    . ?)
+                  ("==="   . ?)
+                  ("!=="   . ?)
+                  ("!=="   . ?)
+                  ("=!="   . ?)        ; Cats uses a different sequence
+
+                  ;; HTML comments
+                  ("<!--"  . ?)
+                  ("<!---" . ?)))))
+
+(defun ad:refresh-prettify-symbols-mode ()
+  "Toggle `prettify-symbols-mode' explicitly."
+  (prettify-symbols-mode -1)
+  (prettify-symbols-mode +1))
+
+;; Hooks for modes in which to use ligatures
+(mapc (lambda (hook)
+        (general-add-hook hook (lambda ()
+                                 (ad:setup-ligatures)
+                                 (ad:refresh-prettify-symbols-mode))))
+      '(text-mode-hook
+        prog-mode-hook))
+
+;; Enable `prettify-symbols-mode'
+(global-prettify-symbols-mode +1)
+
 ;;; Colors & Themes
+
+;; Distinguish evil state by cursor shape/color
+(gsetq evil-mode-line-format nil
+       evil-normal-state-cursor '(box "#839496")
+       evil-motion-state-cursor '(box "#b58900")
+       evil-insert-state-cursor '(bar "#268bd2")
+       evil-emacs-state-cursor  '(bar "#d33682")
+       evil-visual-state-cursor '(box "#d33682"))
 
 ;; Disable old color theme when switching to new color theme
 (defun ad:disable-themes (&rest _)
