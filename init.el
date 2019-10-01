@@ -585,8 +585,11 @@ and ':underline' the same value."
   ;; Compact agenda blocks (disabled)
   (gsetq org-agenda-compact-blocks nil))
 
+(use-package org-ql
+  :after org)
+
 (use-package org-bullets
-  :ghook 'org-mode)
+  :ghook 'org-mode-hook)
 
 (use-package evil-org
   :after evil org
