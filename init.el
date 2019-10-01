@@ -726,6 +726,9 @@ and ':underline' the same value."
 
 (use-package yasnippet
   :defer 3
+  :general
+  (general-def help-map
+    "y" #'yas-describe-tables)
   :ghook ('prog-mode-hook #'yas-minor-mode)
   :config
   ;; Never expand snippets in normal state
