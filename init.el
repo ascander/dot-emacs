@@ -806,6 +806,10 @@ and ':underline' the same value."
          company-tooltip-align-annotations t
          company-show-numbers t)
 
+  ;; Complete, using the current selection
+  (general-def company-active-map
+    "C-;" #'company-complete-selection)
+
   ;; Add YASnippet support for all company backends
   ;; See: https://github.com/syl20bnr/spacemacs/pull/179
   (defun ad:company-backend-with-yas (backends)
