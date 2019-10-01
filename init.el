@@ -380,14 +380,14 @@
 (use-package solarized-theme            ; I always come back to you
   :init
   ;; Basic settings - disprefer bold and italics, use high contrast
-  (setq solarized-use-variable-pitch nil
+  (gsetq solarized-use-variable-pitch nil
     solarized-use-less-bold t
     solarized-use-more-italic nil
     solarized-distinct-doc-face t
-    solarized-emphasize-indicators nil
+    solarized-emphasize-indicators t
     solarized-high-contrast-mode-line nil)
   ;; Avoid all font size changes
-  (setq solarized-height-minus-1 1.0
+  (gsetq solarized-height-minus-1 1.0
     solarized-height-plus-1 1.0
     solarized-height-plus-2 1.0
     solarized-height-plus-3 1.0
