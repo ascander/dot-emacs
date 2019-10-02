@@ -670,11 +670,44 @@ and ':underline' the same value."
   ;; Do not dim blocked tasks
   (gsetq org-agenda-dim-blocked-tasks nil)
 
+  ;; Just use a newline to separate blocks
+  (gsetq org-agenda-block-separator "")
+
   ;; Compact agenda blocks (disabled)
   (gsetq org-agenda-compact-blocks nil))
 
 (use-package org-ql
   :after org)
+
+;; Custom Org agenda building commands. This is listed separately for a couple
+;; of reasons:
+;;
+;;   1. To break up a long ':config' section for org-mode
+;;   2. To force loading of functions in 'org-ql-search.el'
+;;
+;; Startup time is not adversely impacted, since loading of 'org' + 'org-ql' is
+;; deferred until eg. invoking `org-capture' or `org-agenda'. I'd love a better
+;; solution here, but a working setup is .9 of the law.
+(general-with-package 'org
+  ;; Enable agenda building commands
+  (require 'org-ql-search)
+
+  ;; Test building an agenda
+  (gsetq org-agenda-custom-commands
+         '(("w" "Work Agenda"
+            ((agenda)
+             ;; Followed by next tasks
+             (org-ql-block '(and (todo "NEXT")
+                                 (not (scheduled))
+                                 (tags "@work"))
+                           ((org-ql-block-header "Next Tasks:")))
+             (org-ql-block '(and (todo "WAITING")
+                                 (not (scheduled))
+                                 (tags "@work"))
+                           ((org-ql-block-header "Waiting on:")))
+             (org-ql-block '(and (todo)
+                                 (tags "REFILE"))
+                           ((org-ql-block-header "Refile:"))))))))
 
 (use-package org-bullets
   :ghook 'org-mode-hook)
