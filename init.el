@@ -1040,7 +1040,12 @@ and ':underline' the same value."
     (interactive)
     (newline-and-indent)
     (scala-indent:insert-asterisk-on-multiline-comment))
-  (define-key scala-mode-map (kbd "RET") #'ad|scala-mode-newline-comments))
+  (define-key scala-mode-map (kbd "RET") #'ad|scala-mode-newline-comments)
+
+  (general-m scala-mode-map
+    "b" #'lsp-metals-build-import
+    "c" #'lsp-metals-build-connect
+    "d" #'lsp-metals-doctor-run))
 
 (use-package sbt-mode
   :commands sbt-start sbt-command
