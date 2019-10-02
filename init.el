@@ -907,7 +907,10 @@ and ':underline' the same value."
 
 (use-package electric
   :ensure nil
-  :init (electric-pair-mode 1))
+  :init (electric-pair-mode 1)
+  :config
+  ;; Disable electric pairing in minibuffer
+  (gsetq electric-pair-inhibit-predicate #'(lambda (_) (minibufferp))))
 
 (use-package paren
   :ensure nil
