@@ -430,7 +430,7 @@ and ':underline' the same value."
 (use-package minions
   :after moody
   :init
-  (gsetq minions-mode-line-lighter "o.O"
+  (gsetq minions-mode-line-lighter "ʕ•ᴥ•ʔ"
          minions-mode-line-delimiters '("" . ""))
   (minions-mode 1))
 
