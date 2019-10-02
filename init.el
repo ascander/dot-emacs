@@ -548,7 +548,7 @@ and ':underline' the same value."
   "D" #'ad:kill-buffer-delete-window
   "." #'ad:delete-other-windows)
 
-;;; Org mode & friends
+;;; Org mode and friends
 
 (use-package org
   :ensure org-plus-contrib
