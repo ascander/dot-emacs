@@ -59,7 +59,6 @@
 
 (eval-when-compile
   (require 'use-package))
-(require 'bind-key)
 
 ;;; General and friends
 
