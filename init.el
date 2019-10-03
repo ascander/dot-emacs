@@ -824,6 +824,9 @@ and ':underline' the same value."
   ;; Goto org headings
   (general-m org-mode-map
     "j" #'counsel-org-goto)
+  ;; Load themes
+  (general-t
+    "t" #'counsel-load-theme)
   :config (counsel-mode 1))
 
 (use-package swiper
