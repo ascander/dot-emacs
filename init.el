@@ -575,8 +575,10 @@ and ':underline' the same value."
   (gsetq org-src-fontify-natively t
          org-log-done 'time
          org-use-fast-todo-selection t
-         org-startup-truncated t
-         org-tags-column 80
+         org-startup-truncated nil
+         org-tags-column -80
+         ;; TODO investigate why 'auto' is broken here
+         org-agenda-tags-column 80
          org-enable-priority-commands nil
          org-reverse-note-order t)
 
