@@ -649,8 +649,8 @@ and ':underline' the same value."
   ;; Display the right `header-line-format' as well
   (general-add-hook
    'org-capture-mode-hook
-   #'(lambda ()
-       (gsetq-local header-line-format "Capture buffer. Finish 'RET', refile 'r', abort 'q'.")))
+   #'(lambda () (gsetq-local header-line-format
+                        "Capture buffer. Finish 'RET', refile 'r', abort 'q'.")))
 
   ;; Refile targets include this file and any agenda file - up to 5 levels deep
   (gsetq org-refile-targets '((nil :maxlevel . 5)
