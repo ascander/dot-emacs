@@ -956,6 +956,9 @@ and ':underline' the same value."
   :defer t
   :ghook 'prog-mode-hook 'text-mode-hook)
 
+(use-package rainbow-mode
+  :ghook 'prog-mode-hook)
+
 (use-package company
   :init (global-company-mode)
   :config
