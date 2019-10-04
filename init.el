@@ -238,6 +238,12 @@
 (custom-set-faces
  '(line-number-current-line ((t :weight bold :foreground "#b58900"))))
 
+(general-def 'insert
+  "M-h" #'evil-backward-char
+  "M-j" #'evil-next-line
+  "M-k" #'evil-previous-line
+  "M-l" #'evil-forward-char)
+
 (use-package no-littering
   :config
   ;; Exclude no-littering files from 'recentf'
