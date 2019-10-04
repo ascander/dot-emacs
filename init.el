@@ -115,11 +115,17 @@
 
 (use-package evil
   :init
-  (gsetq evil-want-keybinding nil ; don't load evil bindings for other modes
-     evil-overriding-maps nil ; no maps should override evil maps
-     evil-search-module 'evil-search ; use evil-search instead of isearch
+  (gsetq evil-want-keybinding nil     ; don't load evil bindings for other modes
+     evil-overriding-maps nil         ; no maps should override evil maps
+     evil-search-module 'evil-search  ; use evil-search instead of isearch
+     ;; This setting is not respected for 'n/N' searches.
+     ;;
+     ;; NOTE: persistent highlighting after a search can be cleared with the
+     ;; ':nohlsearch' (evil-ex-nohighlight) command.
+     ;;
+     ;; See: https://github.com/emacs-evil/evil/pull/1128/commits/68d4eb382fe25db74dd1c5f4ddea00ff249ca254
      evil-ex-search-persistent-highlight nil ; no persistent highlighting after search
-     evil-want-Y-yank-to-eol t)		 ; Y like D
+     evil-want-Y-yank-to-eol t)              ; Y like D
   :config (evil-mode))
 
 (use-package evil-collection
