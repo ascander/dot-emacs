@@ -1130,6 +1130,19 @@ and ':underline' the same value."
    'self-insert-command
    minibuffer-local-completion-map))
 
+;;; Python
+
+(use-package lsp-python-ms
+  :defer t
+  :init
+  (general-add-hook 'python-mode-hook #'(lambda () (require 'lsp-python-ms) (lsp))))
+
+(use-package pyvenv
+  :general
+  (general-m python-mode-map
+    "v" #'pyvenv-workon
+    "V" #'pyvenv-deactivate))
+
 ;;; Coda
 
 (use-package profile-dotemacs
