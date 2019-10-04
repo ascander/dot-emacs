@@ -220,6 +220,9 @@
 (defun ad:absolute-line-numbers ()
   (setq-local display-line-numbers t))
 
+(defun ad:disable-line-numbers-local ()
+  (setq-local display-line-numbers nil))
+
 ;; Switch to absolute line numbers in insert state
 (general-add-hook 'evil-insert-state-entry-hook #'ad:absolute-line-numbers)
 (general-add-hook 'evil-insert-state-exit-hook #'ad:relative-line-numbers)
@@ -577,8 +580,6 @@ and ':underline' the same value."
          org-use-fast-todo-selection t
          org-startup-truncated nil
          org-tags-column -80
-         ;; TODO investigate why 'auto' is broken here
-         org-agenda-tags-column 80
          org-enable-priority-commands nil
          org-reverse-note-order t)
 
@@ -667,6 +668,11 @@ and ':underline' the same value."
   ;; afterwards; let's be polite.
   (gsetq org-agenda-window-setup 'only-window
          org-agenda-restore-windows-after-quit t)
+
+  ;; Setting `org-agenda-tags-column' to 'auto' doesn't take line numbers into
+  ;; account, so if you have line numbers enabled in an org agenda buffer, the
+  ;; tags wrap and make things look very ugly.
+  (general-add-hook 'org-agenda-mode-hook #'ad:disable-line-numbers-local)
 
   ;; Do not dim blocked tasks
   (gsetq org-agenda-dim-blocked-tasks nil)
