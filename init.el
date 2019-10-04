@@ -1009,10 +1009,7 @@ and ':underline' the same value."
     "E" #'flycheck-list-errors))
 
 (use-package lsp-mode
-  :commands lsp
-  :init
-  ;; Only enable LSP for these languages/modes
-  (general-add-hook 'scala-mode-hook #'lsp)
+  :defer t
   :config
   ;; Basic settings
   (gsetq lsp-prefer-flymake nil
@@ -1099,6 +1096,12 @@ and ':underline' the same value."
 
 (use-package scala-mode
   :defer t
+  :general
+  (general-m scala-mode-map
+    "b" #'lsp-metals-build-import
+    "c" #'lsp-metals-build-connect
+    "d" #'lsp-metals-doctor-run)
+  :gfhook #'lsp
   :config
   ;; Indentation preferences
   (gsetq scala-indent:default-run-on-strategy
@@ -1111,14 +1114,10 @@ and ':underline' the same value."
     (interactive)
     (newline-and-indent)
     (scala-indent:insert-asterisk-on-multiline-comment))
-  (define-key scala-mode-map (kbd "RET") #'ad|scala-mode-newline-comments)
-
-  (general-m scala-mode-map
-    "b" #'lsp-metals-build-import
-    "c" #'lsp-metals-build-connect
-    "d" #'lsp-metals-doctor-run))
+  (define-key scala-mode-map (kbd "RET") #'ad|scala-mode-newline-comments))
 
 (use-package sbt-mode
+  :after scala-mode
   :commands sbt-start sbt-command
   :config
   ;; Don't pop up SBT buffers automatically
