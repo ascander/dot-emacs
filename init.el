@@ -1043,9 +1043,7 @@ and ':underline' the same value."
   (company-lsp-async 1)
   (company-lsp-enable-snippet t))
 
-;;; Major modes
-
-;; Git
+;;; Git
 
 (use-package git-commit
   :defer t
@@ -1067,7 +1065,7 @@ and ':underline' the same value."
 (use-package gitattributes-mode
   :defer t)
 
-;; Lisp/Emacs Lisp
+;;; Lisp/Emacs Lisp
 
 (use-package elisp-mode
   :ensure nil
@@ -1083,7 +1081,7 @@ and ':underline' the same value."
   :config
   (gsetq emacs-lisp-docstring-fill-column 80))
 
-;; Markdown
+;;; Markdown
 
 (use-package vmd-mode)
 
@@ -1092,7 +1090,7 @@ and ':underline' the same value."
   (general-m markdown-mode-map
     "p" #'vmd-mode))
 
-;; Scala
+;;; Scala
 
 (use-package scala-mode
   :defer t
