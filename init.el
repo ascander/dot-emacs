@@ -858,6 +858,11 @@ and ':underline' the same value."
   :general ([remap isearch-forward] #'swiper)
   :init (gsetq swiper-goto-start-of-match t))
 
+(use-package avy
+  :general (general-spc "s" #'avy-goto-char-timer)
+  :init (gsetq avy-all-windows nil
+               avy-timeout-seconds 0.25))
+
 (use-package prescient
   :config (prescient-persist-mode))
 
