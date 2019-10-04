@@ -369,6 +369,9 @@
 ;; Enable `prettify-symbols-mode'
 (global-prettify-symbols-mode +1)
 
+;; Unprettify at right edge
+(gsetq prettify-symbols-unprettify-at-point 'right-edge)
+
 ;;; Colors & Themes
 
 ;; Distinguish evil state by cursor shape/color
@@ -598,6 +601,14 @@ and ':underline' the same value."
 
   ;; Enable habits
   (require 'org-habit)
+
+  ;; Allow `electric-pair-mode' to recognize paired delimiters in org buffers
+  ;; See: https://emacs.stackexchange.com/questions/17284/adding-tilde-to-electric-pairs-in-org-mode
+  (general-add-hook 'org-mode-hook
+                    #'(lambda ()
+                        (modify-syntax-entry ?/ "$/" org-mode-syntax-table)
+                        (modify-syntax-entry ?= "$=" org-mode-syntax-table)
+                        (modify-syntax-entry ?~ "$~" org-mode-syntax-table)))
 
   ;; TODO task states
   (gsetq org-todo-keywords
