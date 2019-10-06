@@ -1032,7 +1032,8 @@ and ':underline' the same value."
     "D" #'lsp-find-declaration          ; same
     "x" #'lsp-find-references
     "r" #'lsp-rename                    ; this'n too
-    "=" #'lsp-format-buffer)
+    "=" #'lsp-format-buffer
+    "R" #'lsp-restart-workspace)
 
   (require 'lsp-clients))
 
@@ -1139,16 +1140,19 @@ and ':underline' the same value."
 
 ;;; Python
 
-(use-package lsp-python-ms
-  :defer t
-  :init
-  (general-add-hook 'python-mode-hook #'(lambda () (require 'lsp-python-ms) (lsp))))
-
 (use-package pyvenv
+  :ghook 'python-mode-hook
   :general
   (general-m python-mode-map
     "v" #'pyvenv-workon
     "V" #'pyvenv-deactivate))
+
+(use-package lsp-python-ms
+  :defer t
+  :init
+  (general-add-hook 'python-mode-hook #'(lambda ()
+                                          (require 'lsp-python-ms)
+                                          (lsp))))
 
 ;;; Coda
 
