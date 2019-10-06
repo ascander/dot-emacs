@@ -966,6 +966,7 @@ and ':underline' the same value."
   :ghook 'prog-mode-hook)
 
 (use-package company
+  :defer 5
   :init (global-company-mode)
   :config
   ;; Basic settings
@@ -1089,9 +1090,11 @@ and ':underline' the same value."
 
 ;;; Markdown
 
-(use-package vmd-mode)
+(use-package vmd-mode
+  :defer t)
 
 (use-package markdown-mode
+  :defer t
   :config
   (general-m markdown-mode-map
     "p" #'vmd-mode))
