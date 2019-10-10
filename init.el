@@ -565,6 +565,19 @@ and ':underline' the same value."
   "D" #'ad:kill-buffer-delete-window
   "." #'ad:delete-other-windows)
 
+(use-package shackle
+  :init
+  (gsetq shackle-rules
+         '((compilation-mode :noselect t)
+           ("\\*Org Src.*" :regexp t :align below :select t)
+           ("*Org Select*" :align below :select t)
+           ;; TODO figure out how to force this buffer to the bottom
+           ;; ("CAPURE-refile.org" :align below :select t)
+           (" *Org todo*" :align below :select t)
+           ("*Flycheck errors*" :align below :size 0.33 :noselect t ))
+         shackle-default-rule '(:select t))
+  :config (shackle-mode t))
+
 ;;; Org mode and friends
 
 (use-package org
@@ -590,13 +603,25 @@ and ':underline' the same value."
                                     "emacs.org")))
 
   ;; Default settings
-  (gsetq org-src-fontify-natively t
+  (gsetq org-src-window-setup 'other-window
+         org-src-fontify-natively t
          org-log-done 'time
          org-use-fast-todo-selection t
          org-startup-truncated nil
          org-tags-column -80
          org-enable-priority-commands nil
          org-reverse-note-order t)
+
+  ;; Re-define org-switch-to-buffer-other-window to NOT use org-no-popups.
+  ;; Primarily for compatibility with shackle.
+  ;; See: https://emacs.stackexchange.com/a/31634
+  (defun org-switch-to-buffer-other-window (args)
+    "Switch to buffer in a second window on the current frame.
+In particular, do not allow pop-up frames. Returns the newly created buffer.
+Redefined to allow pop-up windows."
+    ;;  (org-no-popups
+    ;;     (apply 'switch-to-buffer-other-window args)))
+    (switch-to-buffer-other-window args))
 
   ;; Navigate by headings, using Ivy
   (gsetq org-goto-interface 'outline-path-completion
