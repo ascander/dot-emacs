@@ -103,11 +103,6 @@
                                        ((nil . "\\`\\?\\?\\'") . (nil . "λ"))
                                        ((nil . "magit-") . (nil . "git-"))))
 
-  ;; No line numbers in `which-key' buffers, please.
-  (defun ad:disable-line-numbers-local ()
-    "Disables line numbers locally."
-    (gsetq display-line-numbers nil))
-
   (general-add-hook 'which-key-init-buffer-hook #'ad:disable-line-numbers-local)
   :config (which-key-mode 1))
 
