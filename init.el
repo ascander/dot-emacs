@@ -216,10 +216,12 @@
            display-line-numbers-current-absolute t) ; display absolute number of current line
 
 (defun ad:relative-line-numbers ()
-  (setq-local display-line-numbers 'visual))
+  (when (bound-and-true-p display-line-numbers)
+    (setq-local display-line-numbers 'visual)))
 
 (defun ad:absolute-line-numbers ()
-  (setq-local display-line-numbers t))
+  (when (bound-and-true-p display-line-numbers)
+    (setq-local display-line-numbers t)))
 
 (defun ad:disable-line-numbers-local ()
   (setq-local display-line-numbers nil))
@@ -227,6 +229,9 @@
 ;; Switch to absolute line numbers in insert state
 (general-add-hook 'evil-insert-state-entry-hook #'ad:absolute-line-numbers)
 (general-add-hook 'evil-insert-state-exit-hook #'ad:relative-line-numbers)
+
+;; Disable line numbers in comint-mode
+(general-add-hook 'comint-mode-hook #'ad:disable-line-numbers-local)
 
 ;; Bedazzle the current line number
 ;; TODO handle this for dark/light themes
@@ -1070,6 +1075,23 @@ Redefined to allow pop-up windows."
   :custom
   (company-lsp-async 1)
   (company-lsp-enable-snippet t))
+
+(use-package term
+  :ensure nil
+  :init
+  ;; Disable line numbers and current line highlighting in terminal buffers
+  (general-add-hook 'term-mode-hook
+                    #'(lambda ()
+                        (ad:disable-line-numbers-local)
+                        (gsetq-local global-hl-line-mode nil))))
+
+(use-package shell-pop
+  :general (general-m "t" #'shell-pop)
+  :init (gsetq shell-pop-window-size 40)
+  :config
+  ;; Set shell type to term
+  (gsetq shell-pop-shell-type
+         '("term" "*terminal*" #'(lambda () (term shell-pop-term-shell)))))
 
 ;;; Git
 
