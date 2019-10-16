@@ -439,7 +439,8 @@ and ':underline' the same value."
   (general-add-advice #'load-theme :after #'ad:set-mode-line-attributes)
   :config
   (gsetq x-underline-at-descent-line t
-         moody-slant-function #'moody-slant-apple-rgb)
+         moody-slant-function #'moody-slant-apple-rgb
+         moody-mode-line-height 28)
 
   (moody-replace-mode-line-buffer-identification)
   (moody-replace-vc-mode))
