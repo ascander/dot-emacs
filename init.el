@@ -569,12 +569,14 @@ and ':underline' the same value."
   :init
   (gsetq shackle-rules
          '((compilation-mode :noselect t)
+           ;; TODO term-mode doesn't go through `display-buffer' so it won't work with shackle
+           ;; (term-mode :align below :size 0.4 :select t)
            ("\\*Org Src.*" :regexp t :align below :select t)
            ("*Org Select*" :align below :select t)
            ;; TODO figure out how to force this buffer to the bottom
            ;; ("CAPURE-refile.org" :align below :select t)
            (" *Org todo*" :align below :select t)
-           ("*Flycheck errors*" :align below :size 0.33 :noselect t ))
+           ("*Flycheck errors*" :align below :size 0.33 :select t ))
          shackle-default-rule '(:select t))
   :config (shackle-mode t))
 
