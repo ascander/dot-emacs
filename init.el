@@ -535,19 +535,21 @@ T - tag prefix
     ("q" nil)
     ("." nil :color blue))
   :config
-  ;; Basic dired settings
-  (setq dired-auto-revert-buffer t
-        dired-listing-switches "-alh"
-        dired-recursive-copies 'always
-        dired-dwim-target t)
+  ;; Basic settings
+  (gsetq dired-auto-revert-buffer t
+         dired-listing-switches "-lha"
+         dired-recursive-copies 'always
+         dired-dwim-target t)
 
-  ;; Use more 'ls' switches if we have them available
-  (when (or (memq system-type '(gnu gnu/linux))
-            (string= (file-name-nondirectory insert-directory-program) "gls"))
-    (setq dired-listing-switches
-          (concat dired-listing-switches " --group-directories-first -v"))))
+  ;; Bedazzle 'ls' if we're using a suitable GNU version
+  (if ad:is-a-mac-p
+      (when (executable-find "gls")
+        (gsetq insert-directory-program "gls"
+               dired-listing-switches "-lha --group-directories-first"))
+    ;; Assume we're on a GNU-compatible system
+    (gsetq dired-listing-switches "-lha --group-directories-first")))
 
-(use-package dired-x                    ; Additional tools for 'dired'
+(use-package dired-x
   :ensure nil
   :after dired
   :init
@@ -592,10 +594,10 @@ T - tag prefix
     (setq auto-revert-use-notify nil))
   :config (global-auto-revert-mode 1))
 
-;; View read-only files
-(setq view-read-only t)
+;; Clean up whitespace on save
+(general-add-hook 'before-save-hook #'whitespace-cleanup)
 
-;;; Buffer, frame and window settings
+;;; Windows and buffers
 
 (use-package ibuffer                       ; A better buffer list
   :bind (([remap list-buffers] . ibuffer)  ; C-x C-b
@@ -804,15 +806,229 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
 
 ;;; Org
 
-(use-package init-org                   ; The almighty Org mode
-  :load-path "lisp"
-  :ensure nil)
+(defun ad:hsplit ()
+  "Split the window horizontally and switch to the new window."
+  (interactive)
+  (split-window-horizontally)
+  (other-window 1))
 
-(use-package ox-reveal                  ; Reveal.js back end for Org export
-  :defer t
-  :load-path "site-lisp/org-reveal")
+(general-t
+  "h" #'windmove-left
+  "j" #'windmove-down
+  "k" #'windmove-up
+  "l" #'windmove-right
+  "-" #'ad:vsplit
+  "'" #'ad:hsplit
+  "q" #'ad:kill-this-buffer
+  "d" #'delete-window
+  "D" #'ad:kill-buffer-delete-window
+  "." #'ad:delete-other-windows)
 
-(use-package evil-org                   ; Evil bindings for Org mode
+(use-package shackle
+  :init
+  (gsetq shackle-rules
+         '((compilation-mode :noselect t)
+           ;; TODO term-mode doesn't go through `display-buffer' so it won't work with shackle
+           ;; (term-mode :align below :size 0.4 :select t)
+           ("\\*Org Src.*" :regexp t :align below :select t)
+           ("*Org Select*" :align below :select t)
+           ;; TODO figure out how to force this buffer to the bottom
+           ;; ("CAPURE-refile.org" :align below :select t)
+           (" *Org todo*" :align below :select t)
+           ("*Flycheck errors*" :align below :size 0.33 :select t ))
+         shackle-default-rule '(:select t))
+  :config (shackle-mode t))
+
+;;; Org mode and friends
+
+(use-package org
+  :ensure org-plus-contrib
+  :pin org
+  :general
+  (general-spc
+    "c" #'org-capture
+    "a" #'org-agenda)
+  :config
+  ;; Set locations of org directory, agenda files, default notes file
+  (defun ad:expand-org-file (file)
+    (concat (file-name-as-directory org-directory) file))
+
+  (gsetq org-directory (expand-file-name "~/org")
+         org-default-notes-file (ad:expand-org-file "refile.org")
+         org-archive-location (concat (ad:expand-org-file "archive.org") "::* From %s")
+         org-agenda-files (mapcar #'ad:expand-org-file
+                                  '("work.org"
+                                    "home.org"
+                                    "refile.org"
+                                    "reminders.org"
+                                    "emacs.org")))
+
+  ;; Default settings
+  (gsetq org-src-window-setup 'other-window
+         org-src-fontify-natively t
+         org-log-done 'time
+         org-use-fast-todo-selection t
+         org-startup-truncated nil
+         org-tags-column -80
+         org-enable-priority-commands nil
+         org-reverse-note-order t)
+
+  ;; Re-define org-switch-to-buffer-other-window to NOT use org-no-popups.
+  ;; Primarily for compatibility with shackle.
+  ;; See: https://emacs.stackexchange.com/a/31634
+  (defun org-switch-to-buffer-other-window (args)
+    "Switch to buffer in a second window on the current frame.
+In particular, do not allow pop-up frames. Returns the newly created buffer.
+Redefined to allow pop-up windows."
+    ;;  (org-no-popups
+    ;;     (apply 'switch-to-buffer-other-window args)))
+    (switch-to-buffer-other-window args))
+
+  ;; Navigate by headings, using Ivy
+  (gsetq org-goto-interface 'outline-path-completion
+         org-outline-path-complete-in-steps nil)
+
+  ;; Enable easy templates for src blocks
+  (require 'org-tempo)
+
+  ;; Enable habits
+  (require 'org-habit)
+
+  ;; Allow `electric-pair-mode' to recognize paired delimiters in org buffers
+  ;; See: https://emacs.stackexchange.com/questions/17284/adding-tilde-to-electric-pairs-in-org-mode
+  (general-add-hook 'org-mode-hook
+                    #'(lambda ()
+                        (modify-syntax-entry ?/ "$/" org-mode-syntax-table)
+                        (modify-syntax-entry ?= "$=" org-mode-syntax-table)
+                        (modify-syntax-entry ?~ "$~" org-mode-syntax-table)))
+
+  ;; TODO task states
+  (gsetq org-todo-keywords
+        '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+          (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "MEETING")))
+
+  ;; Task state settings
+  (gsetq org-enforce-todo-dependencies t
+         org-enforce-todo-checkbox-dependencies t
+         org-treat-S-cursor-todo-selection-as-state-change nil)
+
+  ;; Tags based on state triggers; used for filtering tasks in agenda views
+  ;;
+  ;; Triggers break down into the following rules:
+  ;;
+  ;;   - moving a task to CANCELLED adds the CANCELLED tag
+  ;;   - moving a task to WAITING adds the WAITING tag
+  ;;   - moving a task to HOLD adds the WAITING and HOLD tags
+  ;;   - moving a task to a done state removes the WAITING and HOLD tags
+  ;;   - moving a task to TODO removes WAITING, CANCELLED, and HOLD tags
+  ;;   - moving a task to NEXT removes WAITING, CANCELLED, and HOLD tags
+  ;;   - moving a task to DONE removes WAITING, CANCELLED, and HOLD tags
+  (gsetq org-todo-state-tags-triggers
+        '(("CANCELLED" ("CANCELLED" . t))
+          ("WAITING" ("WAITING" . t))
+          ("HOLD" ("WAITING" . t) ("HOLD" . t))
+          (done ("WAITING") ("HOLD"))
+          ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
+          ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
+          ("DONE" ("WAITING") ("CANCELLED") ("HOLD"))))
+
+  ;; Org capture templates
+  (gsetq org-capture-templates
+        '(("t" "Todo" entry (file "~/org/refile.org")
+           "* TODO %i%?")
+          ("n" "Note" entry (file "~/org/refile.org")
+           "* %i%? :NOTE:\n %U")
+          ("m" "Meeting" entry (file "~/org/refile.org")
+           "* MEETING with %? :MEETING:\n %U")
+          ("d" "Deadline" entry (file "~/org/reminders.org")
+           "* TODO %i%?\n DEADLINE:%T")))
+
+  ;; Use sensible keybindings for capture buffers
+  (general-def 'normal org-capture-mode-map
+    "RET" #'org-capture-finalize
+    "q" #'org-capture-kill
+    "r" #'org-capture-refile)
+
+  ;; Display the right `header-line-format' as well
+  (general-add-hook
+   'org-capture-mode-hook
+   #'(lambda () (gsetq-local header-line-format
+                        "Capture buffer. Finish 'RET', refile 'r', abort 'q'.")))
+
+  ;; Refile targets include this file and any agenda file - up to 5 levels deep
+  (gsetq org-refile-targets '((nil :maxlevel . 5)
+                             (org-agenda-files :maxlevel . 5)))
+
+  ;; Switch to insert state when capturing
+  (general-add-hook 'org-capture-mode-hook #'evil-insert-state)
+  (general-add-hook 'org-log-buffer-setup-hook #'evil-insert-state)
+
+  ;; Include the filename in refile target paths; this allows refiling to the
+  ;; top level of a target
+  (gsetq org-refile-use-outline-path 'file)
+
+  ;; Allow refiling to create parent tasks with confirmation
+  (gsetq org-refile-allow-creating-parent-nodes 'confirm)
+
+  ;; Do not use hierarchical steps in completion, since we use Ivy
+  (gsetq org-outline-path-complete-in-steps nil)
+
+  ;; Display agenda as the only window, but restore the previous configuration
+  ;; afterwards; let's be polite.
+  (gsetq org-agenda-window-setup 'only-window
+         org-agenda-restore-windows-after-quit t)
+
+  ;; Setting `org-agenda-tags-column' to 'auto' doesn't take line numbers into
+  ;; account, so if you have line numbers enabled in an org agenda buffer, the
+  ;; tags wrap and make things look very ugly.
+  (general-add-hook 'org-agenda-mode-hook #'ad:disable-line-numbers-local)
+
+  ;; Do not dim blocked tasks
+  (gsetq org-agenda-dim-blocked-tasks nil)
+
+  ;; Just use a newline to separate blocks
+  (gsetq org-agenda-block-separator "")
+
+  ;; Compact agenda blocks (disabled)
+  (gsetq org-agenda-compact-blocks nil))
+
+(use-package org-ql
+  :after org)
+
+;; Custom Org agenda building commands. This is listed separately for a couple
+;; of reasons:
+;;
+;;   1. To break up a long ':config' section for org-mode
+;;   2. To force loading of functions in 'org-ql-search.el'
+;;
+;; Startup time is not adversely impacted, since loading of 'org' + 'org-ql' is
+;; deferred until eg. invoking `org-capture' or `org-agenda'. I'd love a better
+;; solution here, but a working setup is .9 of the law.
+(general-with-package 'org
+  ;; Enable agenda building commands
+  (require 'org-ql-search)
+
+  ;; Test building an agenda
+  (gsetq org-agenda-custom-commands
+         '(("w" "Work Agenda"
+            ((agenda)
+             ;; Followed by next tasks
+             (org-ql-block '(and (todo "NEXT")
+                                 (not (scheduled))
+                                 (tags "@work"))
+                           ((org-ql-block-header "Next Tasks:")))
+             (org-ql-block '(and (todo "WAITING")
+                                 (not (scheduled))
+                                 (tags "@work"))
+                           ((org-ql-block-header "Waiting on:")))
+             (org-ql-block '(and (todo)
+                                 (tags "REFILE"))
+                           ((org-ql-block-header "Refile:"))))))))
+
+(use-package org-bullets
+  :ghook 'org-mode-hook)
+
+(use-package evil-org
   :after evil org
   :config
   (add-hook 'org-mode-hook #'evil-org-mode)
@@ -949,11 +1165,25 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   :disabled t
   :after (ivy counsel)
   :init
-  ;; Only use a posframe for the following commands
-  (setq ivy-posframe-display-functions-alist
-        '((complete-symbol . ivy-posframe-display-at-point)
-          (counsel-M-x     . ivy-posframe-display-at-window-bottom-left)
-          (t               . nil)))
+  ;; Align virtual buffers, and abbreviate paths
+  (gsetq ivy-virtual-abbreviate 'full
+         ivy-rich-path-style 'abbrev
+         ivy-rich-switch-buffer-align-virtual-buffer t)
+  :config (ivy-rich-mode 1))
+
+(use-package ivy-posframe
+  :demand t
+  :config
+  (gsetq ivy-posframe-width 120)
+
+  (ivy-posframe-mode t))
+
+(use-package yasnippet
+  :defer 3
+  :general
+  (general-def help-map
+    "y" #'yas-describe-tables)
+  :ghook ('prog-mode-hook #'yas-minor-mode)
   :config
   (ivy-posframe-mode 1))
 
@@ -1213,12 +1443,17 @@ _t_: toggle    _._: toggle hydra _H_: help       C-o other win no-select
   :after company
   :config (company-statistics-mode 1))
 
-(use-package company-quickhelp          ; Show popup documentation for company candidates
-  ;; Disabled because the tooltip can't be styled on a Mac.
-  ;; See: https://github.com/expez/company-quickhelp/issues/36
-  :disabled t
-  :after company
-  :config (company-quickhelp-mode 1))
+(use-package company-posframe
+  :config (company-posframe-mode 1))
+
+(use-package flycheck
+  :ghook ('after-init-hook #'global-flycheck-mode)
+  :config
+  ;; Basic settings
+  (gsetq flycheck-display-errors-delay 0.4)
+  ;; Get me outta here
+  (general-def 'normal flycheck-error-list-mode
+    "q" #'quit-window))
 
 (use-package flycheck                   ; On the fly syntax checking for Emacs
   :hook (prog-mode . flycheck-mode))
