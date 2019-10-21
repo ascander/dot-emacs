@@ -586,7 +586,7 @@ and ':underline' the same value."
            ;; TODO term-mode doesn't go through `display-buffer' so it won't work with shackle
            ;; (term-mode :align below :size 0.4 :select t)
            ("\\*Org Src.*" :regexp t :align below :select t)
-           ("*Org Select*" :align below :select t)
+           ("*Org Select*" :align below :size 0.20 :select t)
            ;; TODO figure out how to force this buffer to the bottom
            ;; ("CAPURE-refile.org" :align below :select t)
            (" *Org todo*" :align below :select t)
@@ -690,13 +690,13 @@ Redefined to allow pop-up windows."
   ;; Org capture templates
   (gsetq org-capture-templates
         '(("t" "Todo" entry (file "~/org/refile.org")
-           "* TODO %i%?")
+           "** TODO %i%?")
           ("n" "Note" entry (file "~/org/refile.org")
-           "* %i%? :NOTE:\n %U")
+           "** %i%? :NOTE:\n %U")
           ("m" "Meeting" entry (file "~/org/refile.org")
-           "* MEETING with %? :MEETING:\n %U")
+           "** MEETING with %? :MEETING:\n %U")
           ("d" "Deadline" entry (file "~/org/reminders.org")
-           "* TODO %i%?\n DEADLINE:%T")))
+           "** TODO %i%?\n DEADLINE:%T")))
 
   ;; Use sensible keybindings for capture buffers
   (general-def 'normal org-capture-mode-map
