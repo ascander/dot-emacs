@@ -511,6 +511,9 @@ and ':underline' the same value."
     (gsetq auto-revert-use-notify nil))
   :config (global-auto-revert-mode 1))
 
+;; Clean up whitespace on save
+(general-add-hook 'before-save-hook #'whitespace-cleanup)
+
 ;;; Windows and buffers
 
 (use-package ace-window
