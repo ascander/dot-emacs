@@ -473,6 +473,16 @@ and ':underline' the same value."
     ;; Assume we're on a GNU-compatible system
     (gsetq dired-listing-switches "-lha --group-directories-first")))
 
+(general-with-package 'dired
+  (put 'dired-find-alternate-file 'disabled nil)
+  (general-def 'normal dired-mode-map
+    ;; Navigation
+    "h" #'dired-up-directory
+    "j" #'dired-next-line
+    "k" #'dired-previous-line
+    "i" #'dired-find-alternate-file
+    "f" #'counsel-find-file))
+
 (use-package dired-x
   :ensure nil
   :after dired
