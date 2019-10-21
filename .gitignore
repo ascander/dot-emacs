@@ -22,5 +22,5 @@
 # Flycheck related files
 /flycheck_init.el
 
-
-
+# Default location for MS Python Language Server
+mspyls/

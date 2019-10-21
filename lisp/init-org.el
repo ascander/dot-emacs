@@ -27,13 +27,10 @@
 (use-package org                        ; The almighty Org mode
   :ensure org-plus-contrib
   :pin org
-  :mode (("\\.org$" . org-mode))
-  :general (general-spc
-             "o"  #'(:ignore t :which-key "Org")
-             "oa" #'org-agenda
-             "oc" #'org-capture
-             "oj" #'counsel-org-goto
-             "ol" #'org-store-link)
+  :general
+  (general-spc
+    "c" #'org-capture
+    "a" #'org-agenda)
   :config
   ;; Defaults
   (setq
@@ -68,6 +65,10 @@ created buffer. Redefined to allow pop-up windows."
 
   ;; Enable org habits for habit tracking
   (require 'org-habit)
+
+  ;; Don't display line numbers in capture buffers
+  (general-add-hook 'org-capture-mode-hook
+                    #'(lambda () (gsetq display-line-numbers nil)))
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Tasks & States
@@ -112,11 +113,11 @@ created buffer. Redefined to allow pop-up windows."
   ;; Capture templates
   (setq org-capture-templates
         '(("t" "Todo" entry (file "~/org/refile.org")
-           "** TODO %i%?")
+           "* TODO %i%?")
           ("n" "Note" entry (file "~/org/refile.org")
-           "** %i%? :NOTE:\n %U")
+           "* %i%? :NOTE:\n %U")
           ("m" "Meeting" entry (file "~/org/refile.org")
-           "** MEETING with %? :MEETING:\n %U")
+           "* MEETING with %? :MEETING:\n %U")
           ("d" "Deadline" entry (file "~/org/reminders.org")
            "* TODO %i%?\n DEADLINE:%T")))
 
