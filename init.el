@@ -587,10 +587,9 @@ and ':underline' the same value."
            ;; (term-mode :align below :size 0.4 :select t)
            ("\\*Org Src.*" :regexp t :align below :select t)
            ("*Org Select*" :align below :size 0.20 :select t)
-           ;; TODO figure out how to force this buffer to the bottom
-           ;; ("CAPURE-refile.org" :align below :select t)
+           ("CAPTURE\\-.*\\.org" :regexp t :align below :size 0.33 :select t)
            (" *Org todo*" :align below :select t)
-           ("*Flycheck errors*" :align below :size 0.33 :select t ))
+           ("*Flycheck errors*" :align below :size 0.33 :select t))
          shackle-default-rule '(:select t))
   :config (shackle-mode t))
 
