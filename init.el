@@ -941,28 +941,6 @@ Redefined to allow pop-up windows."
          ivy-rich-switch-buffer-align-virtual-buffer t)
   :config (ivy-rich-mode 1))
 
-(use-package ivy-posframe
-  :demand t
-  :init
-  ;; Set posframe width in columns
-  (gsetq ivy-posframe-width 120)
-
-  ;; Add fringe because borders don't work on OSX
-  ;; See:https://github.com/tumashu/posframe/issues/30#issuecomment-495928777
-  (gsetq ivy-posframe-parameters
-         '((left-fringe . 8)
-           (right-fringe . 8)))
-
-  ;; Display settings
-  (gsetq ivy-posframe-display-functions-alist
-         '((swiper                            . nil)                           ; nothing for swiper, it gets in the way
-           (complete-symbol                   . ivy-posframe-display-at-point) ; completion at point
-           (counsel-M-x                       . ivy-posframe-display-at-frame-center) ; counsel in the middle
-           (counsel-projectile-switch-project . ivy-posframe-display-at-frame-center) ; switch project too
-           (t                                 . ivy-posframe-display)))
-
-  :config (ivy-posframe-mode))
-
 (use-package yasnippet
   :defer 3
   :general
@@ -1076,9 +1054,6 @@ Redefined to allow pop-up windows."
   :demand t
   :config
   (company-prescient-mode))
-
-(use-package company-posframe
-  :config (company-posframe-mode 1))
 
 (use-package flycheck
   :ghook ('after-init-hook #'global-flycheck-mode)
