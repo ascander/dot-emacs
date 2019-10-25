@@ -941,10 +941,11 @@ Redefined to allow pop-up windows."
 
   ;; Display settings
   (gsetq ivy-posframe-display-functions-alist
-         '((swiper          . nil)                           ; nothing for swiper, it gets in the way
-           (complete-symbol . ivy-posframe-display-at-point) ; completion at point
-           (counsel-M-x     . ivy-posframe-display-at-frame-center) ; counsel in the middle
-           (t               . ivy-posframe-display)))
+         '((swiper                            . nil)                           ; nothing for swiper, it gets in the way
+           (complete-symbol                   . ivy-posframe-display-at-point) ; completion at point
+           (counsel-M-x                       . ivy-posframe-display-at-frame-center) ; counsel in the middle
+           (counsel-projectile-switch-project . ivy-posframe-display-at-frame-center) ; switch project too
+           (t                                 . ivy-posframe-display)))
 
   :config (ivy-posframe-mode))
 
