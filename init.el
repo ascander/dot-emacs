@@ -590,7 +590,7 @@ and ':underline' the same value."
   (other-window 1))
 
 (general-t
-  "m" #'toggle-frame-fullscreen
+  "f" #'toggle-frame-fullscreen
   "h" #'windmove-left
   "j" #'windmove-down
   "k" #'windmove-up
