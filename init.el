@@ -400,6 +400,9 @@
 ;; Unprettify at right edge
 (gsetq prettify-symbols-unprettify-at-point 'right-edge)
 
+(use-package all-the-icons
+  :demand t)
+
 ;;; Colors & Themes
 
 ;; Distinguish evil state by cursor shape/color
@@ -512,6 +515,9 @@ and ':underline' the same value."
   :config
   ;; Don't tell me when you're omitting files
   (gsetq dired-omit-verbose nil))
+
+(use-package all-the-icons-dired
+  :ghook 'dired-mode-hook)
 
 (use-package ignoramus
   :config
@@ -949,6 +955,10 @@ Redefined to allow pop-up windows."
          ivy-rich-switch-buffer-align-virtual-buffer t)
   :config (ivy-rich-mode 1))
 
+(use-package all-the-icons-ivy
+  :demand t
+  :config (all-the-icons-ivy-setup))
+
 (use-package yasnippet
   :defer 3
   :general
@@ -1062,6 +1072,12 @@ Redefined to allow pop-up windows."
   :demand t
   :config
   (company-prescient-mode))
+
+(use-package company-box
+  :ghook 'company-mode-hook
+  :config
+  (gsetq company-box-show-single-candidate t
+         company-box-alist 'company-box-icons-all-the-icons))
 
 (use-package flycheck
   :ghook ('after-init-hook #'global-flycheck-mode)
