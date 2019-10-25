@@ -152,6 +152,14 @@
        evil-emacs-state-modes nil
        evil-motion-state-modes nil)
 
+;; Bind ESC to quit minibuffers as often as possible
+(general-def '(minibuffer-local-map
+               minibuffer-local-ns-map
+               minibuffer-local-completion-map
+               minibuffer-local-must-match-map
+               minibuffer-local-isearch-map)
+  "<escape>" #'keyboard-escape-quit)
+
 (use-package with-editor
   :defer t
   :gfhook #'evil-insert-state
