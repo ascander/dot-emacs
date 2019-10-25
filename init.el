@@ -89,7 +89,11 @@
   ;; Major mode functionality
   (general-create-definer general-m
     :states 'normal
-    :prefix "m"))
+    :prefix "m")
+
+  (general-create-definer general-r
+    :states 'normal
+    :prefix "r"))
 
 (use-package which-key
   :defer 5
@@ -127,10 +131,20 @@
   :after evil
   :config (evil-collection-init))
 
-(use-package evil-escape
-  :after evil
-  :init (gsetq-default evil-escape-key-sequence "jk")
-  :config (evil-escape-mode))
+;; Swap/change default Evil bindings
+(general-def 'normal
+  "a" #'evil-append-line                ; append line without holding shift
+  "A" #'evil-append                     ; append here for a bit more
+  ";" #'evil-ex)                        ; evil-ex without holding shift
+
+;; Replace lost bindings with 'r' prefix
+(general-r
+  ";" #'evil-repeat-find-char           ; from new 'evil-ex'
+  "/" #'evil-ex-search-forward)         ; from swiper
+
+;; Exit emacs state with ESC
+(general-def 'emacs
+  "<escape>" #'evil-normal-state)
 
 ;; Use normal state as the default state for all modes
 (gsetq evil-normal-state-modes
