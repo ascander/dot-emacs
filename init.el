@@ -904,6 +904,10 @@ Redefined to allow pop-up windows."
     "C-k" #'ivy-previous-history-element  ; repeat command with prev element
     "C-'" #'ivy-avy)                      ; pick a candidate using avy
 
+  ;; Swap "?" for 'ivy-resume'
+  (general-def 'normal "?" #'ivy-resume)
+  (general-r "?" #'evil-search-backward)
+
   (ivy-mode 1))
 
 (use-package counsel
