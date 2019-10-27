@@ -1077,9 +1077,22 @@ Redefined to allow pop-up windows."
   :config
   (company-prescient-mode))
 
+;; Observations: this package has some problems for me out of the box. These
+;; are:
+;;
+;;   - Fonts and icons appear too large for my default font settings
+;;   - Numbers (bound to M-n) no longer show up next to the candidates
+;;   - Window for displaying candidates often cuts off more results
+;;   - Icons for certain things are a bit strange (eg. Wrench for Scala class/object)
+;;
+;; I'm hoping that there are workarounds for these.
 (use-package company-box
+  :disabled t
   :ghook 'company-mode-hook
   :config
+  ;; Icons seems a little large still, given preferred font sizes, etc.
+  ;;
+  ;; See: https://github.com/sebastiencs/company-box/issues/38
   (gsetq company-box-show-single-candidate t
          company-box-alist 'company-box-icons-all-the-icons))
 
