@@ -960,7 +960,7 @@ Redefined to allow pop-up windows."
   :config (ivy-rich-mode 1))
 
 (use-package all-the-icons-ivy
-  :demand t
+  :after ivy counsel
   :config (all-the-icons-ivy-setup))
 
 (use-package yasnippet
