@@ -490,6 +490,9 @@ and ':underline' the same value."
          dired-recursive-copies 'always
          dired-dwim-target t)
 
+  (general-spc
+    "d" #'dired)
+
   ;; Bedazzle 'ls' if we're using a suitable GNU version
   (if ad:is-a-mac-p
       (when (executable-find "gls")
@@ -987,7 +990,7 @@ Redefined to allow pop-up windows."
     "P" #'projectile-find-file-in-known-projects
     "r" #'projectile-switch-project
     "v" #'projectile-invalidate-cache
-    "d" #'projectile-dired)
+    "D" #'projectile-dired)
   :config
   ;; Basic settings
   (gsetq projectile-enable-caching t
