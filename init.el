@@ -152,6 +152,14 @@
        evil-emacs-state-modes nil
        evil-motion-state-modes nil)
 
+;; Bind ESC to quit minibuffers as often as possible
+(general-def '(minibuffer-local-map
+               minibuffer-local-ns-map
+               minibuffer-local-completion-map
+               minibuffer-local-must-match-map
+               minibuffer-local-isearch-map)
+  "<escape>" #'keyboard-escape-quit)
+
 (use-package with-editor
   :defer t
   :gfhook #'evil-insert-state
@@ -392,6 +400,9 @@
 ;; Unprettify at right edge
 (gsetq prettify-symbols-unprettify-at-point 'right-edge)
 
+(use-package all-the-icons
+  :demand t)
+
 ;;; Colors & Themes
 
 ;; Distinguish evil state by cursor shape/color
@@ -505,6 +516,9 @@ and ':underline' the same value."
   ;; Don't tell me when you're omitting files
   (gsetq dired-omit-verbose nil))
 
+(use-package all-the-icons-dired
+  :ghook 'dired-mode-hook)
+
 (use-package ignoramus
   :config
   ;; Ignore a few additional things
@@ -582,7 +596,7 @@ and ':underline' the same value."
   (other-window 1))
 
 (general-t
-  "m" #'toggle-frame-fullscreen
+  "f" #'toggle-frame-fullscreen
   "h" #'windmove-left
   "j" #'windmove-down
   "k" #'windmove-up
@@ -890,6 +904,10 @@ Redefined to allow pop-up windows."
     "C-k" #'ivy-previous-history-element  ; repeat command with prev element
     "C-'" #'ivy-avy)                      ; pick a candidate using avy
 
+  ;; Swap "?" for 'ivy-resume'
+  (general-def 'normal "?" #'ivy-resume)
+  (general-r "?" #'evil-search-backward)
+
   (ivy-mode 1))
 
 (use-package counsel
@@ -940,6 +958,10 @@ Redefined to allow pop-up windows."
          ivy-rich-path-style 'abbrev
          ivy-rich-switch-buffer-align-virtual-buffer t)
   :config (ivy-rich-mode 1))
+
+(use-package all-the-icons-ivy
+  :after ivy counsel
+  :config (all-the-icons-ivy-setup))
 
 (use-package yasnippet
   :defer 3
@@ -1054,6 +1076,25 @@ Redefined to allow pop-up windows."
   :demand t
   :config
   (company-prescient-mode))
+
+;; Observations: this package has some problems for me out of the box. These
+;; are:
+;;
+;;   - Fonts and icons appear too large for my default font settings
+;;   - Numbers (bound to M-n) no longer show up next to the candidates
+;;   - Window for displaying candidates often cuts off more results
+;;   - Icons for certain things are a bit strange (eg. Wrench for Scala class/object)
+;;
+;; I'm hoping that there are workarounds for these.
+(use-package company-box
+  :disabled t
+  :ghook 'company-mode-hook
+  :config
+  ;; Icons seems a little large still, given preferred font sizes, etc.
+  ;;
+  ;; See: https://github.com/sebastiencs/company-box/issues/38
+  (gsetq company-box-show-single-candidate t
+         company-box-alist 'company-box-icons-all-the-icons))
 
 (use-package flycheck
   :ghook ('after-init-hook #'global-flycheck-mode)
