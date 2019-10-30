@@ -1036,7 +1036,27 @@ Redefined to allow pop-up windows."
   :init (show-paren-mode 1))
 
 (use-package evil-surround
-  :init (global-evil-surround-mode 1))
+  :init
+  ;; Swap the default bindings for padded/non-padded delimiters
+  (gsetq evil-surround-pairs-alist
+         '(
+           ;; Left pair triggers no-spaces version
+           (?\( . ("(" . ")"))
+           (?\[ . ("[" . "]"))
+           (?\{ . ("{" . "}"))
+           ;; Right pair triggers padded version
+           (?\) . ("( " . " )"))
+           (?\] . ("[ " . " ]"))
+           (?\} . ("{ " . " }"))
+           ;; Everything else
+           (?# . ("#{" . "}"))
+           (?b . ("(" . ")"))
+           (?B . ("{" . "}"))
+           (?> . ("<" . ">"))
+           (?t . evil-surround-read-tag)
+           (?< . evil-surround-read-tag)
+           (?f . evil-surround-function)))
+  :config (global-evil-surround-mode 1))
 
 (use-package rainbow-delimiters
   :defer t
