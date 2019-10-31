@@ -972,7 +972,7 @@ Redefined to allow pop-up windows."
   :config (ivy-rich-mode 1))
 
 (use-package all-the-icons-ivy
-  :after ivy counsel
+  :after ivy counsel counsel-projectile
   :config (all-the-icons-ivy-setup))
 
 (use-package yasnippet
