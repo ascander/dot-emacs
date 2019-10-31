@@ -446,6 +446,15 @@
           (load-theme 'solarized-dark t)))
     (load-theme 'solarized-dark t)))
 
+(use-package doom-themes
+  :defer t
+  :init
+  (gsetq doom-themes-enable-bold nil
+         doom-themes-enable-italic t)
+  :config
+  ;; Correct org-mode's native fontification
+  (doom-themes-org-config))
+
 ;;; Mode line
 
 (use-package moody
