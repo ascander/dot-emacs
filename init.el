@@ -729,14 +729,14 @@ Redefined to allow pop-up windows."
 
   ;; Org capture templates
   (gsetq org-capture-templates
-        '(("t" "Todo" entry (file "~/org/refile.org")
-           "** TODO %i%?")
-          ("n" "Note" entry (file "~/org/refile.org")
-           "** %i%? :NOTE:\n %U")
-          ("m" "Meeting" entry (file "~/org/refile.org")
-           "** MEETING with %? :MEETING:\n %U")
+        '(("t" "TODO" entry (file+headline org-default-notes-file "Tasks")
+           "* TODO %i%?" :empty-lines 1)
+          ("s" "Scheduled" entry (file "~/org/reminders.org")
+           "* TODO %i%?\n SCHEDULED:%^{Scheduled}T" :empty-lines 1)
           ("d" "Deadline" entry (file "~/org/reminders.org")
-           "** TODO %i%?\n DEADLINE:%T")))
+           "* TODO %i%?\n DEADLINE:%^{Deadline}t" :empty-lines 1)
+          ("m" "Meeting" entry (file+headline org-default-notes-file "Meetings")
+           "* MEETING %? :MEETING:\n %U" :empty-lines 1)))
 
   ;; Use sensible keybindings for capture buffers
   (general-def 'normal org-capture-mode-map
