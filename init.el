@@ -500,7 +500,7 @@ and ':underline' the same value."
          dired-dwim-target t)
 
   (general-spc
-    "d" #'dired)
+    "d" #'dired-jump)
 
   ;; Bedazzle 'ls' if we're using a suitable GNU version
   (if ad:is-a-mac-p
