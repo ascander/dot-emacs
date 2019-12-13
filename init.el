@@ -839,7 +839,7 @@ Redefined to allow pop-up windows."
 (use-package magit
   :defer t
   :general
-  ('normal 'override "S" #'magit-status)
+  ('normal "S" #'magit-status)
   (general-t
     "g"  #'(:ignore t :which-key "Git")
     "gs" #'magit-status
