@@ -282,7 +282,12 @@
   ;; Don't let customization use my init.el file
   (gsetq custom-file (no-littering-expand-etc-file-name "custom.el"))
   (general-add-hook 'after-init-hook
-                    (lambda () (load custom-file 'noerror 'nomessage))))
+                    (lambda () (load custom-file 'noerror 'nomessage)))
+
+  ;; Store auto-save files in `no-littering-var-directory'. This is especially
+  ;; useful for directories synced with Google Drive, etc.
+  (gsetq auto-save-file-name-transforms
+         `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 
 ;;; Fonts and font sizes
 
