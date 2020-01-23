@@ -315,6 +315,17 @@
 
   (default-text-scale-mode 1))
 
+;; Toggle minor modes
+(general-def
+  :prefix-command 'ad:toggle
+  :prefix-map 'ad:toggle-map
+  "d" #'toggle-debug-on-error
+  "q" #'toggle-debug-on-quit
+  "A" #'auto-fill-mode
+  "t" #'toggle-truncate-lines)
+
+(general-t "o" #'ad:toggle)
+
 ;; Set up ligatures by way of `prettify-symbols-alist'
 (defun ad:setup-ligatures ()
   "Append Iosevka ligatures to `prettify-symbols-alist'."
@@ -523,7 +534,9 @@ and ':underline' the same value."
     "j" #'dired-next-line
     "k" #'dired-previous-line
     "i" #'dired-find-alternate-file
-    "f" #'counsel-find-file))
+    "f" #'counsel-find-file
+    ;; Misc
+    "S" #'magit-status))
 
 (use-package dired-x
   :ensure nil
@@ -566,7 +579,8 @@ and ':underline' the same value."
   :config
   ;; Basic settings
   (gsetq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
-         aw-scope 'frame))
+         aw-scope 'frame
+         aw-dispatch-always t))
 
 ;; Bindings for window movement/splitting
 
@@ -635,7 +649,8 @@ and ':underline' the same value."
            ("*Org Select*" :align below :size 0.20 :select t)
            ("CAPTURE\\-.*\\.org" :regexp t :align below :size 0.33 :select t)
            (" *Org todo*" :align below :select t)
-           ("*Flycheck errors*" :align below :size 0.33 :select t))
+           ("*Flycheck errors*" :align below :size 0.33 :select nil)
+           (magit-status-mode :align below :size 0.33 :select t :inhibit-window-quit t))
          shackle-default-rule '(:select t))
   :config (shackle-mode t))
 
@@ -1166,7 +1181,7 @@ Redefined to allow pop-up windows."
     "x" #'lsp-find-references
     "r" #'lsp-rename                    ; this'n too
     "=" #'lsp-format-buffer
-    "R" #'lsp-restart-workspace)
+    "R" #'lsp-workspace-restart)
 
   (require 'lsp-clients))
 
