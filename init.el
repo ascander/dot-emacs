@@ -582,6 +582,23 @@ and ':underline' the same value."
          aw-scope 'frame
          aw-dispatch-always t))
 
+(use-package beacon
+  :init
+  ;; When to blink
+  (gsetq beacon-blink-when-point-moves-vertically nil
+         beacon-blink-when-point-moves-horizontally nil
+         beacon-blink-when-window-scrolls nil
+         beacon-blink-when-buffer-changes t
+         beacon-blink-when-window-changes t
+         beacon-blink-when-focused t)
+  ;; How to blink
+  (gsetq beacon-size 30
+         beacon-color "#d33682")        ; Emacs/Visual state color
+  :config
+  ;; Not for terminal modes
+  (add-to-list 'beacon-dont-blink-major-modes 'term-mode)
+  (beacon-mode 1))
+
 ;; Bindings for window movement/splitting
 
 (use-package windmove
