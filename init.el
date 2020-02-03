@@ -861,6 +861,12 @@ Redefined to allow pop-up windows."
                                  (tags "@work"))
                            ((org-ql-block-header "Waiting on:")))
              (org-ql-block '(and (todo)
+                                 (not (scheduled))
+                                 (not (todo "WAITING"))
+                                 (tags "@work")
+                                 (tags "charliework"))
+                           ((org-ql-block-header "Charlie work:")))
+             (org-ql-block '(and (todo)
                                  (tags "REFILE"))
                            ((org-ql-block-header "Refile:"))))))))
 
