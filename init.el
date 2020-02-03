@@ -660,14 +660,21 @@ and ':underline' the same value."
   :init
   (gsetq shackle-rules
          '((compilation-mode :noselect t)
-           ;; TODO term-mode doesn't go through `display-buffer' so it won't work with shackle
-           ;; (term-mode :align below :size 0.4 :select t)
+           ;; Org stuff pops horizontally to the bottom
            ("\\*Org Src.*" :regexp t :align below :select t)
            ("*Org Select*" :align below :size 0.20 :select t)
-           ("CAPTURE\\-.*\\.org" :regexp t :align below :size 0.33 :select t)
+           ("CAPTURE\\-.*\\.org" :regexp t :align below :size 0.20 :select t)
            (" *Org todo*" :align below :select t)
-           ("*Flycheck errors*" :align below :size 0.33 :select nil)
-           (magit-status-mode :align below :size 0.33 :select t :inhibit-window-quit t))
+           ;; Everything else pops horizontally to the top
+           ("*Flycheck errors*" :align above :size 0.33 :select nil)
+           ("*Help*" :align above :size 0.33 :select t)
+           ("*info*" :align above :size 0.33 :select t)
+           ("*lsp-help*" :align above :size 0.33 :select nil)
+           (compilation-mode :align above :size 0.33 :select nil)
+           ;; Give a bit more real estate to magit buffers
+           (magit-status-mode :align above :size 0.4 :select t :inhibit-window-quit t)
+           (magit-log-mode :align above :size 0.4 :select t :inhibit-window-quit t)
+           )
          shackle-default-rule '(:select t))
   :config (shackle-mode t))
 
