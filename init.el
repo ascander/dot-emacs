@@ -1298,7 +1298,7 @@ Redefined to allow pop-up windows."
 ;;; Scala
 
 (use-package scala-mode
-  :defer t
+  :mode ("\\.scala\\'" "\\.sbt\\'" "\\.worksheet\\.sc\\'")
   :general
   (general-m scala-mode-map
     "b" #'lsp-metals-build-import
