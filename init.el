@@ -1063,6 +1063,19 @@ Redefined to allow pop-up windows."
 
   (projectile-mode))
 
+;; Advise some functions to additionally trigger `projectile-invalidate-cache'.
+;; This is useful for magit branching commands as well as moving files in dired.
+(general-with-package 'projectile
+  (defun ad:projectile-invalidate-cache (&rest _args)
+    "Runs `projectile-invalidate-cache'."
+    (projectile-invalidate-cache nil))
+
+  (general-add-advice '(magit-checkout
+                        magit-branch-and-checkout
+                        dired-do-rename
+                        dired-do-rename-regexp)
+                      :after #'ad:projectile-invalidate-cache))
+
 (use-package counsel-projectile
   :general
   (general-spc
