@@ -60,6 +60,62 @@
 (eval-when-compile
   (require 'use-package))
 
+;;; Utility functions
+
+;; Window placement macros
+;; https://web.archive.org/web/20160409014815/https://www.lunaryorn.com/2015/04/29/the-power-of-display-buffer-alist.html
+(defmacro noct:match-major-mode (mode)
+  "Create a function that returns whether the current `major-mode' is MODE."
+  (let ((name (intern (format "noct:match-%s" mode))))
+    `(progn
+       (defun ,name (buffer-or-name _action)
+         (ignore-errors
+           (let ((buffer (get-buffer buffer-or-name)))
+             (eq ',mode (buffer-local-value 'major-mode buffer)))))
+       #',name)))
+
+(defun noct:display-and-select-buffer (func buffer alist)
+  "Call FUNC with BUFFER and ALIST.
+Select the window afterwards if possible. This is modified from
+`shackle--display-buffer-reuse'. Additionally set the window to be fixed size."
+  (let ((window (funcall func buffer alist)))
+    (when (and window (window-live-p window))
+      (select-window window t))
+    ;; TODO this breaks slots
+    ;; (with-current-buffer buffer
+    ;;   (setq window-size-fixed t))
+    window))
+
+(defun noct:display-buffer-reuse-window (buffer alist)
+  "Call `display-buffer-reuse-window' with BUFFER and ALIST.
+Select the window afterwards if possible."
+  (noct:display-and-select-buffer #'display-buffer-reuse-window buffer alist))
+
+(defun noct:display-buffer-in-side-window (buffer alist)
+  "Call `display-buffer-in-side-window' with BUFFER and ALIST.
+Select the window afterwards if possible."
+  (noct:display-and-select-buffer #'display-buffer-in-side-window buffer alist))
+
+(defmacro noct:handle-popup (condition &optional slot)
+  "Display popups matching CONDITION in a side window at the top.
+When SLOT is non-nil, display popup buffers in that SLOT in the side window."
+  `(cl-pushnew `(,(if (and (symbolp ',condition)
+                           (string-match "-mode$" (symbol-name ',condition)))
+                      (noct:match-major-mode ,condition)
+                    ,condition)
+                 (noct:display-buffer-reuse-window
+                  ;; won't keep popping up new windows at the top
+                  noct:display-buffer-in-side-window)
+                 (side . top)
+                 (slot . ,,slot)
+                 (window-height . 0.4))
+               display-buffer-alist
+               :test #'equal))
+
+(defun noct:side-window-p ()
+  "Return non-nil if the selected window is a side window."
+  (window-parameter (selected-window) 'window-side))
+
 ;;; General and friends
 
 (use-package general
@@ -223,6 +279,21 @@
 (column-number-mode)                               ; display column number in the mode line
 
 ;;; Basic UI
+
+;; Help mode
+(general-with-package 'help-mode
+  (general-def 'normal "H" #'help-command)
+
+  (general-def help-map
+    "c" #'describe-key-briefly
+    "C" #'describe-coding-system
+    "p" #'apropos-library)
+
+  (general-def 'normal help-mode-map
+    "q" #'quit-window
+    "ESC" #'quit-window)
+
+  (noct:handle-popup help-mode))
 
 ;; Disable tool bar, scroll bar, and menu bar.
 ;;
@@ -657,6 +728,7 @@ and ':underline' the same value."
   "." #'ad:delete-other-windows)
 
 (use-package shackle
+  :disabled t
   :init
   (gsetq shackle-rules
          '((compilation-mode :noselect t)
@@ -929,6 +1001,11 @@ Redefined to allow pop-up windows."
    'projectile-switch-project-hook
    #'ad:set-magit-repository-directories-from-projectile-known-projects))
 
+;; Magit window positioning
+(noct:handle-popup magit-status-mode)
+(noct:handle-popup magit-log-mode)
+(noct:handle-popup magit-revision-mode 1)
+
 (use-package evil-magit
   :after evil magit)
 
@@ -1198,7 +1275,9 @@ Redefined to allow pop-up windows."
   (gsetq flycheck-display-errors-delay 0.4)
   ;; Get me outta here
   (general-def 'normal flycheck-error-list-mode
-    "q" #'quit-window))
+    "q" #'quit-window)
+
+  (noct:handle-popup flycheck-error-list-mode))
 
 (general-with-package 'prog-mode
   (general-m prog-mode-map
