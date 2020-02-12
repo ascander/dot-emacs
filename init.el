@@ -662,21 +662,20 @@ and ':underline' the same value."
 (use-package shackle
   :init
   (gsetq shackle-rules
-         '((compilation-mode :noselect t)
-           ;; Org stuff pops horizontally to the bottom
-           ("\\*Org Src.*" :regexp t :align below :select t)
-           ("*Org Select*" :align below :size 0.20 :select t)
+         '(
+           ;; Org-mode buffers pop to the bottom
+           ("\\*Org Src.*"       :regexp t :align below :size 0.20 :select t)
            ("CAPTURE\\-.*\\.org" :regexp t :align below :size 0.20 :select t)
-           (" *Org todo*" :align below :select t)
-           ;; Everything else pops horizontally to the top
+           ("*Org Select*"                 :align below :size 0.20 :select t)
+           (" *Org todo*"                  :align below :size 0.20 :select t)
+           ;; Everything else pops to the top
+           (magit-status-mode   :align above :size 0.33 :select t    :inhibit-window-quit t)
+           (magit-log-mode      :align above :size 0.33 :select t    :inhibit-window-quit t)
            ("*Flycheck errors*" :align above :size 0.33 :select nil)
-           ("*Help*" :align above :size 0.33 :select t)
-           ("*info*" :align above :size 0.33 :select t)
-           ("*lsp-help*" :align above :size 0.33 :select nil)
-           (compilation-mode :align above :size 0.33 :select nil)
-           (magit-status-mode :align above :size 0.33 :select t :inhibit-window-quit t)
-           (magit-log-mode :align above :size 0.33 :select t :inhibit-window-quit t)
-           )
+           ("*Help*"            :align above :size 0.33 :select t)
+           ("*info*"            :align above :size 0.33 :select t)
+           ("*lsp-help*"        :align above :size 0.33 :select nil)
+           (compilation-mode    :align above :size 0.33 :select nil))
          shackle-default-rule '(:select t))
   :config (shackle-mode t))
 
@@ -904,10 +903,10 @@ Redefined to allow pop-up windows."
   :config
   ;; Basic settings
   (gsetq magit-save-repository-buffers 'dontask
-     magit-refs-show-commit-count 'all
-     magit-branch-prefer-remote-upstream '("master")
-     magit-branch-adjust-remote-upstream-alist '(("origin/master" "master"))
-     magit-revision-show-gravatars nil)
+         magit-refs-show-commit-count 'all
+         magit-branch-prefer-remote-upstream '("master")
+         magit-branch-adjust-remote-upstream-alist '(("origin/master" "master"))
+         magit-revision-show-gravatars nil)
 
   ;; Show fine-grained diffs in hunks
   (gsetq-default magit-diff-refine-hunk t)
@@ -1255,7 +1254,8 @@ Redefined to allow pop-up windows."
 
 (use-package shell-pop
   :general (general-m "t" #'shell-pop)
-  :init (gsetq shell-pop-window-size 40)
+  :init (gsetq shell-pop-window-size 33
+               shell-pop-window-position 'top)
   :config
   ;; Set shell type to term
   (gsetq shell-pop-shell-type
