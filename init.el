@@ -238,14 +238,17 @@
            display-line-numbers-current-absolute t) ; display absolute number of current line
 
 (defun ad:relative-line-numbers ()
+  "Toggle relative line numbers."
   (when (bound-and-true-p display-line-numbers)
     (setq-local display-line-numbers 'visual)))
 
 (defun ad:absolute-line-numbers ()
+  "Toggle absolute line numbers."
   (when (bound-and-true-p display-line-numbers)
     (setq-local display-line-numbers t)))
 
 (defun ad:disable-line-numbers-local ()
+  "Locally disable line numbers."
   (setq-local display-line-numbers nil))
 
 ;; Switch to absolute line numbers in insert state
@@ -398,7 +401,7 @@
                   ("<!---" . ?)))))
 
 (defun ad:refresh-prettify-symbols-mode ()
-  "Toggle `prettify-symbols-mode' explicitly."
+  "Toggle prettify symbols mode explicitly."
   (prettify-symbols-mode -1)
   (prettify-symbols-mode +1))
 
