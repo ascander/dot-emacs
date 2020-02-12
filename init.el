@@ -671,9 +671,8 @@ and ':underline' the same value."
            ("*info*" :align above :size 0.33 :select t)
            ("*lsp-help*" :align above :size 0.33 :select nil)
            (compilation-mode :align above :size 0.33 :select nil)
-           ;; Give a bit more real estate to magit buffers
-           (magit-status-mode :align above :size 0.4 :select t :inhibit-window-quit t)
-           (magit-log-mode :align above :size 0.4 :select t :inhibit-window-quit t)
+           (magit-status-mode :align above :size 0.33 :select t :inhibit-window-quit t)
+           (magit-log-mode :align above :size 0.33 :select t :inhibit-window-quit t)
            )
          shackle-default-rule '(:select t))
   :config (shackle-mode t))
