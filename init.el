@@ -670,6 +670,31 @@ and ':underline' the same value."
   (add-to-list 'beacon-dont-blink-major-modes 'term-mode)
   (beacon-mode 1))
 
+(defmacro noct:after-gui (&rest body)
+  "Run BODY once after the first GUI frame is created."
+  (declare (indent 0) (debug t))
+  `(if (display-graphic-p)
+       (progn ,@body)
+     (general-add-hook 'server-after-make-frame-hook
+                       (lambda () ,@body)
+                       nil
+                       nil
+                       t)))
+
+ (defun noct:default-monitor-geometry ()
+  "Return geometry for the first monitor in `display-monitor-attributes-list'."
+  (let* ((first-monitor (car (display-monitor-attributes-list))))
+    (alist-get 'geometry first-monitor)))
+
+(defun noct:default-monitor-width ()
+  "Return the width of the first monitor in `display-monitor-attributes-list'."
+  (nth 2 (noct:default-monitor-geometry)))
+
+(defun noct:default-monitor-height ()
+  "Return the height of the first monitor in `display-monitor-attributes-list'."
+  (nth 3 (noct:default-monitor-geometry)))
+
+
 ;; Bindings for window movement/splitting
 
 (use-package windmove
@@ -1097,6 +1122,32 @@ Redefined to allow pop-up windows."
          ivy-rich-path-style 'abbrev
          ivy-rich-switch-buffer-align-virtual-buffer t)
   :config (ivy-rich-mode 1))
+
+(use-package ivy-posframe
+  :config
+  ;; this is in columns (i.e. character width) not pixels
+  (gsetq ivy-posframe-width 120)
+
+  (noct:after-gui
+    ;; 3 pixels on FHD
+    (gsetq ivy-posframe-border-width
+           (round (* 0.0015625 (noct:default-monitor-width)))))
+
+  (defun noct:posframe-poshandler-frame-top-center (info)
+    (cons (/ (- (plist-get info :parent-frame-width)
+                (plist-get info :posframe-width))
+             2)
+          (round (* 0.02 (noct:default-monitor-height)))))
+
+  ;; TODO posframe currently requires this naming
+  (defun ivy-posframe-display-at-frame-top-center (str)
+    (ivy-posframe--display str #'noct:posframe-poshandler-frame-top-center))
+
+  (gsetq ivy-posframe-display-functions-alist
+         '((t . ivy-posframe-display-at-frame-top-center)))
+
+  (noct:after-gui
+    (ivy-posframe-mode)))
 
 (use-package all-the-icons-ivy
   :after ivy counsel counsel-projectile
