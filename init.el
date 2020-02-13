@@ -1197,6 +1197,13 @@ Redefined to allow pop-up windows."
   :config
   ;; Basic settings
   (gsetq flycheck-display-errors-delay 0.4)
+
+  ;; Remove background colors for fringe indicators
+  (custom-set-faces
+   '(flycheck-fringe-error ((t :background nil)))
+   '(flycheck-fringe-warning ((t :background nil)))
+   '(flycheck-fringe-info ((t :background nil))))
+
   ;; Get me outta here
   (general-def 'normal flycheck-error-list-mode
     "q" #'quit-window))
