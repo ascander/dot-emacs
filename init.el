@@ -1173,6 +1173,23 @@ Redefined to allow pop-up windows."
   :config
   (company-prescient-mode))
 
+(use-package company-emoji
+  :after company
+  :if (version< "27.0" emacs-version)
+  :config
+  ;; Adjust the font settings for the frame
+  (defun ad:set-emoji-font (frame)
+    "Adjust the font settings of FRAME so Emacs can display emoji properly."
+    (if (eq system-type 'darwin)
+        ;; For MacOS
+        (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend)
+      ;; For Linux/GNU
+      (set-fontset-font t 'symbol (font-spec :family "Symbola") frame 'prepend)))
+
+  (general-add-hook 'after-make-frame-functions #'ad:set-emoji-font)
+  ;; Add emjoi completion backend
+  (add-to-list 'company-backends 'company-emoji))
+
 ;; Observations: this package has some problems for me out of the box. These
 ;; are:
 ;;
