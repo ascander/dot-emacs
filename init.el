@@ -255,8 +255,13 @@
 (general-add-hook 'evil-insert-state-entry-hook #'ad:absolute-line-numbers)
 (general-add-hook 'evil-insert-state-exit-hook #'ad:relative-line-numbers)
 
-;; Disable line numbers in comint-mode
+;; Disable line numbers in terminal-ish modes
 (general-add-hook 'comint-mode-hook #'ad:disable-line-numbers-local)
+(general-add-hook 'vterm-mode-hook #'ad:disable-line-numbers-local)
+
+;; Go ahead and disable global line highlighting in terminal-ish modes, too
+(general-add-hook 'vterm-mode-hook #'(lambda () (gsetq-local global-hl-line-mode nil)))
+
 
 ;; Bedazzle the current line number
 ;; TODO handle this for dark/light themes
