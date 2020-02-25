@@ -737,14 +737,6 @@ Redefined to allow pop-up windows."
   ;; Enable habits
   (require 'org-habit)
 
-  ;; Allow `electric-pair-mode' to recognize paired delimiters in org buffers
-  ;; See: https://emacs.stackexchange.com/questions/17284/adding-tilde-to-electric-pairs-in-org-mode
-  (general-add-hook 'org-mode-hook
-                    #'(lambda ()
-                        (modify-syntax-entry ?/ "$/" org-mode-syntax-table)
-                        (modify-syntax-entry ?= "$=" org-mode-syntax-table)
-                        (modify-syntax-entry ?~ "$~" org-mode-syntax-table)))
-
   ;; TODO task states
   (gsetq org-todo-keywords
         '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
@@ -831,6 +823,10 @@ Redefined to allow pop-up windows."
 
   ;; Just use a newline to separate blocks
   (gsetq org-agenda-block-separator "")
+
+  ;; Advise `org-agenda-quit' to save all existing org buffers, so things don't
+  ;; get lost. Ask how I know.
+  (general-add-advice 'org-agenda-quit :after #'org-save-all-org-buffers)
 
   ;; Compact agenda blocks (disabled)
   (gsetq org-agenda-compact-blocks nil))
