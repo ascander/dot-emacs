@@ -323,6 +323,7 @@
   :prefix-command 'ad:toggle
   :prefix-map 'ad:toggle-map
   "d" #'toggle-debug-on-error
+  "o" #'dired-omit-mode
   "q" #'toggle-debug-on-quit
   "A" #'auto-fill-mode
   "t" #'toggle-truncate-lines)
@@ -538,6 +539,7 @@ and ':underline' the same value."
     "k" #'dired-previous-line
     "i" #'dired-find-alternate-file
     "f" #'counsel-find-file
+    "F" #'find-name-dired
     ;; Misc
     "S" #'magit-status))
 
