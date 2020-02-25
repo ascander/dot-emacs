@@ -42,8 +42,8 @@
 ;;; Package initialization
 
 (require 'package)
-(setq load-prefer-newer t            ; prefer the newest version of a file
-      package-enable-at-startup nil) ; explicitly initialize packages
+(setq load-prefer-newer t               ; prefer the newest version of a file
+      package-enable-at-startup nil)    ; don't run `package-initialize' after loading init file
 
 (setq package-archives
       '(("melpa" . "https://melpa.org/packages/")
