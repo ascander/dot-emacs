@@ -677,6 +677,7 @@ and ':underline' the same value."
            ("*Help*"            :align above :size 0.33 :select t)
            ("*info*"            :align above :size 0.33 :select t)
            ("*lsp-help*"        :align above :size 0.33 :select nil)
+           ("*xref*"            :align above :size 0.33 :select t)
            (compilation-mode    :align above :size 0.33 :select nil))
          shackle-default-rule '(:select t))
   :config (shackle-mode t))
