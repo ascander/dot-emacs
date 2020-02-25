@@ -1275,14 +1275,21 @@ Redefined to allow pop-up windows."
                         (ad:disable-line-numbers-local)
                         (gsetq-local global-hl-line-mode nil))))
 
+(use-package vterm
+  :ensure nil                           ; installed via nixpkgs
+  :init
+  (gsetq vterm-kill-buffer-on-exit t
+         vterm-max-scrollback 10000))
+
 (use-package shell-pop
   :general (general-m "t" #'shell-pop)
-  :init (gsetq shell-pop-window-size 33
-               shell-pop-window-position 'top)
+  :init (gsetq shell-pop-window-size 40
+               shell-pop-window-position 'top
+               shell-pop-full-span t)
   :config
   ;; Set shell type to term
   (gsetq shell-pop-shell-type
-         '("term" "*terminal*" #'(lambda () (term shell-pop-term-shell)))))
+         '("vterm" "vterm" #'(lambda () (vterm)))))
 
 ;;; Git
 
