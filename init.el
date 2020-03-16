@@ -42,8 +42,7 @@
 ;;; Package initialization
 
 (require 'package)
-(setq load-prefer-newer t               ; prefer the newest version of a file
-      package-enable-at-startup nil)    ; don't run `package-initialize' after loading init file
+(setq load-prefer-newer t)
 
 (setq package-archives
       '(("melpa" . "https://melpa.org/packages/")
@@ -224,14 +223,6 @@
 
 ;;; Basic UI
 
-;; Disable tool bar, scroll bar, and menu bar.
-;;
-;; Note: menu bar cannot be disabled on OSX, so only remove it if
-;; we're not on a Mac (and it's enabled).
-(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-(when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-(when (and (not ad:is-a-mac-p) (fboundp 'menu-bar-mode)) (menu-bar-mode -1))
-
 ;; Use Emacs' builtin line numbering
 (gsetq-default display-line-numbers 'visual ; vim-style line numbers
            display-line-numbers-widen t ; disregard any narrowing
@@ -298,11 +289,6 @@
          `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 
 ;;; Fonts and font sizes
-
-(set-face-attribute 'default nil
-            :family "Iosevka Dost"
-            :height 140
-            :weight 'regular)
 
 (set-face-attribute 'variable-pitch nil
             :family "Fira Sans"
