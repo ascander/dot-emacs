@@ -842,11 +842,15 @@ Redefined to allow pop-up windows."
   (gsetq org-agenda-custom-commands
          '(("w" "Work Agenda"
             ((agenda)
-             ;; Followed by next tasks
              (org-ql-block '(and (todo "NEXT")
                                  (not (scheduled))
                                  (tags "@work"))
                            ((org-ql-block-header "Next Tasks:")))
+             (org-ql-block '(and (todo)
+                                 (tags "@work")
+                                 (children (todo))
+                                 (not (children (todo "NEXT"))))
+                           ((org-ql-block-header "Stuck Projects:")))
              (org-ql-block '(and (todo "WAITING")
                                  (not (scheduled))
                                  (tags "@work"))
