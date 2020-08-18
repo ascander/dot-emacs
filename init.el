@@ -707,6 +707,9 @@ and ':underline' the same value."
          org-enable-priority-commands nil
          org-reverse-note-order t)
 
+  ;; Don't try to be intelligent about inserting blank lines
+  (gsetq org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+
   ;; Re-define org-switch-to-buffer-other-window to NOT use org-no-popups.
   ;; Primarily for compatibility with shackle.
   ;; See: https://emacs.stackexchange.com/a/31634
@@ -1001,6 +1004,9 @@ Redefined to allow pop-up windows."
   :general (general-spc "s" #'avy-goto-char-timer)
   :init (gsetq avy-all-windows nil
                avy-timeout-seconds 0.25))
+
+(use-package ivy-avy
+  :after ivy avy)
 
 (use-package prescient
   :config (prescient-persist-mode))
