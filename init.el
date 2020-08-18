@@ -1229,40 +1229,56 @@ Redefined to allow pop-up windows."
     "E" #'flycheck-list-errors))
 
 (use-package lsp-mode
-  :defer t
-  :config
-  ;; Basic settings
-  (gsetq lsp-prefer-flymake nil
-         lsp-metals-server-command "metals"
-         lsp-response-timeout 20)
+  :ghook ('lsp-mode-hook #'lsp-enable-which-key-integration)
+  :commands (lsp lsp-deferred))
 
-  (general-def 'normal lsp-mode-map
-    "N" #'lsp-describe-thing-at-point
-    "RET" #'lsp-find-definition)
-
-  (general-m lsp-mode-map
-    "i" #'lsp-goto-implementation       ; donut work on metals
-    "D" #'lsp-find-declaration          ; same
-    "x" #'lsp-find-references
-    "r" #'lsp-rename                    ; this'n too
-    "=" #'lsp-format-buffer
-    "R" #'lsp-workspace-restart)
-
-  (require 'lsp-clients))
+(use-package lsp-metals
+  :init (gsetq lsp-metals-server-command "metals"))
 
 (use-package lsp-ui
   :ghook ('lsp-mode-hook #'lsp-ui-mode)
-  :init
-  ;; Show information only when I ask for it, thanks
-  (gsetq-default lsp-ui-sideline-enable nil
-                 lsp-ui-doc-enable nil))
+  :commands lsp-ui-mode
+  ;; :init (general-add-hook 'lsp-ui-doc-frame-hook)
+  )
 
-(use-package company-lsp
-  :after company lsp-mode
-  :config (add-to-list 'company-backends 'company-lsp)
-  :custom
-  (company-lsp-async 1)
-  (company-lsp-enable-snippet t))
+(use-package lsp-ivy
+  :commands lsp-ivy-workspace-symbol)
+
+;; (use-package lsp-mode
+;;   :defer t
+;;   :config
+;;   ;; Basic settings
+;;   (gsetq lsp-prefer-flymake nil
+;;          lsp-metals-server-command "metals"
+;;          lsp-response-timeout 20)
+
+;;   (general-def 'normal lsp-mode-map
+;;     "N" #'lsp-describe-thing-at-point
+;;     "RET" #'lsp-find-definition)
+
+;;   (general-m lsp-mode-map
+;;     "i" #'lsp-goto-implementation       ; donut work on metals
+;;     "D" #'lsp-find-declaration          ; same
+;;     "x" #'lsp-find-references
+;;     "r" #'lsp-rename                    ; this'n too
+;;     "=" #'lsp-format-buffer
+;;     "R" #'lsp-workspace-restart)
+
+;;   (require 'lsp-clients))
+
+;; (use-package lsp-ui
+;;   :ghook ('lsp-mode-hook #'lsp-ui-mode)
+;;   :init
+;;   ;; Show information only when I ask for it, thanks
+;;   (gsetq-default lsp-ui-sideline-enable nil
+;;                  lsp-ui-doc-enable nil))
+
+;; (use-package company-lsp
+;;   :after company lsp-mode
+;;   :config (add-to-list 'company-backends 'company-lsp)
+;;   :custom
+;;   (company-lsp-async 1)
+;;   (company-lsp-enable-snippet t))
 
 (use-package term
   :ensure nil
@@ -1342,12 +1358,12 @@ Redefined to allow pop-up windows."
 
 (use-package scala-mode
   :mode ("\\.scala\\'" "\\.sbt\\'" "\\.worksheet\\.sc\\'")
+  :gfhook #'lsp-deferred
   :general
   (general-m scala-mode-map
     "b" #'lsp-metals-build-import
     "c" #'lsp-metals-build-connect
     "d" #'lsp-metals-doctor-run)
-  :gfhook #'lsp
   :config
   ;; Indentation preferences
   (gsetq scala-indent:default-run-on-strategy
