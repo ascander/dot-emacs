@@ -1400,19 +1400,21 @@ Redefined to allow pop-up windows."
 
 ;;; Python
 
-(use-package pyvenv
-  :ghook 'python-mode-hook
-  :general
-  (general-m python-mode-map
-    "v" #'pyvenv-workon
-    "V" #'pyvenv-deactivate))
-
 (use-package lsp-python-ms
+  :init (gsetq lsp-python-ms-auto-install-server t)
+  :ghook ('python-mode-hook #'(lambda ()
+                                (require 'lsp-python-ms)
+                                (lsp-deferred))))
+
+(use-package conda
   :defer t
-  :init
-  (general-add-hook 'python-mode-hook #'(lambda ()
-                                          (require 'lsp-python-ms)
-                                          (lsp))))
+  :init (gsetq conda-anaconda-home (expand-file-name "~/miniconda3")
+               conda-env-home-directory (expand-file-name "~/miniconda3")))
+
+;;; YAML
+
+(use-package yaml-mode
+  :mode ("\\.yaml\\'" "\\.yml\\'" "MLproject\\'"))
 
 ;;; Coda
 
