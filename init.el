@@ -114,16 +114,16 @@
 (use-package evil
   :init
   (gsetq evil-want-keybinding nil     ; don't load evil bindings for other modes
-     evil-overriding-maps nil         ; no maps should override evil maps
-     evil-search-module 'evil-search  ; use evil-search instead of isearch
-     ;; This setting is not respected for 'n/N' searches.
-     ;;
-     ;; NOTE: persistent highlighting after a search can be cleared with the
-     ;; ':nohlsearch' (evil-ex-nohighlight) command.
-     ;;
-     ;; See: https://github.com/emacs-evil/evil/pull/1128/commits/68d4eb382fe25db74dd1c5f4ddea00ff249ca254
-     evil-ex-search-persistent-highlight nil ; no persistent highlighting after search
-     evil-want-Y-yank-to-eol t)              ; Y like D
+         evil-overriding-maps nil     ; no maps should override evil maps
+         evil-search-module 'evil-search ; use evil-search instead of isearch
+         ;; This setting is not respected for 'n/N' searches.
+         ;;
+         ;; NOTE: persistent highlighting after a search can be cleared with the
+         ;; ':nohlsearch' (evil-ex-nohighlight) command.
+         ;;
+         ;; See: https://github.com/emacs-evil/evil/pull/1128/commits/68d4eb382fe25db74dd1c5f4ddea00ff249ca254
+         evil-ex-search-persistent-highlight nil ; no persistent highlighting after search
+         evil-want-Y-yank-to-eol t)              ; Y like D
   :config (evil-mode))
 
 (use-package evil-collection
@@ -225,8 +225,8 @@
 
 ;; Use Emacs' builtin line numbering
 (gsetq-default display-line-numbers 'visual ; vim-style line numbers
-           display-line-numbers-widen t ; disregard any narrowing
-           display-line-numbers-current-absolute t) ; display absolute number of current line
+               display-line-numbers-widen t ; disregard any narrowing
+               display-line-numbers-current-absolute t) ; display absolute number of current line
 
 (defun ad:relative-line-numbers ()
   "Toggle relative line numbers."
@@ -291,9 +291,9 @@
 ;;; Fonts and font sizes
 
 (set-face-attribute 'variable-pitch nil
-            :family "Fira Sans"
-            :height 140
-            :weight 'regular)
+                    :family "Fira Sans"
+                    :height 140
+                    :weight 'regular)
 
 (use-package default-text-scale
   :general
@@ -327,70 +327,70 @@
   (gsetq prettify-symbols-alist
          (append prettify-symbols-alist
                  '(
-                  ;; Rightwards arrows
-                  ("->"   . ?)
-                  ("=>"   . ?)
-                  ("->>"  . ?)
-                  ("=>>"  . ?)
-                  ("-->"  . ?)
-                  ("==>"  . ?)
-                  ("--->" . ?)
-                  ("===>" . ?)
-                  ("->-"  . ?)
-                  ("=>="  . ?)
-                  (">-"   . ?)
-                  (">>-"  . ?)
-                  (">>="  . ?)
-                  ("~>"   . ?⤳)
+                   ;; Rightwards arrows
+                   ("->"   . ?)
+                   ("=>"   . ?)
+                   ("->>"  . ?)
+                   ("=>>"  . ?)
+                   ("-->"  . ?)
+                   ("==>"  . ?)
+                   ("--->" . ?)
+                   ("===>" . ?)
+                   ("->-"  . ?)
+                   ("=>="  . ?)
+                   (">-"   . ?)
+                   (">>-"  . ?)
+                   (">>="  . ?)
+                   ("~>"   . ?⤳)
 
-                  ;; Leftwards arrows
-                  ("<-"   . ?)
-                  ("<<-"  . ?)
-                  ("<<="  . ?)
-                  ("<--"  . ?)
-                  ("<=="  . ?)
-                  ("<---" . ?)
-                  ("<===" . ?)
-                  ("-<-"  . ?)
-                  ("=<="  . ?)
-                  ("-<"   . ?)
-                  ("=<"   . ?)
-                  ("-<<"  . ?)
-                  ("=<<"  . ?)
+                   ;; Leftwards arrows
+                   ("<-"   . ?)
+                   ("<<-"  . ?)
+                   ("<<="  . ?)
+                   ("<--"  . ?)
+                   ("<=="  . ?)
+                   ("<---" . ?)
+                   ("<===" . ?)
+                   ("-<-"  . ?)
+                   ("=<="  . ?)
+                   ("-<"   . ?)
+                   ("=<"   . ?)
+                   ("-<<"  . ?)
+                   ("=<<"  . ?)
 
-                  ;; Bidirectional arrows
-                  ("<->"    . ?)
-                  ("<=>"    . ?)
-                  ("<-->"   . ?)
-                  ("<==>"   . ?)
-                  ("<--->"  . ?)
-                  ("<===>"  . ?)
-                  ("<---->" . ?)
-                  ("<====>" . ?)
+                   ;; Bidirectional arrows
+                   ("<->"    . ?)
+                   ("<=>"    . ?)
+                   ("<-->"   . ?)
+                   ("<==>"   . ?)
+                   ("<--->"  . ?)
+                   ("<===>"  . ?)
+                   ("<---->" . ?)
+                   ("<====>" . ?)
 
-                  ;; Colons
-                  ("::"  . ?)
-                  (":::" . ?)
+                   ;; Colons
+                   ("::"  . ?)
+                   (":::" . ?)
 
-                  ;; Logical
-                  ("/\\" . ?)
-                  ("\\/" . ?)
+                   ;; Logical
+                   ("/\\" . ?)
+                   ("\\/" . ?)
 
-                  ;; Comparison operators
-                  (">="  . ?)
-                  ("<="  . ?)
+                   ;; Comparison operators
+                   (">="  . ?)
+                   ("<="  . ?)
 
-                  ;; Equality/inequality
-                  ("=="    . ?)
-                  ("!="    . ?)
-                  ("==="   . ?)
-                  ("!=="   . ?)
-                  ("!=="   . ?)
-                  ("=!="   . ?)        ; Cats uses a different sequence
+                   ;; Equality/inequality
+                   ("=="    . ?)
+                   ("!="    . ?)
+                   ("==="   . ?)
+                   ("!=="   . ?)
+                   ("!=="   . ?)
+                   ("=!="   . ?)        ; Cats uses a different sequence
 
-                  ;; HTML comments
-                  ("<!--"  . ?)
-                  ("<!---" . ?)))))
+                   ;; HTML comments
+                   ("<!--"  . ?)
+                   ("<!---" . ?)))))
 
 (defun ad:refresh-prettify-symbols-mode ()
   "Toggle prettify symbols mode explicitly."
@@ -436,25 +436,25 @@
   :init
   ;; Basic settings - disprefer bold and italics, use high contrast
   (gsetq solarized-use-variable-pitch nil
-    solarized-use-less-bold t
-    solarized-use-more-italic nil
-    solarized-distinct-doc-face t
-    solarized-emphasize-indicators t
-    solarized-high-contrast-mode-line nil)
+         solarized-use-less-bold t
+         solarized-use-more-italic nil
+         solarized-distinct-doc-face t
+         solarized-emphasize-indicators t
+         solarized-high-contrast-mode-line nil)
   ;; Avoid all font size changes
   (gsetq solarized-height-minus-1 1.0
-    solarized-height-plus-1 1.0
-    solarized-height-plus-2 1.0
-    solarized-height-plus-3 1.0
-    solarized-height-plus-4 1.0)
+         solarized-height-plus-1 1.0
+         solarized-height-plus-2 1.0
+         solarized-height-plus-3 1.0
+         solarized-height-plus-4 1.0)
   :config
   ;; Conditionally load the default theme based on whether we're
   ;; running the Emacs daemon.
   (if (daemonp)
       (add-hook 'after-make-frame-functions
-        (lambda (frame)
-          (select-frame frame)
-          (load-theme 'solarized-dark t)))
+                (lambda (frame)
+                  (select-frame frame)
+                  (load-theme 'solarized-dark t)))
     (load-theme 'solarized-dark t)))
 
 (use-package doom-themes
@@ -707,6 +707,9 @@ and ':underline' the same value."
          org-enable-priority-commands nil
          org-reverse-note-order t)
 
+  ;; Don't try to be intelligent about inserting blank lines
+  (gsetq org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+
   ;; Re-define org-switch-to-buffer-other-window to NOT use org-no-popups.
   ;; Primarily for compatibility with shackle.
   ;; See: https://emacs.stackexchange.com/a/31634
@@ -730,8 +733,8 @@ Redefined to allow pop-up windows."
 
   ;; TODO task states
   (gsetq org-todo-keywords
-        '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-          (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "MEETING")))
+         '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+           (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "MEETING")))
 
   ;; Task state settings
   (gsetq org-enforce-todo-dependencies t
@@ -750,24 +753,24 @@ Redefined to allow pop-up windows."
   ;;   - moving a task to NEXT removes WAITING, CANCELLED, and HOLD tags
   ;;   - moving a task to DONE removes WAITING, CANCELLED, and HOLD tags
   (gsetq org-todo-state-tags-triggers
-        '(("CANCELLED" ("CANCELLED" . t))
-          ("WAITING" ("WAITING" . t))
-          ("HOLD" ("WAITING" . t) ("HOLD" . t))
-          (done ("WAITING") ("HOLD"))
-          ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
-          ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
-          ("DONE" ("WAITING") ("CANCELLED") ("HOLD"))))
+         '(("CANCELLED" ("CANCELLED" . t))
+           ("WAITING" ("WAITING" . t))
+           ("HOLD" ("WAITING" . t) ("HOLD" . t))
+           (done ("WAITING") ("HOLD"))
+           ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
+           ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
+           ("DONE" ("WAITING") ("CANCELLED") ("HOLD"))))
 
   ;; Org capture templates
   (gsetq org-capture-templates
-        '(("t" "TODO" entry (file+headline org-default-notes-file "Tasks")
-           "* TODO %i%?" :empty-lines 1)
-          ("s" "Scheduled" entry (file "~/org/reminders.org")
-           "* TODO %i%?\n SCHEDULED:%^{Scheduled}T" :empty-lines 1)
-          ("d" "Deadline" entry (file "~/org/reminders.org")
-           "* TODO %i%?\n DEADLINE:%^{Deadline}t" :empty-lines 1)
-          ("m" "Meeting" entry (file+headline org-default-notes-file "Meetings")
-           "* MEETING %? :MEETING:\n %U" :empty-lines 1)))
+         '(("t" "TODO" entry (file+headline org-default-notes-file "Tasks")
+            "* TODO %i%?" :empty-lines 1)
+           ("s" "Scheduled" entry (file "~/org/reminders.org")
+            "* TODO %i%?\n SCHEDULED:%^{Scheduled}T" :empty-lines 1)
+           ("d" "Deadline" entry (file "~/org/reminders.org")
+            "* TODO %i%?\n DEADLINE:%^{Deadline}t" :empty-lines 1)
+           ("m" "Meeting" entry (file+headline org-default-notes-file "Meetings")
+            "* MEETING %? :MEETING:\n %U" :empty-lines 1)))
 
   ;; Use sensible keybindings for capture buffers
   (general-def 'normal org-capture-mode-map
@@ -783,7 +786,7 @@ Redefined to allow pop-up windows."
 
   ;; Refile targets include this file and any agenda file - up to 5 levels deep
   (gsetq org-refile-targets '((nil :maxlevel . 5)
-                             (org-agenda-files :maxlevel . 5)))
+                              (org-agenda-files :maxlevel . 5)))
 
   ;; Switch to insert state when capturing
   (general-add-hook 'org-capture-mode-hook #'evil-insert-state)
@@ -847,6 +850,7 @@ Redefined to allow pop-up windows."
                                  (tags "@work"))
                            ((org-ql-block-header "Next Tasks:")))
              (org-ql-block '(and (todo)
+                                 (not (todo "HOLD" "WAITING"))
                                  (tags "@work")
                                  (children (todo))
                                  (not (children (todo "NEXT"))))
@@ -985,6 +989,8 @@ Redefined to allow pop-up windows."
   ;; Goto org headings
   (general-m org-mode-map
     "j" #'counsel-org-goto)
+  ;; For, eg. switching to a newly created project
+  (general-spc "F" #'counsel-find-file)
   ;; Load themes
   (general-t
     "t" #'counsel-load-theme)
@@ -998,6 +1004,9 @@ Redefined to allow pop-up windows."
   :general (general-spc "s" #'avy-goto-char-timer)
   :init (gsetq avy-all-windows nil
                avy-timeout-seconds 0.25))
+
+(use-package ivy-avy
+  :after ivy avy)
 
 (use-package prescient
   :config (prescient-persist-mode))
@@ -1226,40 +1235,56 @@ Redefined to allow pop-up windows."
     "E" #'flycheck-list-errors))
 
 (use-package lsp-mode
-  :defer t
-  :config
-  ;; Basic settings
-  (gsetq lsp-prefer-flymake nil
-         lsp-metals-server-command "metals"
-         lsp-response-timeout 20)
+  :ghook ('lsp-mode-hook #'lsp-enable-which-key-integration)
+  :commands (lsp lsp-deferred))
 
-  (general-def 'normal lsp-mode-map
-    "N" #'lsp-describe-thing-at-point
-    "RET" #'lsp-find-definition)
-
-  (general-m lsp-mode-map
-    "i" #'lsp-goto-implementation       ; donut work on metals
-    "D" #'lsp-find-declaration          ; same
-    "x" #'lsp-find-references
-    "r" #'lsp-rename                    ; this'n too
-    "=" #'lsp-format-buffer
-    "R" #'lsp-workspace-restart)
-
-  (require 'lsp-clients))
+(use-package lsp-metals
+  :init (gsetq lsp-metals-server-command "metals"))
 
 (use-package lsp-ui
   :ghook ('lsp-mode-hook #'lsp-ui-mode)
-  :init
-  ;; Show information only when I ask for it, thanks
-  (gsetq-default lsp-ui-sideline-enable nil
-                 lsp-ui-doc-enable nil))
+  :commands lsp-ui-mode
+  ;; :init (general-add-hook 'lsp-ui-doc-frame-hook)
+  )
 
-(use-package company-lsp
-  :after company lsp-mode
-  :config (add-to-list 'company-backends 'company-lsp)
-  :custom
-  (company-lsp-async 1)
-  (company-lsp-enable-snippet t))
+(use-package lsp-ivy
+  :commands lsp-ivy-workspace-symbol)
+
+;; (use-package lsp-mode
+;;   :defer t
+;;   :config
+;;   ;; Basic settings
+;;   (gsetq lsp-prefer-flymake nil
+;;          lsp-metals-server-command "metals"
+;;          lsp-response-timeout 20)
+
+;;   (general-def 'normal lsp-mode-map
+;;     "N" #'lsp-describe-thing-at-point
+;;     "RET" #'lsp-find-definition)
+
+;;   (general-m lsp-mode-map
+;;     "i" #'lsp-goto-implementation       ; donut work on metals
+;;     "D" #'lsp-find-declaration          ; same
+;;     "x" #'lsp-find-references
+;;     "r" #'lsp-rename                    ; this'n too
+;;     "=" #'lsp-format-buffer
+;;     "R" #'lsp-workspace-restart)
+
+;;   (require 'lsp-clients))
+
+;; (use-package lsp-ui
+;;   :ghook ('lsp-mode-hook #'lsp-ui-mode)
+;;   :init
+;;   ;; Show information only when I ask for it, thanks
+;;   (gsetq-default lsp-ui-sideline-enable nil
+;;                  lsp-ui-doc-enable nil))
+
+;; (use-package company-lsp
+;;   :after company lsp-mode
+;;   :config (add-to-list 'company-backends 'company-lsp)
+;;   :custom
+;;   (company-lsp-async 1)
+;;   (company-lsp-enable-snippet t))
 
 (use-package term
   :ensure nil
@@ -1339,17 +1364,17 @@ Redefined to allow pop-up windows."
 
 (use-package scala-mode
   :mode ("\\.scala\\'" "\\.sbt\\'" "\\.worksheet\\.sc\\'")
+  :gfhook #'lsp-deferred
   :general
   (general-m scala-mode-map
     "b" #'lsp-metals-build-import
     "c" #'lsp-metals-build-connect
     "d" #'lsp-metals-doctor-run)
-  :gfhook #'lsp
   :config
   ;; Indentation preferences
   (gsetq scala-indent:default-run-on-strategy
-        scala-indent:operator-strategy
-        scala-indent:use-javadoc-style t)
+         scala-indent:operator-strategy
+         scala-indent:use-javadoc-style t)
 
   ;; Insert newline in a multiline comment should insert an asterisk
   (defun ad|scala-mode-newline-comments ()
@@ -1375,19 +1400,21 @@ Redefined to allow pop-up windows."
 
 ;;; Python
 
-(use-package pyvenv
-  :ghook 'python-mode-hook
-  :general
-  (general-m python-mode-map
-    "v" #'pyvenv-workon
-    "V" #'pyvenv-deactivate))
-
 (use-package lsp-python-ms
+  :init (gsetq lsp-python-ms-auto-install-server t)
+  :ghook ('python-mode-hook #'(lambda ()
+                                (require 'lsp-python-ms)
+                                (lsp-deferred))))
+
+(use-package conda
   :defer t
-  :init
-  (general-add-hook 'python-mode-hook #'(lambda ()
-                                          (require 'lsp-python-ms)
-                                          (lsp))))
+  :init (gsetq conda-anaconda-home (expand-file-name "~/miniconda3")
+               conda-env-home-directory (expand-file-name "~/miniconda3")))
+
+;;; YAML
+
+(use-package yaml-mode
+  :mode ("\\.yaml\\'" "\\.yml\\'" "MLproject\\'"))
 
 ;;; Coda
 
@@ -1399,11 +1426,11 @@ Redefined to allow pop-up windows."
 
 ;; Display timing information in '*Messages*' buffer
 (add-hook 'emacs-startup-hook
-      (lambda ()
-        (message "Emacs ready in %s with %d garbage collections."
-             (format "%.2f seconds"
-                 (float-time
-                  (time-subtract after-init-time before-init-time))) gcs-done)))
+          (lambda ()
+            (message "Emacs ready in %s with %d garbage collections."
+                     (format "%.2f seconds"
+                             (float-time
+                              (time-subtract after-init-time before-init-time))) gcs-done)))
 
 (provide 'init)
 ;;; init.el ends here
