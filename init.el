@@ -847,6 +847,7 @@ Redefined to allow pop-up windows."
             ((agenda)
              (org-ql-block '(and (todo "NEXT")
                                  (not (scheduled))
+                                 (not (parent (todo "HOLD" "WAITING")))
                                  (tags "@work"))
                            ((org-ql-block-header "Next Tasks:")))
              (org-ql-block '(and (todo)
