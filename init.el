@@ -924,9 +924,12 @@ Redefined to allow pop-up windows."
   (with-eval-after-load 'projectile
     (ad:set-magit-repository-directories-from-projectile-known-projects))
 
-  (general-add-hook
-   'projectile-switch-project-hook
-   #'ad:set-magit-repository-directories-from-projectile-known-projects))
+  (general-add-hook 'projectile-switch-project-hook
+                    #'ad:set-magit-repository-directories-from-projectile-known-projects)
+
+  ;; Disable auto-fill-mode in git commit buffers
+  (general-remove-hook 'git-commit-setup-hook
+                       #'git-commit-turn-on-auto-fill))
 
 (use-package evil-magit
   :after evil magit)
