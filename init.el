@@ -1239,8 +1239,28 @@ Redefined to allow pop-up windows."
     "E" #'flycheck-list-errors))
 
 (use-package lsp-mode
-  :ghook ('lsp-mode-hook #'lsp-enable-which-key-integration)
-  :commands (lsp lsp-deferred))
+  :init
+  ;; Performance tuning per: https://emacs-lsp.github.io/lsp-mode/page/performance/
+  (gsetq lsp-idle-delay 0.5
+         lsp-completion-provider :capf
+         read-process-output-max (* 1024 1024))
+  :config
+  (general-def 'normal lsp-mode-map
+    "N" #'lsp-describe-thing-at-point
+    "RET" #'lsp-find-definition)
+
+  (gsetq lsp-keymap-prefix "mm")
+  (general-add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
+
+  (general-m lsp-mode-map
+    "m" lsp-command-map
+    "i" #'lsp-goto-implementation
+    "D" #'lsp-find-declaration
+    "x" #'lsp-find-references
+    "r" #'lsp-rename
+    "R" #'lsp-workspace-restart
+    "=" #'lsp-format-buffer
+    "l" #'lsp-workspace-show-log))
 
 (use-package lsp-metals
   :init (gsetq lsp-metals-server-command "metals"))
@@ -1253,42 +1273,6 @@ Redefined to allow pop-up windows."
 
 (use-package lsp-ivy
   :commands lsp-ivy-workspace-symbol)
-
-;; (use-package lsp-mode
-;;   :defer t
-;;   :config
-;;   ;; Basic settings
-;;   (gsetq lsp-prefer-flymake nil
-;;          lsp-metals-server-command "metals"
-;;          lsp-response-timeout 20)
-
-;;   (general-def 'normal lsp-mode-map
-;;     "N" #'lsp-describe-thing-at-point
-;;     "RET" #'lsp-find-definition)
-
-;;   (general-m lsp-mode-map
-;;     "i" #'lsp-goto-implementation       ; donut work on metals
-;;     "D" #'lsp-find-declaration          ; same
-;;     "x" #'lsp-find-references
-;;     "r" #'lsp-rename                    ; this'n too
-;;     "=" #'lsp-format-buffer
-;;     "R" #'lsp-workspace-restart)
-
-;;   (require 'lsp-clients))
-
-;; (use-package lsp-ui
-;;   :ghook ('lsp-mode-hook #'lsp-ui-mode)
-;;   :init
-;;   ;; Show information only when I ask for it, thanks
-;;   (gsetq-default lsp-ui-sideline-enable nil
-;;                  lsp-ui-doc-enable nil))
-
-;; (use-package company-lsp
-;;   :after company lsp-mode
-;;   :config (add-to-list 'company-backends 'company-lsp)
-;;   :custom
-;;   (company-lsp-async 1)
-;;   (company-lsp-enable-snippet t))
 
 (use-package term
   :ensure nil
